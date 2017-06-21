@@ -17,7 +17,7 @@ EXPOSE 8888 80 443 21 20
 # Set the entrypoint script.
 #ADD ${REMOTE_PATH}/entrypoint.sh /entrypoint.sh
 #RUN chmod 777 /entrypoint.sh
-ENTRYPOINT ["/usr/bin/bt" "start"]
+ENTRYPOINT ["/usr/bin/bt", "start"]
 
 #Define the default command.
 #CMD ["/usr/bin/bt" "start"]
