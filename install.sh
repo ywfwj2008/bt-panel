@@ -456,7 +456,7 @@ chmod +x $setup_path/server/panel/certbot-auto
 chmod -R +x $setup_path/server/panel/script
 echo "$port" > $setup_path/server/panel/data/port.pl
 service bt start
-password=`cat /dev/urandom | head -n 16 | md5sum | head -c 8`
+password=123456
 cd $setup_path/server/panel/
 username=`python tools.pyc panel $password`
 cd ~
