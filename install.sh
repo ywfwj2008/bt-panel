@@ -317,21 +317,12 @@ chmod -R 600 $setup_path/server/panel
 chmod +x $setup_path/server/panel/certbot-auto
 chmod -R +x $setup_path/server/panel/script
 echo "$port" > $setup_path/server/panel/data/port.pl
-# service bt start
-# password=`cat /dev/urandom | head -n 16 | md5sum | head -c 8`
 password=123456
 cd $setup_path/server/panel/
 username=`python tools.pyc panel $password`
 cd ~
 echo "$password" > $setup_path/server/panel/default.pl
 chmod 600 $setup_path/server/panel/default.pl
-
-isStart=`ps aux |grep 'python main.pyc'|grep -v grep|awk '{print $2}'`
-if [ "$isStart" == '' ];then
-	echo -e "\033[31mERROR: The BT-Panel service startup failed.\033[0m";
-	echo '============================================'
-	exit;
-fi
 
 if [ -f "/etc/init.d/iptables" ];then
 	iptables -I INPUT DROP
