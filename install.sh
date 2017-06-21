@@ -65,81 +65,12 @@ done
 
 yum install python-devel -y
 
-if [ -f '/www/server/mysql/bin/mysql_config' ];then
-	SetLink
-fi
-
 if [ ! -f '/usr/bin/mysql_config' ];then
 	yum install mysql-devel -y
 fi
 
 tmp=`python -V 2>&1|awk '{print $2}'`
 pVersion=${tmp:0:3}
-
-SetLink()
-{
-	mSetup_Path=/www/server/mysql
-    ln -sf ${mSetup_Path}/bin/mysql /usr/bin/mysql
-    ln -sf ${mSetup_Path}/bin/mysqldump /usr/bin/mysqldump
-    ln -sf ${mSetup_Path}/bin/myisamchk /usr/bin/myisamchk
-    ln -sf ${mSetup_Path}/bin/mysqld_safe /usr/bin/mysqld_safe
-    ln -sf ${mSetup_Path}/bin/mysqlcheck /usr/bin/mysqlcheck
-	ln -sf ${mSetup_Path}/bin/mysql_config /usr/bin/mysql_config
-	
-	rm -f /usr/lib/libmysqlclient.so.16
-	rm -f /usr/lib64/libmysqlclient.so.16
-	rm -f /usr/lib/libmysqlclient.so.18
-	rm -f /usr/lib64/libmysqlclient.so.18
-	rm -f /usr/lib/libmysqlclient.so.20
-	rm -f /usr/lib64/libmysqlclient.so.20
-	
-	if [ -f "${mSetup_Path}/lib/libmysqlclient.so.18" ];then
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.18 /usr/lib/libmysqlclient.so.16
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.18 /usr/lib64/libmysqlclient.so.16
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.18 /usr/lib/libmysqlclient.so.18
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.18 /usr/lib64/libmysqlclient.so.18
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.18 /usr/lib/libmysqlclient.so.20
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.18 /usr/lib64/libmysqlclient.so.20
-	elif [ -f "${mSetup_Path}/lib/mysql/libmysqlclient.so.18" ];then
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.18 /usr/lib/libmysqlclient.so.16
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.18 /usr/lib64/libmysqlclient.so.16
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.18 /usr/lib/libmysqlclient.so.18
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.18 /usr/lib64/libmysqlclient.so.18
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.18 /usr/lib/libmysqlclient.so.20
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.18 /usr/lib64/libmysqlclient.so.20
-	elif [ -f "${mSetup_Path}/lib/libmysqlclient.so.16" ];then
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.16 /usr/lib/libmysqlclient.so.16
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.16 /usr/lib64/libmysqlclient.so.16
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.16 /usr/lib/libmysqlclient.so.18
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.16 /usr/lib64/libmysqlclient.so.18
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.16 /usr/lib/libmysqlclient.so.20
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.16 /usr/lib64/libmysqlclient.so.20
-	elif [ -f "${mSetup_Path}/lib/mysql/libmysqlclient.so.16" ];then
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.16 /usr/lib/libmysqlclient.so.16
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.16 /usr/lib64/libmysqlclient.so.16
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.16 /usr/lib/libmysqlclient.so.18
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.16 /usr/lib64/libmysqlclient.so.18
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.16 /usr/lib/libmysqlclient.so.20
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.16 /usr/lib64/libmysqlclient.so.20
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient_r.so.16 /usr/lib/libmysqlclient_r.so.16
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient_r.so.16 /usr/lib64/libmysqlclient_r.so.16
-	elif [ -f "${mSetup_Path}/lib/libmysqlclient.so.20" ];then
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.20 /usr/lib/libmysqlclient.so.16
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.20 /usr/lib64/libmysqlclient.so.16
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.20 /usr/lib/libmysqlclient.so.18
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.20 /usr/lib64/libmysqlclient.so.18
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.20 /usr/lib/libmysqlclient.so.20
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.20 /usr/lib64/libmysqlclient.so.20
-	elif [ -f "${mSetup_Path}/lib/mysql/libmysqlclient.so.20" ];then
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.20 /usr/lib/libmysqlclient.so.16
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.20 /usr/lib64/libmysqlclient.so.16
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.20 /usr/lib/libmysqlclient.so.18
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.20 /usr/lib64/libmysqlclient.so.18
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.20 /usr/lib/libmysqlclient.so.20
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.20 /usr/lib64/libmysqlclient.so.20
-	fi
-	ldconfig
-}
 
 Install_setuptools()
 {
