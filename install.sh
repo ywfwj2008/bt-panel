@@ -49,8 +49,6 @@ if [ -f $setup_path/server/panel/data/port.pl ];then
 	port=`cat $setup_path/server/panel/data/port.pl`
 fi
 
-startTime=`date +%s`
-
 #数据盘自动分区
 fdiskP(){
 	for i in `cat /proc/partitions|grep -v name|grep -v ram|awk '{print $4}'|grep -v '^$'|grep -v '[0-9]$'|grep -e 'vd' -e 'sd' -e 'xv'`;
@@ -124,6 +122,7 @@ yum install ntp -y
 \cp -a -r /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 echo 'Synchronizing system time...'
 ntpdate 0.asia.pool.ntp.org
+startTime=`date +%s`
 yum upgrade -y
 setenforce 0
 sed -i 's/SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config
@@ -456,7 +455,7 @@ chmod +x $setup_path/server/panel/certbot-auto
 chmod -R +x $setup_path/server/panel/script
 echo "$port" > $setup_path/server/panel/data/port.pl
 service bt start
-password=123456
+password=`cat /dev/urandom | head -n 16 | md5sum | head -c 8`
 cd $setup_path/server/panel/
 username=`python tools.pyc panel $password`
 cd ~
