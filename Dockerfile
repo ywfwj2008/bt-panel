@@ -12,12 +12,12 @@ RUN chmod 777 install.sh && \
     rm -rf /tmp/*
 
 # expose port
-EXPOSE 8080 80 443 21 20
+EXPOSE 8888 80 443 21 20
 
 # Set the entrypoint script.
 #ADD ${REMOTE_PATH}/entrypoint.sh /entrypoint.sh
 #RUN chmod 777 /entrypoint.sh
 #ENTRYPOINT ["/entrypoint.sh"]
 
- #Define the default command.
- CMD ["/bin/bash" "/www/server/panel/bt.sh" "start"]
+#Define the default command.
+CMD ["/bin/bash"]
