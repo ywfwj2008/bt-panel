@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
 
-service bt start
+/usr/bin/bt start
 
 exec "$@"
