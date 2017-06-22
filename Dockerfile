@@ -5,10 +5,22 @@ ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/raw/master
 
 WORKDIR /tmp
 
-# run install script
+# install bt panel
 ADD ${REMOTE_PATH}/install.sh /tmp/install.sh
 RUN chmod 777 install.sh && \
     bash install.sh && \
+    rm -rf /tmp/*
+
+# install nginx
+ADD ${REMOTE_PATH}/soft/nginx.sh /tmp/nginx.sh
+RUN chmod 777 nginx.sh && \
+    bash nginx.sh install 1.10 && \
+    rm -rf /tmp/*
+
+# install nginx
+ADD ${REMOTE_PATH}/soft/php.sh /tmp/php.sh
+RUN chmod 777 php.sh && \
+    bash php.sh install 5.6  && \
     rm -rf /tmp/*
 
 # install supervisord
