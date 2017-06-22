@@ -25,7 +25,10 @@ sh $name.sh $actionType $version
 docker run \
 --name bt \
 --link mysql:localmysql \
--v /www:/www \
+-v /www/backup:/www/backup \
+-v /www/wwwlogs:/www/wwwlogs \
+-v /www/wwwroot:/www/wwwroot \
+-v /www/server/panel:/www/server/panel \
 -p 8888:8888 \
 -p 80:80 \
 -p 21 \
