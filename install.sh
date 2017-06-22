@@ -250,6 +250,10 @@ wget -O $setup_path/server/panel/certbot-auto $download_Url/install/certbot-auto
 chmod +x $setup_path/server/panel/certbot-auto
 
 
+if [ -f '/etc/init.d/bt' ];then
+	service bt stop
+fi
+
 mkdir -p /www/server
 mkdir -p /www/wwwroot
 mkdir -p /www/wwwlogs
@@ -261,7 +265,7 @@ if [ ! -f "/usr/bin/unzip" ];then
 	yum install unzip -y
 fi
 wget -O panel.zip $download_Url/install/src/panel.zip -T 10
-wget -O /usr/bin/bt $download_Url/install/src/bt.init -T 10
+wget -O /etc/init.d/bt $download_Url/install/src/bt.init -T 10
 if [ -f "$setup_path/server/panel/data/default.db" ];then
 	if [ -d "/$setup_path/server/panel/old_data" ];then
 		rm -rf $setup_path/server/panel/old_data
@@ -306,7 +310,9 @@ rm -f $setup_path/server/panel/*.py
 
 
 
-chmod +x /usr/bin/bt
+chmod +x /etc/init.d/bt
+chkconfig --add bt
+chkconfig --level 2345 bt on
 chmod -R 600 $setup_path/server/panel
 chmod +x $setup_path/server/panel/certbot-auto
 chmod -R +x $setup_path/server/panel/script
