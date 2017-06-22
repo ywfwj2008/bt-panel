@@ -306,9 +306,7 @@ rm -f $setup_path/server/panel/*.py
 
 
 
-chmod +x /etc/init.d/bt
-chkconfig --add bt
-chkconfig --level 2345 bt on
+chmod +x /usr/bin/bt
 chmod -R 600 $setup_path/server/panel
 chmod +x $setup_path/server/panel/certbot-auto
 chmod -R +x $setup_path/server/panel/script
