@@ -14,12 +14,12 @@ actionType=$2(install/uninstall)
 name=$3(nginx/php)
 version=$4
 
-nginx:
-编译：http://125.88.182.172:5880/install/0/nginx.sh
-极速：http://125.88.182.172:5880/install/1/nginx.sh
-php:
+nginx：http://125.88.182.172:5880/install/0/nginx.sh
+php：
 编译：http://125.88.182.172:5880/install/0/php.sh
 极速：http://125.88.182.172:5880/install/1/php.sh
+Pure-Ftpd：http://125.88.182.172:5880/install/0/pure-ftpd.sh
+lib：http://125.88.182.172:5880/install/1/lib.sh
 
 sh $name.sh $actionType $version
 ```
@@ -31,10 +31,9 @@ docker run \
 -v /www/backup:/www/backup \
 -v /www/wwwlogs:/www/wwwlogs \
 -v /www/wwwroot:/www/wwwroot \
--v /www/server/panel:/www/server/panel \
 -p 8888:8888 \
 -p 80:80 \
--p 21 \
--p 20 \
+-p 21:21 \
+-p 20:20 \
 -d ywfwj2008/bt-panel
 ```
