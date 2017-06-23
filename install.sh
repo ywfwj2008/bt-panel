@@ -75,7 +75,7 @@ pVersion=${tmp:0:3}
 
 lib_install='/www/server/rpm.pl'
 if [ ! -f "${lib_install}" ];then
-    wget -O lib.sh ${Download_Url}/install/1/lib.sh && sh lib.sh
+    wget -O lib.sh ${download_Url}/install/1/lib.sh && sh lib.sh
 fi
 
 Install_setuptools()
