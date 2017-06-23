@@ -44,6 +44,7 @@ download_Url=http://$nodeAddr:5880
 rm -f ping.pl
 
 setup_path=/www
+echo $setup_path > /var/bt_setupPath.conf
 port='8888'
 if [ -f $setup_path/server/panel/data/port.pl ];then
 	port=`cat $setup_path/server/panel/data/port.pl`
@@ -411,4 +412,5 @@ echo -e "=================================================================="
 endTime=`date +%s`
 ((outTime=($endTime-$startTime)/60))
 echo -e "Time consumed:\033[32m $outTime \033[0mMinute!"
+
 rm -f install.sh
