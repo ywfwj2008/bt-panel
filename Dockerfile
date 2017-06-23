@@ -11,9 +11,6 @@ RUN chmod 777 install.sh && \
     bash install.sh && \
     rm -rf /tmp/*
 
-# install pure-ftp
-RUN bash /www/server/panel/install/install_soft.sh 0 install pure-ftpd
-
 # install supervisord
 ADD ./supervisord.conf /etc/supervisor/supervisord.conf
 RUN pip install --upgrade pip && \
