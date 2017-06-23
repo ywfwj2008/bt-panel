@@ -12,15 +12,7 @@ RUN chmod 777 install.sh && \
     rm -rf /tmp/*
 
 # install nginx
-ADD ${REMOTE_PATH}/soft/nginx.sh /tmp/nginx.sh
-RUN chmod 777 nginx.sh && \
-    bash nginx.sh install 1.10 && \
-    rm -rf /tmp/*
-
-# install nginx
-ADD ${REMOTE_PATH}/soft/php.sh /tmp/php.sh
-RUN chmod 777 php.sh && \
-    bash php.sh install 5.6  && \
+RUN bash /www/server/panel/install/install_soft.sh 0 install nginx 1.12 && \
     rm -rf /tmp/*
 
 # install supervisord
