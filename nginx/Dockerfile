@@ -1,4 +1,4 @@
-FROM ywfwj2008/bt-panel:latest
+FROM ywfwj2008/bt-php:latest
 MAINTAINER ywfwj2008 <ywfwj2008@163.com>
 
 ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/raw/master
