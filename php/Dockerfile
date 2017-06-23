@@ -7,7 +7,7 @@ WORKDIR /tmp
 
 # install nginx
 RUN bash /www/server/panel/install/install_soft.sh 0 install php 5.6 && \
-    rm -rf /tmp/*
+    bash /www/server/panel/install/install_soft.sh 0 install php 7.0
 
 # expose port
 EXPOSE 8888 80 443 21 20
