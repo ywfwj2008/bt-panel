@@ -73,6 +73,11 @@ fi
 tmp=`python -V 2>&1|awk '{print $2}'`
 pVersion=${tmp:0:3}
 
+lib_install='/www/server/rpm.pl'
+if [ ! -f "${lib_install}" ];then
+    wget -O lib.sh ${Download_Url}/install/1/lib.sh && sh lib.sh
+fi
+
 Install_setuptools()
 {
 	if [ ! -f "/usr/bin/easy_install" ];then
