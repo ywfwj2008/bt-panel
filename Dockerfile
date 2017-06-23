@@ -21,7 +21,9 @@ RUN pip install --upgrade pip && \
 EXPOSE 8888 80 443 21 20
 
 # Set the entrypoint script.
-ENTRYPOINT ["/etc/init.d/bt", "start"]
+ADD ${REMOTE_PATH}/entrypoint.sh /entrypoint.sh
+RUN chmod 777 /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
 
 #Define the default command.
 CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
