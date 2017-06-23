@@ -11,10 +11,6 @@ RUN chmod 777 install.sh && \
     bash install.sh && \
     rm -rf /tmp/*
 
-# install nginx
-RUN bash /www/server/panel/install/install_soft.sh 0 install nginx 1.12 && \
-    rm -rf /tmp/*
-
 # install supervisord
 ADD ./supervisord.conf /etc/supervisor/supervisord.conf
 RUN pip install --upgrade pip && \
@@ -25,9 +21,7 @@ RUN pip install --upgrade pip && \
 EXPOSE 8888 80 443 21 20
 
 # Set the entrypoint script.
-ADD ${REMOTE_PATH}/entrypoint.sh /entrypoint.sh
-RUN chmod 777 /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/etc/init.d/bt", "start"]
 
 #Define the default command.
 CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
