@@ -26,7 +26,7 @@ http://125.88.182.172:5880/install/1/opcache.sh
 
 sh $name.sh $actionType $version
 ```
-
+## run mysql
 ```
 docker run \
 --name mysql \
@@ -34,7 +34,7 @@ docker run \
 -e MYSQL_ROOT_PASSWORD=my-secret-pw \
 -d mysql:5.6
 ```
-
+## run web server
 ```
 docker run \
 --name bt \
