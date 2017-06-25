@@ -9,7 +9,7 @@ WORKDIR /tmp
 RUN bash /www/server/panel/install/install_soft.sh 0 install nginx openresty
 
 # expose port
-EXPOSE 8888 80 443 21 20 30000-40000
+EXPOSE 8888 80 443 21 20
 
 # Set the entrypoint script.
 ADD ${REMOTE_PATH}/nginx/entrypoint.sh /entrypoint.sh

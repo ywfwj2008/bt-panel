@@ -18,7 +18,7 @@ RUN pip install --upgrade pip && \
     mkdir -p /etc/supervisor/conf.d /var/log/supervisor
 
 # expose port
-EXPOSE 8888 80 443 21 20 30000-40000
+EXPOSE 8888 80 443 21 20
 
 # Set the entrypoint script.
 ADD ${REMOTE_PATH}/entrypoint.sh /entrypoint.sh
