@@ -33,6 +33,7 @@ docker run \
 -v /www/wwwroot:/www/wwwroot \
 -p 8888:8888 \
 -p 80:80 \
+-p 443:443
 -p 21:21 \
 -p 20:20 \
 -d ywfwj2008/bt-panel
