@@ -46,5 +46,6 @@ docker run \
 -p 443:443
 -p 21:21 \
 -p 20:20 \
--d ywfwj2008/bt-panel
+-p 30000-40000 \
+-d ywfwj2008/bt-php-nginx
 ```
