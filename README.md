@@ -21,7 +21,17 @@ php：
 Pure-Ftpd：http://125.88.182.172:5880/install/0/pure-ftpd.sh
 lib：http://125.88.182.172:5880/install/1/lib.sh
 
+http://125.88.182.172:5880/install/1/opcache.sh
+
 sh $name.sh $actionType $version
+```
+
+```
+docker run \
+--name mysql \
+-v /www/mysql:/var/lib/mysql \
+-e MYSQL_ROOT_PASSWORD=my-secret-pw \
+-d mysql:5.6
 ```
 
 ```
