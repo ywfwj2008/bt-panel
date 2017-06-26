@@ -10,6 +10,7 @@ RUN bash /www/server/panel/install/install_soft.sh 0 install nginx -Tengine2.2.0
 
 # expose port
 EXPOSE 8888 80 443 21 20
+
 # Set the entrypoint script.
 ADD ${REMOTE_PATH}/nginx/entrypoint.sh /entrypoint.sh
 RUN chmod 777 /entrypoint.sh

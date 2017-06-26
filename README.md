@@ -30,7 +30,7 @@ sh $name.sh $actionType $version
 ```
 docker run \
 --name mysql \
--v /www/mysql:/var/lib/mysql \
+-v /home/mysql:/var/lib/mysql \
 -e MYSQL_ROOT_PASSWORD=my-secret-pw \
 -d mysql:5.6
 ```
@@ -39,9 +39,9 @@ docker run \
 docker run \
 --name bt \
 --link mysql:localmysql \
--v /www/backup:/www/backup \
--v /www/wwwlogs:/www/wwwlogs \
--v /www/wwwroot:/www/wwwroot \
+-v /home/backup:/www/backup \
+-v /home/wwwlogs:/www/wwwlogs \
+-v /home/wwwroot:/www/wwwroot \
 -p 8888:8888 \
 -p 80:80 \
 -p 443:443 \
