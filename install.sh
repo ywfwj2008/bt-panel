@@ -50,6 +50,74 @@ if [ -f $setup_path/server/panel/data/port.pl ];then
 	port=`cat $setup_path/server/panel/data/port.pl`
 fi
 
+#数据盘自动分区
+fdiskP(){
+	for i in `cat /proc/partitions|grep -v name|grep -v ram|awk '{print $4}'|grep -v '^$'|grep -v '[0-9]$'|grep -e 'vd' -e 'sd' -e 'xv'`;
+	do
+		#判断/www是否被挂载
+		isR=`df -P|grep $setup_path`
+		if [ "$isR" != "" ];then
+			echo 'Warning: The /www directory has been mounted.'
+			return;
+		fi
+		#判断是否存在未分区磁盘
+		isP=`fdisk -l /dev/$i |grep -v 'bytes'|grep "$i[1-9]*"`
+		if [ "$isP" = "" ];then
+				#开始分区
+				fdisk -S 56 /dev/$i << EOF
+n
+p
+1
+
+
+wq
+EOF
+
+			sleep 5
+			#检查是否分区成功
+			checkP=`fdisk -l /dev/$i|grep "/dev/${i}1"`
+			if [ "$checkP" != "" ];then
+				#格式化分区
+				mkfs.ext4 /dev/${i}1
+				mkdir $setup_path
+				#挂载分区
+				sed -i "/\/dev\/${i}1/d" /etc/fstab
+				echo "/dev/${i}1    $setup_path    ext4    defaults    0 0" >> /etc/fstab
+				mount -a
+				df -h
+			fi
+		else
+			#判断是否存在Windows磁盘分区
+			isN=`fdisk -l /dev/$i|grep -v 'bytes'|grep -v "NTFS"|grep -v "FAT32"`
+			if [ "$isN" = "" ];then
+				echo 'Warning: The Windows partition was detected. For your data security, Mount manually.';
+				return;
+			fi
+
+			#挂载已有分区
+			checkR=`df -P|grep "/dev/$i"`
+			if [ "$checkR" = "" ];then
+					mkdir $setup_path
+					sed -i "/\/dev\/${i}1/d" /etc/fstab
+					echo "/dev/${i}1    $setup_path    ext4    defaults    0 0" >> /etc/fstab
+					mount -a
+					df -h
+			fi
+
+			#清理不可写分区
+			echo 'True' > $setup_path/checkD.pl
+			if [ ! -f $setup_path/checkD.pl ];then
+					sed -i "/\/dev\/${i}1/d" /etc/fstab
+					mount -a
+					df -h
+			else
+					rm -f $setup_path/checkD.pl
+			fi
+		fi
+	done
+}
+#fdiskP
+
 yum clean all
 yum install ntp -y
 \cp -a -r /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
@@ -66,6 +134,10 @@ done
 
 yum install python-devel -y
 
+if [ -f '/www/server/mysql/bin/mysql_config' ];then
+	SetLink
+fi
+
 if [ ! -f '/usr/bin/mysql_config' ];then
 	yum install mysql-devel -y
 fi
@@ -73,10 +145,70 @@ fi
 tmp=`python -V 2>&1|awk '{print $2}'`
 pVersion=${tmp:0:3}
 
-lib_install='/www/server/rpm.pl'
-if [ ! -f "${lib_install}" ];then
-    wget -O lib.sh ${download_Url}/install/1/lib.sh && sh lib.sh
-fi
+SetLink()
+{
+	mSetup_Path=/www/server/mysql
+    ln -sf ${mSetup_Path}/bin/mysql /usr/bin/mysql
+    ln -sf ${mSetup_Path}/bin/mysqldump /usr/bin/mysqldump
+    ln -sf ${mSetup_Path}/bin/myisamchk /usr/bin/myisamchk
+    ln -sf ${mSetup_Path}/bin/mysqld_safe /usr/bin/mysqld_safe
+    ln -sf ${mSetup_Path}/bin/mysqlcheck /usr/bin/mysqlcheck
+	ln -sf ${mSetup_Path}/bin/mysql_config /usr/bin/mysql_config
+
+	rm -f /usr/lib/libmysqlclient.so.16
+	rm -f /usr/lib64/libmysqlclient.so.16
+	rm -f /usr/lib/libmysqlclient.so.18
+	rm -f /usr/lib64/libmysqlclient.so.18
+	rm -f /usr/lib/libmysqlclient.so.20
+	rm -f /usr/lib64/libmysqlclient.so.20
+
+	if [ -f "${mSetup_Path}/lib/libmysqlclient.so.18" ];then
+		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.18 /usr/lib/libmysqlclient.so.16
+		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.18 /usr/lib64/libmysqlclient.so.16
+		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.18 /usr/lib/libmysqlclient.so.18
+		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.18 /usr/lib64/libmysqlclient.so.18
+		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.18 /usr/lib/libmysqlclient.so.20
+		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.18 /usr/lib64/libmysqlclient.so.20
+	elif [ -f "${mSetup_Path}/lib/mysql/libmysqlclient.so.18" ];then
+		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.18 /usr/lib/libmysqlclient.so.16
+		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.18 /usr/lib64/libmysqlclient.so.16
+		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.18 /usr/lib/libmysqlclient.so.18
+		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.18 /usr/lib64/libmysqlclient.so.18
+		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.18 /usr/lib/libmysqlclient.so.20
+		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.18 /usr/lib64/libmysqlclient.so.20
+	elif [ -f "${mSetup_Path}/lib/libmysqlclient.so.16" ];then
+		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.16 /usr/lib/libmysqlclient.so.16
+		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.16 /usr/lib64/libmysqlclient.so.16
+		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.16 /usr/lib/libmysqlclient.so.18
+		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.16 /usr/lib64/libmysqlclient.so.18
+		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.16 /usr/lib/libmysqlclient.so.20
+		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.16 /usr/lib64/libmysqlclient.so.20
+	elif [ -f "${mSetup_Path}/lib/mysql/libmysqlclient.so.16" ];then
+		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.16 /usr/lib/libmysqlclient.so.16
+		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.16 /usr/lib64/libmysqlclient.so.16
+		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.16 /usr/lib/libmysqlclient.so.18
+		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.16 /usr/lib64/libmysqlclient.so.18
+		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.16 /usr/lib/libmysqlclient.so.20
+		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.16 /usr/lib64/libmysqlclient.so.20
+		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient_r.so.16 /usr/lib/libmysqlclient_r.so.16
+		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient_r.so.16 /usr/lib64/libmysqlclient_r.so.16
+	elif [ -f "${mSetup_Path}/lib/libmysqlclient.so.20" ];then
+		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.20 /usr/lib/libmysqlclient.so.16
+		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.20 /usr/lib64/libmysqlclient.so.16
+		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.20 /usr/lib/libmysqlclient.so.18
+		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.20 /usr/lib64/libmysqlclient.so.18
+		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.20 /usr/lib/libmysqlclient.so.20
+		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.20 /usr/lib64/libmysqlclient.so.20
+	elif [ -f "${mSetup_Path}/lib/mysql/libmysqlclient.so.20" ];then
+		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.20 /usr/lib/libmysqlclient.so.16
+		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.20 /usr/lib64/libmysqlclient.so.16
+		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.20 /usr/lib/libmysqlclient.so.18
+		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.20 /usr/lib64/libmysqlclient.so.18
+		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.20 /usr/lib/libmysqlclient.so.20
+		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.20 /usr/lib64/libmysqlclient.so.20
+	fi
+	ldconfig
+}
 
 Install_setuptools()
 {
@@ -323,12 +455,20 @@ chmod -R 600 $setup_path/server/panel
 chmod +x $setup_path/server/panel/certbot-auto
 chmod -R +x $setup_path/server/panel/script
 echo "$port" > $setup_path/server/panel/data/port.pl
+service bt start
 password=123456
 cd $setup_path/server/panel/
 username=`python tools.pyc panel $password`
 cd ~
 echo "$password" > $setup_path/server/panel/default.pl
 chmod 600 $setup_path/server/panel/default.pl
+
+isStart=`ps aux |grep 'python main.pyc'|grep -v grep|awk '{print $2}'`
+if [ "$isStart" == '' ];then
+	echo -e "\033[31mERROR: The BT-Panel service startup failed.\033[0m";
+	echo '============================================'
+	exit;
+fi
 
 if [ -f "/etc/init.d/iptables" ];then
 	iptables -I INPUT DROP
@@ -417,5 +557,4 @@ echo -e "=================================================================="
 endTime=`date +%s`
 ((outTime=($endTime-$startTime)/60))
 echo -e "Time consumed:\033[32m $outTime \033[0mMinute!"
-
 rm -f install.sh
