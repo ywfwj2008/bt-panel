@@ -543,6 +543,7 @@ fi
 
 curl -sS --connect-timeout 10 -m 60 http://www.bt.cn/Api/SetupCount?type=Linux > /dev/null 2>&1
 
+/etc/init.d/bt start
 curl -sS -c cookies --user-agent Mozilla/5.0  http://127.0.0.1:8888/login
 curl -sS -c cookies -b cookies --user-agent Mozilla/5.0 -d "username=admin&password=123456&code="  http://127.0.0.1:8888/login
 curl -sS -c cookies -b cookies --user-agent Mozilla/5.0  http://127.0.0.1:8888/plugin?action=getCloudPlugin
