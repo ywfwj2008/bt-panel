@@ -93,7 +93,7 @@ EOF
 				echo 'Warning: The Windows partition was detected. For your data security, Mount manually.';
 				return;
 			fi
-
+			
 			#挂载已有分区
 			checkR=`df -P|grep "/dev/$i"`
 			if [ "$checkR" = "" ];then
@@ -103,7 +103,7 @@ EOF
 					mount -a
 					df -h
 			fi
-
+			
 			#清理不可写分区
 			echo 'True' > $setup_path/checkD.pl
 			if [ ! -f $setup_path/checkD.pl ];then
@@ -154,14 +154,14 @@ SetLink()
     ln -sf ${mSetup_Path}/bin/mysqld_safe /usr/bin/mysqld_safe
     ln -sf ${mSetup_Path}/bin/mysqlcheck /usr/bin/mysqlcheck
 	ln -sf ${mSetup_Path}/bin/mysql_config /usr/bin/mysql_config
-
+	
 	rm -f /usr/lib/libmysqlclient.so.16
 	rm -f /usr/lib64/libmysqlclient.so.16
 	rm -f /usr/lib/libmysqlclient.so.18
 	rm -f /usr/lib64/libmysqlclient.so.18
 	rm -f /usr/lib/libmysqlclient.so.20
 	rm -f /usr/lib64/libmysqlclient.so.20
-
+	
 	if [ -f "${mSetup_Path}/lib/libmysqlclient.so.18" ];then
 		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.18 /usr/lib/libmysqlclient.so.16
 		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.18 /usr/lib64/libmysqlclient.so.16
@@ -468,11 +468,6 @@ if [ "$isStart" == '' ];then
 	echo -e "\033[31mERROR: The BT-Panel service startup failed.\033[0m";
 	echo '============================================'
 	exit;
-else
-    curl -c cookies --user-agent Mozilla/5.0 127.0.0.1:8888/login
-    curl -c cookies -b cookies --user-agent Mozilla/5.0 -d "username=admin&password=123456&code=" 127.0.0.1:8888/login
-    curl -c cookies -b cookies --user-agent Mozilla/5.0 127.0.0.1:8888/plugin?action=getCloudPlugin
-    unlink cookies
 fi
 
 if [ -f "/etc/init.d/iptables" ];then
@@ -543,10 +538,15 @@ if [ "$address" == "" ];then
 fi
 
 if [ "$address" != "SERVER_IP" ];then
-	echo "$address" > $setup_path/server/panel/data/iplist.txt
+	# echo "$address" > $setup_path/server/panel/data/iplist.txt
 fi
 
 curl -sS --connect-timeout 10 -m 60 http://www.bt.cn/Api/SetupCount?type=Linux > /dev/null 2>&1
+
+curl -sS -c cookies --user-agent Mozilla/5.0  http://127.0.0.1:8888/login
+curl -sS -c cookies -b cookies --user-agent Mozilla/5.0 -d "username=admin&password=123456&code="  http://127.0.0.1:8888/login
+curl -sS -c cookies -b cookies --user-agent Mozilla/5.0  http://127.0.0.1:8888/plugin?action=getCloudPlugin
+unlink cookies
 
 echo -e "=================================================================="
 echo -e "\033[32mCongratulations! Install succeeded!\033[0m"

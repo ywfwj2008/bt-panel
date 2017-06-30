@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e
 
-echo "" > /www/server/panel/data/iplist.txt
-
 /etc/init.d/bt start
 /etc/init.d/nginx start
 /etc/init.d/pure-ftpd start
