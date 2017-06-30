@@ -468,6 +468,11 @@ if [ "$isStart" == '' ];then
 	echo -e "\033[31mERROR: The BT-Panel service startup failed.\033[0m";
 	echo '============================================'
 	exit;
+else
+    curl -c cookies --user-agent Mozilla/5.0 127.0.0.1:8888/login
+    curl -c cookies -b cookies --user-agent Mozilla/5.0 -d "username=admin&password=123456&code=" 127.0.0.1:8888/login
+    curl -c cookies -b cookies --user-agent Mozilla/5.0 127.0.0.1:8888/plugin?action=getCloudPlugin
+    unlink cookies
 fi
 
 if [ -f "/etc/init.d/iptables" ];then
