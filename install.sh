@@ -468,47 +468,12 @@ if [ "$isStart" == '' ];then
 	echo -e "\033[31mERROR: The BT-Panel service startup failed.\033[0m";
 	echo '============================================'
 	exit;
-else
-    curl -sS -c cookies --user-agent Mozilla/5.0  http://127.0.0.1:8888/login
-    curl -sS -c cookies -b cookies --user-agent Mozilla/5.0 -d "username=admin&password=123456&code="  http://127.0.0.1:8888/login
-    curl -sS -c cookies -b cookies --user-agent Mozilla/5.0  http://127.0.0.1:8888/plugin?action=getCloudPlugin
-    unlink cookies
 fi
 
-if [ -f "/etc/init.d/iptables" ];then
-	iptables -I INPUT DROP
-	iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport 20 -j ACCEPT
-	iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport 21 -j ACCEPT
-	iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
-	iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
-	iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport $port -j ACCEPT
-	iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport 30000:40000 -j ACCEPT
-	iptables -I INPUT -p tcp -m state --state NEW -m udp --dport 30000:40000 -j ACCEPT
-	service iptables save
-	sed -i "s#IPTABLES_MODULES=\"\"#IPTABLES_MODULES=\"ip_conntrack_netbios_ns ip_conntrack_ftp ip_nat_ftp\"#" /etc/sysconfig/iptables-config
-
-	iptables_status=`service iptables status | grep 'not running'`
-	if [ "${iptables_status}" == '' ];then
-		service iptables restart
-	fi
-fi
-
-if [ "${isVersion}" == '' ];then
-	if [ ! -f "/etc/init.d/iptables" ];then
-		yum install firewalld -y
-		systemctl enable firewalld
-		systemctl start firewalld
-		firewall-cmd --set-default-zone=public > /dev/null 2>&1
-		firewall-cmd --permanent --zone=public --add-port=20/tcp > /dev/null 2>&1
-		firewall-cmd --permanent --zone=public --add-port=21/tcp > /dev/null 2>&1
-		firewall-cmd --permanent --zone=public --add-port=22/tcp > /dev/null 2>&1
-		firewall-cmd --permanent --zone=public --add-port=80/tcp > /dev/null 2>&1
-		firewall-cmd --permanent --zone=public --add-port=$port/tcp > /dev/null 2>&1
-		firewall-cmd --permanent --zone=public --add-port=30000-40000/tcp > /dev/null 2>&1
-		firewall-cmd --permanent --zone=public --add-port=30000-40000/udp > /dev/null 2>&1
-		firewall-cmd --reload
-	fi
-fi
+curl -sS -c cookies --user-agent Mozilla/5.0  http://127.0.0.1:8888/login
+curl -sS -c cookies -b cookies --user-agent Mozilla/5.0 -d "username=admin&password=123456&code="  http://127.0.0.1:8888/login
+curl -sS -c cookies -b cookies --user-agent Mozilla/5.0  http://127.0.0.1:8888/plugin?action=getCloudPlugin
+unlink cookies
 
 pip install psutil chardet web.py MySQL-python psutil virtualenv > /dev/null 2>&1
 
