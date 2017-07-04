@@ -507,10 +507,6 @@ if [ "$address" == "" ];then
 	address="SERVER_IP"
 fi
 
-if [ "$address" != "SERVER_IP" ];then
-	# echo "$address" > $setup_path/server/panel/data/iplist.txt
-fi
-
 curl -sS --connect-timeout 10 -m 60 http://www.bt.cn/Api/SetupCount?type=Linux > /dev/null 2>&1
 
 echo -e "=================================================================="
