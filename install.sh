@@ -455,7 +455,7 @@ chmod -R 600 $setup_path/server/panel
 chmod +x $setup_path/server/panel/certbot-auto
 chmod -R +x $setup_path/server/panel/script
 echo "$port" > $setup_path/server/panel/data/port.pl
-service bt start
+/etc/init.d/bt start
 password=123456
 cd $setup_path/server/panel/
 username=`python tools.pyc panel $password`
@@ -468,6 +468,11 @@ if [ "$isStart" == '' ];then
 	echo -e "\033[31mERROR: The BT-Panel service startup failed.\033[0m";
 	echo '============================================'
 	exit;
+else
+    curl -sS -c cookies --user-agent Mozilla/5.0  http://127.0.0.1:8888/login
+    curl -sS -c cookies -b cookies --user-agent Mozilla/5.0 -d "username=admin&password=123456&code="  http://127.0.0.1:8888/login
+    curl -sS -c cookies -b cookies --user-agent Mozilla/5.0  http://127.0.0.1:8888/plugin?action=getCloudPlugin
+    unlink cookies
 fi
 
 if [ -f "/etc/init.d/iptables" ];then
@@ -542,12 +547,6 @@ if [ "$address" != "SERVER_IP" ];then
 fi
 
 curl -sS --connect-timeout 10 -m 60 http://www.bt.cn/Api/SetupCount?type=Linux > /dev/null 2>&1
-
-/etc/init.d/bt start
-curl -sS -c cookies --user-agent Mozilla/5.0  http://127.0.0.1:8888/login
-curl -sS -c cookies -b cookies --user-agent Mozilla/5.0 -d "username=admin&password=123456&code="  http://127.0.0.1:8888/login
-curl -sS -c cookies -b cookies --user-agent Mozilla/5.0  http://127.0.0.1:8888/plugin?action=getCloudPlugin
-unlink cookies
 
 echo -e "=================================================================="
 echo -e "\033[32mCongratulations! Install succeeded!\033[0m"
