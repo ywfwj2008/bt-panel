@@ -52,14 +52,22 @@ fi
 
 #数据盘自动分区
 fdiskP(){
-	for i in `cat /proc/partitions|grep -v name|grep -v ram|awk '{print $4}'|grep -v '^$'|grep -v '[0-9]$'|grep -e 'vd' -e 'sd' -e 'xv'`;
+	
+	for i in `cat /proc/partitions|grep -v name|grep -v ram|awk '{print $4}'|grep -v '^$'|grep -v '[0-9]$'|grep -v 'vda'|grep -v 'xvda'|grep -v 'sda'|grep -e 'vd' -e 'sd' -e 'xvd'`;
 	do
-		#判断/www是否被挂载
+		#判断指定目录是否被挂载
 		isR=`df -P|grep $setup_path`
 		if [ "$isR" != "" ];then
-			echo 'Warning: The /www directory has been mounted.'
+			echo "Error: The $setup_path directory has been mounted."
 			return;
 		fi
+		
+		isM=`df -P|grep '/dev/${i}1'`
+		if [ "$isM" != "" ];then
+			echo "/dev/${i}1 has been mounted."
+			continue;
+		fi
+			
 		#判断是否存在未分区磁盘
 		isP=`fdisk -l /dev/$i |grep -v 'bytes'|grep "$i[1-9]*"`
 		if [ "$isP" = "" ];then
@@ -117,6 +125,33 @@ EOF
 	done
 }
 #fdiskP
+
+#自动挂载Swap
+autoSwap()
+{
+	swap=`free |grep Swap|awk '{print $2}'`
+	if [ $swap -gt 1 ];then
+        echo "Swap total sizse: $swap";
+		return;
+	fi
+	if [ ! -d /www ];then
+		mkdir /www
+	fi
+	swapFile='/www/swap'
+	dd if=/dev/zero of=$swapFile bs=1M count=1025
+	mkswap -f $swapFile
+    swapon $swapFile
+    echo "$swapFile    swap    swap    defaults    0 0" >> /etc/fstab
+	swap=`free |grep Swap|awk '{print $2}'`
+	if [ $swap -gt 1 ];then
+        echo "Swap total sizse: $swap";
+		return;
+	fi
+	
+	sed -i "/\/www\/swap/d" /etc/fstab
+	rm -f $swapFile
+}
+#autoSwap
 
 yum clean all
 yum install ntp -y
@@ -468,12 +503,50 @@ if [ "$isStart" == '' ];then
 	echo -e "\033[31mERROR: The BT-Panel service startup failed.\033[0m";
 	echo '============================================'
 	exit;
+else
+    curl -sS -c cookies --user-agent Mozilla/5.0  http://127.0.0.1:8888/login
+    curl -sS -c cookies -b cookies --user-agent Mozilla/5.0 -d "username=admin&password=123456&code="  http://127.0.0.1:8888/login
+    curl -sS -c cookies -b cookies --user-agent Mozilla/5.0  http://127.0.0.1:8888/plugin?action=getCloudPlugin
+    unlink cookies
 fi
 
-curl -sS -c cookies --user-agent Mozilla/5.0  http://127.0.0.1:8888/login
-curl -sS -c cookies -b cookies --user-agent Mozilla/5.0 -d "username=admin&password=123456&code="  http://127.0.0.1:8888/login
-curl -sS -c cookies -b cookies --user-agent Mozilla/5.0  http://127.0.0.1:8888/plugin?action=getCloudPlugin
-unlink cookies
+if [ -f "/etc/init.d/iptables" ];then
+	iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport 20 -j ACCEPT
+	iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport 21 -j ACCEPT
+	iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
+	iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
+	iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport $port -j ACCEPT
+	iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport 30000:40000 -j ACCEPT
+	iptables -I INPUT -p tcp -m state --state NEW -m udp --dport 30000:40000 -j ACCEPT
+	iptables -A INPUT -p icmp --icmp-type any -j ACCEPT
+	iptables -A INPUT -s localhost -d localhost -j ACCEPT
+	iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+	iptables -P INPUT DROP
+	service iptables save
+	sed -i "s#IPTABLES_MODULES=\"\"#IPTABLES_MODULES=\"ip_conntrack_netbios_ns ip_conntrack_ftp ip_nat_ftp\"#" /etc/sysconfig/iptables-config
+
+	iptables_status=`service iptables status | grep 'not running'`
+	if [ "${iptables_status}" == '' ];then
+		service iptables restart
+	fi
+fi
+
+if [ "${isVersion}" == '' ];then
+	if [ ! -f "/etc/init.d/iptables" ];then
+		yum install firewalld -y
+		systemctl enable firewalld
+		systemctl start firewalld
+		firewall-cmd --set-default-zone=public > /dev/null 2>&1
+		firewall-cmd --permanent --zone=public --add-port=20/tcp > /dev/null 2>&1
+		firewall-cmd --permanent --zone=public --add-port=21/tcp > /dev/null 2>&1
+		firewall-cmd --permanent --zone=public --add-port=22/tcp > /dev/null 2>&1
+		firewall-cmd --permanent --zone=public --add-port=80/tcp > /dev/null 2>&1
+		firewall-cmd --permanent --zone=public --add-port=$port/tcp > /dev/null 2>&1
+		firewall-cmd --permanent --zone=public --add-port=30000-40000/tcp > /dev/null 2>&1
+		firewall-cmd --permanent --zone=public --add-port=30000-40000/udp > /dev/null 2>&1
+		firewall-cmd --reload
+	fi
+fi
 
 pip install psutil chardet web.py MySQL-python psutil virtualenv > /dev/null 2>&1
 
