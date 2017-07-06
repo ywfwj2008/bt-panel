@@ -424,7 +424,7 @@ chmod +x $setup_path/server/panel/certbot-auto
 
 
 if [ -f '/etc/init.d/bt' ];then
-	service bt stop
+	/etc/init.d/bt stop
 fi
 
 mkdir -p /www/server

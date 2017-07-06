@@ -12,8 +12,6 @@ RUN bash /www/server/panel/install/install_soft.sh 0 install nginx openresty
 EXPOSE 8888 80 443 21 20
 
 # Set the entrypoint script.
-ADD ${REMOTE_PATH}/nginx/entrypoint.sh /entrypoint.sh
-RUN chmod 777 /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 #Define the default command.
