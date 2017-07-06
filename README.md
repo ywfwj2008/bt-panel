@@ -42,6 +42,8 @@ docker run \
 -v /home/backup:/www/backup \
 -v /home/wwwlogs:/www/wwwlogs \
 -v /home/wwwroot:/www/wwwroot \
+-e BT_ADMIN_ACCOUNT=my-account \
+-e BT_ADMIN_PASSWORD=my-secret-pw \
 -p 8888:8888 \
 -p 80:80 \
 -p 443:443 \
