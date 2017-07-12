@@ -153,6 +153,21 @@ autoSwap()
 }
 #autoSwap
 
+#判断kernel-headers组件是否安装
+rpm -qa | grep kernel-headers > kernel-headers.pl
+kernelStatus=`cat kernel-headers.pl`
+#判断华为云
+huaweiLogin=`cat /etc/motd |grep 4000-955-988`
+huaweiSys=`cat /etc/redhat-release | grep ' 7.'`
+if [ "$huaweiLogin" != "" ] && [ "$huaweiSys" != "" ]; then
+	if [ "$kernelStatus" = "" ]; then
+		wget $download_Url/src/kernel-headers-3.10.0-514.el7.x86_64.rpm
+		rpm -ivh kernel-headers-3.10.0-514.el7.x86_64.rpm
+		rm -f kernel-headers-3.10.0-514.el7.x86_64.rpm
+	fi
+fi
+rm -f kernel-headers.pl
+
 yum clean all
 yum install ntp -y
 \cp -a -r /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
@@ -578,6 +593,10 @@ address=""
 address=`curl -sS --connect-timeout 10 -m 60 http://www.bt.cn/Api/getIpAddress`
 if [ "$address" == "" ];then
 	address="SERVER_IP"
+fi
+
+if [ "$address" != "SERVER_IP" ];then
+	echo "" > $setup_path/server/panel/data/iplist.txt
 fi
 
 curl -sS --connect-timeout 10 -m 60 http://www.bt.cn/Api/SetupCount?type=Linux > /dev/null 2>&1
