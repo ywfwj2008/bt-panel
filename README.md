@@ -16,12 +16,12 @@ name=$3(nginx/php)
 version=$4
 
 nginx：http://125.88.182.172:5880/install/0/nginx.sh
-php：
-编译：http://125.88.182.172:5880/install/0/php.sh
-极速：http://125.88.182.172:5880/install/1/php.sh
+php：http://125.88.182.172:5880/install/0/php.sh
+mysql：http://125.88.182.172:5880/install/0/mysql.sh
 Pure-Ftpd：http://125.88.182.172:5880/install/0/pure-ftpd.sh
 lib：http://125.88.182.172:5880/install/1/lib.sh
 
+php扩展：
 http://125.88.182.172:5880/install/1/opcache.sh
 
 sh $name.sh $actionType $version

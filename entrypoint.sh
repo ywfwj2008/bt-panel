@@ -16,5 +16,8 @@ fi
 if [ -f "/etc/init.d/php-fpm-70" ];then
     /etc/init.d/php-fpm-70 start
 fi
+if [ -f "/etc/init.d/mysqld" ];then
+    /etc/init.d/mysqld start
+fi
 
 exec "$@"
