@@ -93,7 +93,7 @@ Install_Nginx()
 	
 	export LD_LIBRARY_PATH=/usr/local/lib/:$LD_LIBRARY_PATH 
 	if [ "${nginxVersion}" != "1.8.1" ];then
-		if [ "${nginx_version}" == "1.12.0" ];then
+		if [ "${nginx_version}" == "1.12.1" ];then
 			Install_LuaJIT
 			#lua_nginx_module
 			wget -c -O lua-nginx-module-master.zip $Download_Url/install/src/lua-nginx-module-master.zip -T 5
@@ -106,17 +106,17 @@ Install_Nginx()
 			unzip ngx_devel_kit-master.zip
 			mv ngx_devel_kit-master ngx_devel_kit
 			rm -f ngx_devel_kit-master.zip
-			./configure --user=www --group=www --prefix=${Setup_Path} --with-openssl=${Setup_Path}/src/openssl --add-module=${Setup_Path}/src/ngx_devel_kit --add-module=${Setup_Path}/src/lua_nginx_module --with-http_stub_status_module --with-http_ssl_module --with-http_v2_module --with-http_gzip_static_module --with-stream --with-stream_ssl_module --with-ipv6 --with-http_sub_module --with-http_flv_module --with-http_addition_module --with-http_realip_module --with-http_mp4_module --with-ld-opt="-Wl,-E"
+			./configure --user=www --group=www --prefix=${Setup_Path} --with-openssl=${Setup_Path}/src/openssl --add-module=${Setup_Path}/src/ngx_devel_kit --add-module=${Setup_Path}/src/lua_nginx_module --with-http_stub_status_module --with-http_ssl_module --with-http_v2_module --with-http_gzip_static_module --with-http_gunzip_module --with-stream --with-stream_ssl_module --with-ipv6 --with-http_sub_module --with-http_flv_module --with-http_addition_module --with-http_realip_module --with-http_mp4_module --with-ld-opt="-Wl,-E"
 		else
 			if [ "$nginx_version" == "openresty" ];then
 				Install_LuaJIT
-				./configure --user=www --group=www --prefix=${Setup_Path} --with-openssl=${Setup_Path}/src/openssl --with-luajit --with-http_stub_status_module --with-http_ssl_module --with-http_v2_module --with-http_gzip_static_module --with-stream --with-stream_ssl_module --with-ipv6 --with-http_sub_module --with-http_flv_module --with-http_addition_module --with-http_realip_module --with-http_mp4_module --with-ld-opt="-Wl,-E"
+				./configure --user=www --group=www --prefix=${Setup_Path} --with-openssl=${Setup_Path}/src/openssl --with-luajit --with-http_stub_status_module --with-http_ssl_module --with-http_v2_module --with-http_gzip_static_module --with-http_gunzip_module --with-stream --with-stream_ssl_module --with-ipv6 --with-http_sub_module --with-http_flv_module --with-http_addition_module --with-http_realip_module --with-http_mp4_module --with-ld-opt="-Wl,-E"
 			else
-				./configure --user=www --group=www --prefix=${Setup_Path} --with-openssl=${Setup_Path}/src/openssl --with-http_stub_status_module --with-http_ssl_module --with-http_v2_module --with-http_gzip_static_module --with-ipv6 --with-http_sub_module --with-http_flv_module --with-http_addition_module --with-http_realip_module --with-http_mp4_module --with-ld-opt="-Wl,-E"
+				./configure --user=www --group=www --prefix=${Setup_Path} --with-openssl=${Setup_Path}/src/openssl --with-http_stub_status_module --with-http_ssl_module --with-http_v2_module --with-http_gzip_static_module --with-http_gunzip_module --with-ipv6 --with-http_sub_module --with-http_flv_module --with-http_addition_module --with-http_realip_module --with-http_mp4_module --with-ld-opt="-Wl,-E"
 			fi
 		fi
     else
-		./configure --user=www --group=www --prefix=${Setup_Path} --with-openssl=${Setup_Path}/src/openssl --with-http_stub_status_module --with-http_ssl_module --with-http_spdy_module --with-http_gzip_static_module --with-ipv6 --with-http_sub_module --with-http_flv_module --with-http_addition_module --with-http_realip_module --with-http_mp4_module --with-ld-opt="-Wl,-E"
+		./configure --user=www --group=www --prefix=${Setup_Path} --with-openssl=${Setup_Path}/src/openssl --with-http_stub_status_module --with-http_ssl_module --with-http_spdy_module --with-http_gzip_static_module --with-http_gunzip_module --with-ipv6 --with-http_sub_module --with-http_flv_module --with-http_addition_module --with-http_realip_module --with-http_mp4_module --with-ld-opt="-Wl,-E"
 	fi
 	if [ "$nginx_version" == "openresty" ];then
 		gmake && gmake install
@@ -266,7 +266,7 @@ EOF
 	rm -f src.tar.gz
 	CheckPHPVersion
 	sed -i "s/#limit_conn_zone.*/limit_conn_zone \$binary_remote_addr zone=perip:10m;\n\tlimit_conn_zone \$server_name zone=perserver:10m;/" ${Setup_Path}/conf/nginx.conf
-	if [ "${nginx_version}" == "1.12.0" ] || [ "${nginx_version}" == "openresty" ];then
+	if [ "${nginx_version}" == "1.12.1" ] || [ "${nginx_version}" == "openresty" ];then
 		sed -i "s/mime.types;/mime.types;\n\tinclude proxy.conf;\n\t#include luawaf.conf;\n/" ${Setup_Path}/conf/nginx.conf
 	fi
 	
@@ -317,8 +317,8 @@ version=$2
 if [ "$actionType" == 'install' ];then
 	nginxVersion='-Tengine2.2.0'
 	if [ "$version" == "1.10" ] || [ "$version" == "1.12" ];then
-		nginxVersion='1.12.0'
-		nginx_version='1.12.0'
+		nginxVersion='1.12.1'
+		nginx_version='1.12.1'
 	elif [ "$version" == "1.8" ];then
 		nginxVersion='1.8.1'
 	elif [ "$version" == "openresty" ];then
