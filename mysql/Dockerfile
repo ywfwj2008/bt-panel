@@ -9,7 +9,7 @@ WORKDIR /tmp
 RUN bash /www/server/panel/install/install_soft.sh 0 install mysql 5.6
 
 # expose port
-EXPOSE 8888 80 443 21 20 3306
+EXPOSE 8888 80 443 21 20 3306 888
 
 # Set the entrypoint script.
 ENTRYPOINT ["/entrypoint.sh"]
