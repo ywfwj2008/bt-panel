@@ -17,8 +17,7 @@ cd pecl-memcache-php7 && \
 $PHP_INSTALL_DIR/bin/phpize && \
 ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config && \
 make && make install && \
-echo "extension=memcache.so" > $PHP_INSTALL_DIR/etc/php.d/ext-memcache.ini && \
-rm -rf /tmp/*
+echo "extension=memcache.so" > $PHP_INSTALL_DIR/etc/php.d/ext-memcache.ini
 
 # install php-memcached
 wget -c --no-check-certificate https://launchpad.net/libmemcached/1.0/$LIBMEMCACHED_VERSION/+download/libmemcached-$LIBMEMCACHED_VERSION.tar.gz && \
@@ -35,8 +34,7 @@ $PHP_INSTALL_DIR/bin/phpize && \
 ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config && \
 make && make install && \
 echo "extension=memcached.so" >> $PHP_INSTALL_DIR/etc/php.d/ext-memcached.ini && \
-echo "memcached.use_sasl=1" >> $PHP_INSTALL_DIR/etc/php.d/ext-memcached.ini && \
-rm -rf /tmp/*
+echo "memcached.use_sasl=1" >> $PHP_INSTALL_DIR/etc/php.d/ext-memcached.ini
 
 # install php-redis
 $PHP_INSTALL_DIR/bin/pecl install redis && \
@@ -53,8 +51,7 @@ cd event-$EVENT_VERSION && \
 $PHP_INSTALL_DIR/bin/phpize && \
 ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config --with-event-openssl=no --enable-event-sockets --with-event-extra && \
 make && make install && \
-echo "extension=event.so" > $PHP_INSTALL_DIR/etc/php.d/ext-event.ini && \
-rm -rf /tmp/*
+echo "extension=event.so" > $PHP_INSTALL_DIR/etc/php.d/ext-event.ini
 
 # install ioncube and sg11
 phpExtensionDir=$(${PHP_INSTALL_DIR}/bin/php-config --extension-dir) && \
@@ -63,5 +60,4 @@ tar xzf /tmp/ioncube_loaders_lin_x86-64.tar.gz && \
 /bin/cp /tmp/ioncube/ioncube_loader_lin_7.0.so ${phpExtensionDir}/ioncube_loader.so && \
 wget -c https://github.com/ywfwj2008/docker-php/raw/master/loaders.linux-x86_64.tar.gz -P /tmp && \
 tar xzf /tmp/loaders.linux-x86_64.tar.gz && \
-/bin/cp /tmp/ixed.7.0.lin ${phpExtensionDir}/ixed.lin && \
-rm -rf /tmp/*
+/bin/cp /tmp/ixed.7.0.lin ${phpExtensionDir}/ixed.lin
