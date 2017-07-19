@@ -158,10 +158,10 @@ rpm -qa | grep kernel-headers > kernel-headers.pl
 kernelStatus=`cat kernel-headers.pl`
 #判断华为云
 huaweiLogin=`cat /etc/motd |grep 4000-955-988`
-huaweiSys=`cat /etc/redhat-release | grep ' 7.'`
+huaweiSys=`cat /etc/redhat-release | grep 1611`
 if [ "$huaweiLogin" != "" ] && [ "$huaweiSys" != "" ]; then
 	if [ "$kernelStatus" = "" ]; then
-		wget $download_Url/src/kernel-headers-3.10.0-514.el7.x86_64.rpm
+		wget http://125.88.182.172:5880/src/kernel-headers-3.10.0-514.el7.x86_64.rpm
 		rpm -ivh kernel-headers-3.10.0-514.el7.x86_64.rpm
 		rm -f kernel-headers-3.10.0-514.el7.x86_64.rpm
 	fi
@@ -590,7 +590,7 @@ if [ ! -d '/etc/letsencrypt' ];then
 fi
 
 address=""
-address=`curl -sS --connect-timeout 10 -m 60 http://www.bt.cn/Api/getIpAddress`
+address=`curl -sS --connect-timeout 10 -m 60 https://www.bt.cn/Api/getIpAddress`
 if [ "$address" == "" ];then
 	address="SERVER_IP"
 fi
@@ -599,12 +599,13 @@ if [ "$address" != "SERVER_IP" ];then
 	echo "" > $setup_path/server/panel/data/iplist.txt
 fi
 
-curl -sS --connect-timeout 10 -m 60 http://www.bt.cn/Api/SetupCount?type=Linux > /dev/null 2>&1
+curl -sS --connect-timeout 10 -m 60 https://www.bt.cn/Api/SetupCount?type=Linux > /dev/null 2>&1
+
 
 echo -e "=================================================================="
 echo -e "\033[32mCongratulations! Install succeeded!\033[0m"
 echo -e "=================================================================="
-echo -e "Bt-Panel: http://$address:$port"
+echo  "Bt-Panel: http://$address:$port"
 echo -e "username: $username"
 echo -e "password: $password"
 echo -e "\033[33mWarning:\033[0m"
