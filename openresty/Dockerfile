@@ -6,7 +6,8 @@ ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/raw/master
 WORKDIR /tmp
 
 # install openresty
-RUN bash /www/server/panel/install/install_soft.sh 0 install nginx openresty
+RUN bash /www/server/panel/install/install_soft.sh 0 install nginx openresty && \
+    rm -rf /tmp/*
 
 # expose port
 EXPOSE 8888 80 443 21 20 888

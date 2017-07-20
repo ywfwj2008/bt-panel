@@ -15,7 +15,8 @@ RUN chmod 777 install.sh && \
 ADD ./supervisord.conf /etc/supervisor/supervisord.conf
 RUN pip install --upgrade pip && \
     pip install supervisor && \
-    mkdir -p /etc/supervisor/conf.d /var/log/supervisor
+    mkdir -p /etc/supervisor/conf.d /var/log/supervisor && \
+    rm -rf /tmp/*
 
 # expose port
 EXPOSE 8888 80 443 21 20 888

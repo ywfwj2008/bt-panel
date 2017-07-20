@@ -7,7 +7,8 @@ WORKDIR /tmp
 
 # install php
 RUN bash /www/server/panel/install/install_soft.sh 0 install php 5.6 && \
-    bash /www/server/panel/install/install_soft.sh 0 install php 7.0
+    bash /www/server/panel/install/install_soft.sh 0 install php 7.0 && \
+    rm -rf /tmp/*
 
 # expose port
 EXPOSE 8888 80 443 21 20 888
