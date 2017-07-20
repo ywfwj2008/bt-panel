@@ -49,6 +49,9 @@ fi
 if [ -f "/etc/init.d/php-fpm-70" ];then
     /etc/init.d/php-fpm-70 start
 fi
+if [ -f "/etc/init.d/php-fpm-71" ];then
+    /etc/init.d/php-fpm-71 start
+fi
 if [ -f "/etc/init.d/redis" ];then
     /etc/init.d/redis start
 fi
