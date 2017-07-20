@@ -10,7 +10,7 @@ RUN bash /www/server/panel/install/install_soft.sh 0 install nginx 1.12 && \
     bash /www/server/panel/install/install_soft.sh 0 install pure-ftpd
 
 # expose port
-EXPOSE 8888 80 443 21 20
+EXPOSE 8888 80 443 21 20 888
 
 # Set the entrypoint script.
 ENTRYPOINT ["/entrypoint.sh"]

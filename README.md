@@ -18,6 +18,7 @@ version=$4
 nginx：http://125.88.182.172:5880/install/0/nginx.sh
 php：http://125.88.182.172:5880/install/0/php.sh
 mysql：http://125.88.182.172:5880/install/0/mysql.sh
+redis：http://125.88.182.172:5880/install/0/redis.sh
 Pure-Ftpd：http://125.88.182.172:5880/install/0/pure-ftpd.sh
 lib：http://125.88.182.172:5880/install/1/lib.sh
 
