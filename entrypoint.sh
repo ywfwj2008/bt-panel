@@ -28,7 +28,7 @@ fi
 if [ -f "/etc/init.d/pure-ftpd" ];then
     /etc/init.d/pure-ftpd start
 fi
-if [ -f " /etc/init.d/nginx" ];then
+if [ -f "/etc/init.d/nginx" ];then
     /etc/init.d/nginx start
 fi
 if [ -f "/etc/init.d/php-fpm-52" ];then
