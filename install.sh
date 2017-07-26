@@ -332,13 +332,13 @@ Install_psutil()
 {
 	isSetup=`python -m psutil 2>&1|grep package`
 	if [ "$isSetup" = "" ];then
-		wget -O psutil-5.1.3.tar.gz $download_Url/install/src/psutil-5.1.3.tar.gz -T 10
-		tar xvf psutil-5.1.3.tar.gz
-		rm -f psutil-5.1.3.tar.gz
-		cd psutil-5.1.3
+		wget -O psutil-5.2.2.tar.gz $download_Url/install/src/psutil-5.2.2.tar.gz -T 10
+		tar xvf psutil-5.2.2.tar.gz
+		rm -f psutil-5.2.2.tar.gz
+		cd psutil-5.2.2
 		python setup.py install
 		cd ..
-		rm -rf psutil-5.1.3
+		rm -rf psutil-5.2.2
 	fi
 	isSetup=`python -m psutil 2>&1|grep package`
 	if [ "$isSetup" = "" ];then
@@ -518,11 +518,6 @@ if [ "$isStart" == '' ];then
 	echo -e "\033[31mERROR: The BT-Panel service startup failed.\033[0m";
 	echo '============================================'
 	exit;
-else
-    curl -sS -c cookies --user-agent Mozilla/5.0  http://127.0.0.1:8888/login
-    curl -sS -c cookies -b cookies --user-agent Mozilla/5.0 -d "username=admin&password=123456&code="  http://127.0.0.1:8888/login
-    curl -sS -c cookies -b cookies --user-agent Mozilla/5.0  http://127.0.0.1:8888/plugin?action=getCloudPlugin
-    unlink cookies
 fi
 
 if [ -f "/etc/init.d/iptables" ];then
