@@ -40,10 +40,6 @@ echo "memcached.use_sasl=1" >> $PHP_INSTALL_DIR/etc/php.d/ext-memcached.ini
 $PHP_INSTALL_DIR/bin/pecl install redis && \
 echo "extension=redis.so" > $PHP_INSTALL_DIR/etc/php.ini
 
-# install php-swoole
-$PHP_INSTALL_DIR/bin/pecl install swoole && \
-echo "extension=swoole.so" > $PHP_INSTALL_DIR/etc/php.ini
-
 # install event
 wget -c --no-check-certificate http://pecl.php.net/get/event-$EVENT_VERSION.tgz && \
 tar xzf event-$EVENT_VERSION.tgz && \
