@@ -14,6 +14,8 @@ RUN bash /www/server/panel/install/install_soft.sh 0 install php 5.6 && \
     bash /www/server/panel/install/install_soft.sh 0 install fileinfo 70 && \
     rm -rf /tmp/*
 
+RUN /usr/bin/composer self-update
+
 # expose port
 EXPOSE 8888 80 443 21 20 888
 
