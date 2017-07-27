@@ -53,6 +53,9 @@ if [ -f "/etc/init.d/php-fpm-71" ];then
     /etc/init.d/php-fpm-71 start
 fi
 if [ -f "/etc/init.d/redis" ];then
+    if [ -f "/var/run/redis_6379.pid" ];then
+        unlink /var/run/redis_6379.pid
+    fi
     /etc/init.d/redis start
 fi
 if [ -f "/etc/init.d/memcached" ];then
