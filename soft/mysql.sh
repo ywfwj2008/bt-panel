@@ -28,9 +28,9 @@ Data_Path=$Root_Path/server/data
 Is_64bit=`getconf LONG_BIT`
 run_path='/root'
 mysql_51='5.1.73'
-mysql_55='5.5.55'
-mysql_56='5.6.36'
-mysql_57='5.7.18'
+mysql_55='5.5.57'
+mysql_56='5.6.37'
+mysql_57='5.7.19'
 mariadb_55='5.5.55'
 mariadb_100='10.0.31'
 mariadb_101='10.1.24'
@@ -159,7 +159,6 @@ myisam_sort_buffer_size = 4M
 thread_cache_size = 4
 query_cache_size = 4M
 tmp_table_size = 8M
-sql-mode=NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTIO
 
 #skip-networking
 #skip-name-resolve
@@ -304,7 +303,6 @@ myisam_sort_buffer_size = 4M
 thread_cache_size = 4
 query_cache_size = 4M
 tmp_table_size = 8M
-sql-mode=NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTIO
 
 #skip-networking
 #skip-name-resolve
@@ -455,7 +453,7 @@ explicit_defaults_for_timestamp = true
 max_connections = 500
 max_connect_errors = 100
 open_files_limit = 65535
-sql-mode=NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTIO
+sql-mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
 
 log-bin=mysql-bin
 binlog_format=mixed
@@ -627,6 +625,7 @@ myisam_sort_buffer_size = 8M
 thread_cache_size = 8
 query_cache_size = 8M
 tmp_table_size = 16M
+sql-mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
 
 explicit_defaults_for_timestamp = true
 #skip-networking
@@ -808,7 +807,7 @@ explicit_defaults_for_timestamp = true
 max_connections = 500
 max_connect_errors = 100
 open_files_limit = 65535
-sql-mode=NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTIO
+sql-mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
 
 log-bin=mysql-bin
 binlog_format=mixed
@@ -971,7 +970,6 @@ myisam_sort_buffer_size = 4M
 thread_cache_size = 4
 query_cache_size = 4M
 tmp_table_size = 8M
-sql-mode=NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTIO
 
 #skip-networking
 #skip-name-resolve
@@ -1117,7 +1115,7 @@ myisam_sort_buffer_size = 8M
 thread_cache_size = 4
 query_cache_size = 8M
 tmp_table_size = 16M
-sql-mode=NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTIO
+sql-mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
 
 #skip-networking
 #skip-name-resolve
@@ -1262,7 +1260,7 @@ myisam_sort_buffer_size = 8M
 thread_cache_size = 8
 query_cache_size = 8M
 tmp_table_size = 16M
-sql-mode=NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTIO
+sql-mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
 
 #skip-networking
 #skip-name-resolve

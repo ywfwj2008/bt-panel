@@ -37,9 +37,9 @@ if [ ! -f "${lib_install}" ];then
 fi
 
 php_55='5.5.38'
-php_56='5.6.30'
-php_70='7.0.19'
-php_71='7.1.5'
+php_56='5.6.31'
+php_70='7.0.21'
+php_71='7.1.7'
 
 Set_PHP_FPM_Opt()
 {
@@ -177,25 +177,13 @@ Install_PHP_52()
     sed -i 's/short_open_tag =.*/short_open_tag = On/g' ${php_setup_path}/etc/php.ini
     sed -i 's/; cgi.fix_pathinfo=.*/cgi.fix_pathinfo=0/g'${php_setup_path}/etc/php.ini
     sed -i 's/max_execution_time =.*/max_execution_time = 300/g' ${php_setup_path}/etc/php.ini
-	sed -i 's/;sendmail_path =.*/sendmail_path = \/usr\/bin\/sendmail -t -i/g' ${php_setup_path}/etc/php.ini
+	sed -i 's/;sendmail_path =.*/sendmail_path = \/usr\/sbin\/sendmail -t -i/g' ${php_setup_path}/etc/php.ini
     sed -i 's/disable_functions =.*/disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,popen,ini_alter,ini_restore,dl,openlog,syslog,readlink,symlink,popepassthru/g' ${php_setup_path}/etc/php.ini
+    sed -i 's/display_errors = Off/display_errors = On/g' ${php_setup_path}/etc/php.ini
     Pear_Pecl_Set
     
 	mkdir -p /usr/local/zend/php52
-    if [ "${Is_64bit}" = "64" ] ; then
-        wget ${Download_Url}/src/ZendOptimizer-3.3.9-linux-glibc23-x86_64.tar.gz -T20
-        tar zxf ZendOptimizer-3.3.9-linux-glibc23-x86_64.tar.gz
-
-        \cp ZendOptimizer-3.3.9-linux-glibc23-x86_64/data/5_2_x_comp/ZendOptimizer.so /usr/local/zend/php52/
-		rm -rf ZendOptimizer-3.3.9-linux-glibc23-x86_64
-		rm -f ZendOptimizer-3.3.9-linux-glibc23-x86_64.tar.gz
-    else
-        wget ${Download_Url}/src/ZendOptimizer-3.3.9-linux-glibc23-i386.tar.gz -T20
-        tar zxf ZendOptimizer-3.3.9-linux-glibc23-i386.tar.gz
-        \cp ZendOptimizer-3.3.9-linux-glibc23-i386/data/5_2_x_comp/ZendOptimizer.so /usr/local/zend/php52/
-		rm -rf ZendOptimizer-3.3.9-linux-glibc23-i386
-		rm -f ZendOptimizer-3.3.9-linux-glibc23-i386.tar.gz
-    fi
+	wget -O /usr/local/zend/php52/ZendOptimizer.so ${Download_Url}/src/ZendOptimizer-${Is_64bit}.so -T 20
 	
 	mysqli='';
 	if [ -f ${php_setup_path}/lib/php/extensions/no-debug-non-zts-20060613/mysqli.so ];then
@@ -227,6 +215,7 @@ EOF
 	else
 		if [ ! -f /www/server/php/52/libphp5.so ];then
 			\cp -a -r $Root_Path/server/apache/modules/libphp5.so /www/server/php/52/libphp5.so
+			sed -i '/#LoadModule php5_module/s/^#//' /www/server/apache/conf/httpd.conf
 		fi
 		/etc/init.d/httpd restart
 	fi
@@ -285,8 +274,9 @@ Install_PHP_53()
     sed -i 's/max_execution_time =.*/max_execution_time = 300/g' ${php_setup_path}/etc/php.ini
     sed -i 's/register_long_arrays =.*/;register_long_arrays = On/g' ${php_setup_path}/etc/php.ini
     sed -i 's/magic_quotes_gpc =.*/;magic_quotes_gpc = On/g' ${php_setup_path}/etc/php.ini
-	sed -i 's/;sendmail_path =.*/sendmail_path = \/usr\/bin\/sendmail -t -i/g' ${php_setup_path}/etc/php.ini
+	sed -i 's/;sendmail_path =.*/sendmail_path = \/usr\/sbin\/sendmail -t -i/g' ${php_setup_path}/etc/php.ini
     sed -i 's/disable_functions =.*/disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,popen,ini_alter,ini_restore,dl,openlog,syslog,readlink,symlink,popepassthru/g' ${php_setup_path}/etc/php.ini
+    sed -i 's/display_errors = Off/display_errors = On/g' ${php_setup_path}/etc/php.ini
     Pear_Pecl_Set
     Install_Composer
 
@@ -363,6 +353,7 @@ Set_PHP_FPM_Opt
 else
 	if [ ! -f /www/server/php/53/libphp5.so ];then
 		\cp -a -r $Root_Path/server/apache/modules/libphp5.so /www/server/php/53/libphp5.so
+		sed -i '/#LoadModule php5_module/s/^#//' /www/server/apache/conf/httpd.conf
 	fi
 	/etc/init.d/httpd restart
 fi
@@ -413,8 +404,9 @@ Install_PHP_54()
     sed -i 's/short_open_tag =.*/short_open_tag = On/g' ${php_setup_path}/etc/php.ini
     sed -i 's/;cgi.fix_pathinfo=.*/cgi.fix_pathinfo=1/g' ${php_setup_path}/etc/php.ini
     sed -i 's/max_execution_time =.*/max_execution_time = 300/g' ${php_setup_path}/etc/php.ini
-	sed -i 's/;sendmail_path =.*/sendmail_path = \/usr\/bin\/sendmail -t -i/g' ${php_setup_path}/etc/php.ini
+	sed -i 's/;sendmail_path =.*/sendmail_path = \/usr\/sbin\/sendmail -t -i/g' ${php_setup_path}/etc/php.ini
     sed -i 's/disable_functions =.*/disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,popen,ini_alter,ini_restore,dl,openlog,syslog,readlink,symlink,popepassthru/g' ${php_setup_path}/etc/php.ini
+    sed -i 's/display_errors = Off/display_errors = On/g' ${php_setup_path}/etc/php.ini
     Pear_Pecl_Set
     Install_Composer
 	
@@ -490,6 +482,7 @@ EOF
 else
 	if [ ! -f /www/server/php/54/libphp5.so ];then
 		\cp -a -r $Root_Path/server/apache/modules/libphp5.so /www/server/php/54/libphp5.so
+		sed -i '/#LoadModule php5_module/s/^#//' /www/server/apache/conf/httpd.conf
 	fi
 	/etc/init.d/httpd restart
 fi
@@ -537,8 +530,9 @@ Install_PHP_55()
     sed -i 's/short_open_tag =.*/short_open_tag = On/g' ${php_setup_path}/etc/php.ini
     sed -i 's/;cgi.fix_pathinfo=.*/cgi.fix_pathinfo=1/g' ${php_setup_path}/etc/php.ini
     sed -i 's/max_execution_time =.*/max_execution_time = 300/g' ${php_setup_path}/etc/php.ini
-	sed -i 's/;sendmail_path =.*/sendmail_path = \/usr\/bin\/sendmail -t -i/g' ${php_setup_path}/etc/php.ini
+	sed -i 's/;sendmail_path =.*/sendmail_path = \/usr\/sbin\/sendmail -t -i/g' ${php_setup_path}/etc/php.ini
     sed -i 's/disable_functions =.*/disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,popen,ini_alter,ini_restore,dl,openlog,syslog,readlink,symlink,popepassthru/g' ${php_setup_path}/etc/php.ini
+    sed -i 's/display_errors = Off/display_errors = On/g' ${php_setup_path}/etc/php.ini
     Pear_Pecl_Set
     Install_Composer
 
@@ -661,10 +655,11 @@ Install_PHP_56()
     sed -i 's/short_open_tag =.*/short_open_tag = On/g' ${php_setup_path}/etc/php.ini
     sed -i 's/;cgi.fix_pathinfo=.*/cgi.fix_pathinfo=1/g' ${php_setup_path}/etc/php.ini
     sed -i 's/max_execution_time =.*/max_execution_time = 300/g' ${php_setup_path}/etc/php.ini
-	sed -i 's/;sendmail_path =.*/sendmail_path = \/usr\/bin\/sendmail -t -i/g' ${php_setup_path}/etc/php.ini
+	sed -i 's/;sendmail_path =.*/sendmail_path = \/usr\/sbin\/sendmail -t -i/g' ${php_setup_path}/etc/php.ini
 	sed -i 's/;openssl.cafile=/openssl.cafile=\/etc\/pki\/tls\/certs\/ca-bundle.crt/' ${php_setup_path}/etc/php.ini
 	sed -i 's/;curl.cainfo =/curl.cainfo = \/etc\/pki\/tls\/certs\/ca-bundle.crt/' ${php_setup_path}/etc/php.ini
     sed -i 's/disable_functions =.*/disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,popen,ini_alter,ini_restore,dl,openlog,syslog,readlink,symlink,popepassthru/g' ${php_setup_path}/etc/php.ini
+    sed -i 's/display_errors = Off/display_errors = On/g' ${php_setup_path}/etc/php.ini
     Pear_Pecl_Set
     Install_Composer
 
@@ -784,10 +779,11 @@ Install_PHP_70()
     sed -i 's/short_open_tag =.*/short_open_tag = On/g' ${php_setup_path}/etc/php.ini
     sed -i 's/;cgi.fix_pathinfo=.*/cgi.fix_pathinfo=1/g' ${php_setup_path}/etc/php.ini
     sed -i 's/max_execution_time =.*/max_execution_time = 300/g' ${php_setup_path}/etc/php.ini
-	sed -i 's/;sendmail_path =.*/sendmail_path = \/usr\/bin\/sendmail -t -i/g' ${php_setup_path}/etc/php.ini
+	sed -i 's/;sendmail_path =.*/sendmail_path = \/usr\/sbin\/sendmail -t -i/g' ${php_setup_path}/etc/php.ini
 	sed -i 's/;openssl.cafile=/openssl.cafile=\/etc\/pki\/tls\/certs\/ca-bundle.crt/' ${php_setup_path}/etc/php.ini
 	sed -i 's/;curl.cainfo =/curl.cainfo = \/etc\/pki\/tls\/certs\/ca-bundle.crt/' ${php_setup_path}/etc/php.ini
     sed -i 's/disable_functions =.*/disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,popen,ini_alter,ini_restore,dl,openlog,syslog,readlink,symlink,popepassthru/g' ${php_setup_path}/etc/php.ini
+    sed -i 's/display_errors = Off/display_errors = On/g' ${php_setup_path}/etc/php.ini
     Pear_Pecl_Set
     Install_Composer
 
@@ -895,10 +891,11 @@ Install_PHP_71()
     sed -i 's/short_open_tag =.*/short_open_tag = On/g' ${php_setup_path}/etc/php.ini
     sed -i 's/;cgi.fix_pathinfo=.*/cgi.fix_pathinfo=1/g' ${php_setup_path}/etc/php.ini
     sed -i 's/max_execution_time =.*/max_execution_time = 300/g' ${php_setup_path}/etc/php.ini
-	sed -i 's/;sendmail_path =.*/sendmail_path = \/usr\/bin\/sendmail -t -i/g' ${php_setup_path}/etc/php.ini
+	sed -i 's/;sendmail_path =.*/sendmail_path = \/usr\/sbin\/sendmail -t -i/g' ${php_setup_path}/etc/php.ini
 	sed -i 's/;openssl.cafile=/openssl.cafile=\/etc\/pki\/tls\/certs\/ca-bundle.crt/' ${php_setup_path}/etc/php.ini
 	sed -i 's/;curl.cainfo =/curl.cainfo = \/etc\/pki\/tls\/certs\/ca-bundle.crt/' ${php_setup_path}/etc/php.ini
     sed -i 's/disable_functions =.*/disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,popen,ini_alter,ini_restore,dl,openlog,syslog,readlink,symlink,popepassthru/g' ${php_setup_path}/etc/php.ini
+    sed -i 's/display_errors = Off/display_errors = On/g' ${php_setup_path}/etc/php.ini
     Pear_Pecl_Set
     Install_Composer
 

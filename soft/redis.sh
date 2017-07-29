@@ -130,9 +130,6 @@ esac
 	fi
 	
 	case "${version}" in 
-		'52')
-		extFile='/www/server/php/52/lib/php/extensions/no-debug-non-zts-20060613/redis.so'
-		;;
 		'53')
 		extFile='/www/server/php/53/lib/php/extensions/no-debug-non-zts-20090626/redis.so'
 		;;
