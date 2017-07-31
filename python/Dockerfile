@@ -1,18 +1,18 @@
 FROM python:latest
 MAINTAINER ywfwj2008 <ywfwj2008@163.com>
 
-ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/raw/master
+ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/blob/master/python
 
 WORKDIR /tmp
 
 # install bt panel
-ADD ${REMOTE_PATH}/install.sh /tmp/install.sh
+ADD ${REMOTE_PATH}/install-ubuntu.sh /tmp/install.sh
 RUN chmod 777 install.sh && \
     bash install.sh && \
     rm -rf /tmp/*
 
 # install supervisord
-ADD ./supervisord.conf /etc/supervisor/supervisord.conf
+ADD ${REMOTE_PATH}/supervisord.conf /etc/supervisor/supervisord.conf
 RUN pip install --upgrade pip && \
     pip install supervisor && \
     mkdir -p /etc/supervisor/conf.d /var/log/supervisor && \
