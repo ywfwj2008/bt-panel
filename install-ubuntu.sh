@@ -233,13 +233,13 @@ Install_psutil()
 {
 	isSetup=`python -m psutil 2>&1|grep package`
 	if [ "$isSetup" = "" ];then
-		wget -O psutil-5.1.3.tar.gz $download_Url/install/src/psutil-5.1.3.tar.gz -T 10
-		tar xvf psutil-5.1.3.tar.gz
-		rm -f psutil-5.1.3.tar.gz
-		cd psutil-5.1.3
+		wget -O psutil-5.2.2.tar.gz $download_Url/install/src/psutil-5.2.2.tar.gz -T 10
+		tar xvf psutil-5.2.2.tar.gz
+		rm -f psutil-5.2.2.tar.gz
+		cd psutil-5.2.2
 		python setup.py install
 		cd ..
-		rm -rf psutil-5.1.3
+		rm -rf psutil-5.2.2
 	fi
 	isSetup=`python -m psutil 2>&1|grep package`
 	if [ "$isSetup" = "" ];then
@@ -428,7 +428,7 @@ if [ ! -d '/etc/letsencrypt' ];then
 fi
 
 address=""
-address=`curl -sS --connect-timeout 10 -m 60 http://www.bt.cn/Api/getIpAddress`
+address=`curl -sS --connect-timeout 10 -m 60 https://www.bt.cn/Api/getIpAddress`
 if [ "$address" = "" ];then
 	address="SERVER_IP"
 fi
@@ -438,7 +438,7 @@ if [ "$address" != "SERVER_IP" ];then
 fi
 
 
-curl -sS --connect-timeout 10 -m 60 http://www.bt.cn/Api/SetupCount?type=Linux > /dev/null 2>&1
+curl -sS --connect-timeout 10 -m 60 https://www.bt.cn/Api/SetupCount?type=Linux > /dev/null 2>&1
 
 echo -e "=================================================================="
 echo -e "\033[32mCongratulations! Install succeeded!\033[0m"
