@@ -19,7 +19,7 @@ RUN pip install --upgrade pip && \
     rm -rf /tmp/*
 
 # expose port
-EXPOSE 8888 80 443 21 20 888
+EXPOSE 8888 80 443 21 20 888 3306 9001
 
 # Set the entrypoint script.
 ADD ${REMOTE_PATH}/entrypoint.sh /entrypoint.sh

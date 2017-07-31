@@ -11,7 +11,7 @@ RUN bash /www/server/panel/install/install_soft.sh 0 install redis 56 && \
     rm -rf /tmp/*
 
 # expose port
-EXPOSE 8888 80 443 21 20 888
+EXPOSE 8888 80 443 21 20 888 3306 9001
 
 # Set the entrypoint script.
 ENTRYPOINT ["/entrypoint.sh"]
