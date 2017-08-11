@@ -7,7 +7,6 @@ WORKDIR /tmp
 
 # install nginx
 RUN bash /www/server/panel/install/install_soft.sh 0 install nginx 1.12 && \
-    bash /www/server/panel/install/install_soft.sh 0 install pure-ftpd && \
     rm -rf /tmp/*
 
 # expose port
