@@ -168,97 +168,23 @@ if [ "$huaweiLogin" != "" ] && [ "$huaweiSys" != "" ]; then
 fi
 rm -f kernel-headers.pl
 
-yum clean all
 yum install ntp -y
 \cp -a -r /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 echo 'Synchronizing system time...'
 ntpdate 0.asia.pool.ntp.org
 startTime=`date +%s`
-yum upgrade -y
 setenforce 0
 sed -i 's/SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config
-for pace in wget python-devel python-imaging zip unzip openssl openssl-devel gcc libxml2 libxml2-dev libxslt* zlib zlib-devel libjpeg-devel libpng-devel libwebp libwebp-devel freetype freetype-devel lsof pcre pcre-devel vixie-cron crontabs;
+for pace in python-devel python-imaging zip unzip openssl openssl-devel gcc libxml2 libxml2-dev libxslt* zlib zlib-devel libjpeg-devel libpng-devel libwebp libwebp-devel freetype freetype-devel lsof pcre pcre-devel vixie-cron crontabs;
 do 
 	yum -y install $pace; 
 done
-
-yum install python-devel -y
-
-if [ -f '/www/server/mysql/bin/mysql_config' ];then
-	SetLink
-fi
-
-if [ ! -f '/usr/bin/mysql_config' ];then
-	yum install mysql-devel -y
+if [ -f "/usr/bin/dnf" ]; then
+	dnf install -y redhat-rpm-config
 fi
 
 tmp=`python -V 2>&1|awk '{print $2}'`
 pVersion=${tmp:0:3}
-
-SetLink()
-{
-	mSetup_Path=/www/server/mysql
-    ln -sf ${mSetup_Path}/bin/mysql /usr/bin/mysql
-    ln -sf ${mSetup_Path}/bin/mysqldump /usr/bin/mysqldump
-    ln -sf ${mSetup_Path}/bin/myisamchk /usr/bin/myisamchk
-    ln -sf ${mSetup_Path}/bin/mysqld_safe /usr/bin/mysqld_safe
-    ln -sf ${mSetup_Path}/bin/mysqlcheck /usr/bin/mysqlcheck
-	ln -sf ${mSetup_Path}/bin/mysql_config /usr/bin/mysql_config
-	
-	rm -f /usr/lib/libmysqlclient.so.16
-	rm -f /usr/lib64/libmysqlclient.so.16
-	rm -f /usr/lib/libmysqlclient.so.18
-	rm -f /usr/lib64/libmysqlclient.so.18
-	rm -f /usr/lib/libmysqlclient.so.20
-	rm -f /usr/lib64/libmysqlclient.so.20
-	
-	if [ -f "${mSetup_Path}/lib/libmysqlclient.so.18" ];then
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.18 /usr/lib/libmysqlclient.so.16
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.18 /usr/lib64/libmysqlclient.so.16
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.18 /usr/lib/libmysqlclient.so.18
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.18 /usr/lib64/libmysqlclient.so.18
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.18 /usr/lib/libmysqlclient.so.20
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.18 /usr/lib64/libmysqlclient.so.20
-	elif [ -f "${mSetup_Path}/lib/mysql/libmysqlclient.so.18" ];then
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.18 /usr/lib/libmysqlclient.so.16
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.18 /usr/lib64/libmysqlclient.so.16
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.18 /usr/lib/libmysqlclient.so.18
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.18 /usr/lib64/libmysqlclient.so.18
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.18 /usr/lib/libmysqlclient.so.20
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.18 /usr/lib64/libmysqlclient.so.20
-	elif [ -f "${mSetup_Path}/lib/libmysqlclient.so.16" ];then
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.16 /usr/lib/libmysqlclient.so.16
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.16 /usr/lib64/libmysqlclient.so.16
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.16 /usr/lib/libmysqlclient.so.18
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.16 /usr/lib64/libmysqlclient.so.18
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.16 /usr/lib/libmysqlclient.so.20
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.16 /usr/lib64/libmysqlclient.so.20
-	elif [ -f "${mSetup_Path}/lib/mysql/libmysqlclient.so.16" ];then
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.16 /usr/lib/libmysqlclient.so.16
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.16 /usr/lib64/libmysqlclient.so.16
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.16 /usr/lib/libmysqlclient.so.18
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.16 /usr/lib64/libmysqlclient.so.18
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.16 /usr/lib/libmysqlclient.so.20
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.16 /usr/lib64/libmysqlclient.so.20
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient_r.so.16 /usr/lib/libmysqlclient_r.so.16
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient_r.so.16 /usr/lib64/libmysqlclient_r.so.16
-	elif [ -f "${mSetup_Path}/lib/libmysqlclient.so.20" ];then
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.20 /usr/lib/libmysqlclient.so.16
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.20 /usr/lib64/libmysqlclient.so.16
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.20 /usr/lib/libmysqlclient.so.18
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.20 /usr/lib64/libmysqlclient.so.18
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.20 /usr/lib/libmysqlclient.so.20
-		ln -sf ${mSetup_Path}/lib/libmysqlclient.so.20 /usr/lib64/libmysqlclient.so.20
-	elif [ -f "${mSetup_Path}/lib/mysql/libmysqlclient.so.20" ];then
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.20 /usr/lib/libmysqlclient.so.16
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.20 /usr/lib64/libmysqlclient.so.16
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.20 /usr/lib/libmysqlclient.so.18
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.20 /usr/lib64/libmysqlclient.so.18
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.20 /usr/lib/libmysqlclient.so.20
-		ln -sf ${mSetup_Path}/lib/mysql/libmysqlclient.so.20 /usr/lib64/libmysqlclient.so.20
-	fi
-	ldconfig
-}
 
 Install_setuptools()
 {
@@ -421,12 +347,21 @@ trusted-host=pypi.doubanio.com
 EOF
 fi
 
+psutil_version=`python -c 'import psutil;print psutil.__version__;'|grep '5.'`
+if [ "$psutil_version" = '' ];then
+	pip uninstall psutil -y
+fi
+
 pip install --upgrade pip
-pip install psutil mysql-python chardet web.py virtualenv
+pip install psutil chardet web.py virtualenv
 
 Install_Pillow
 Install_psutil
-Install_mysqldb
+
+if [  -f /www/server/mysql/bin/mysql ]; then
+	pip install mysql-python
+	Install_mysqldb
+fi
 Install_chardet
 Install_webpy
 
@@ -558,7 +493,7 @@ if [ "${isVersion}" == '' ];then
 	fi
 fi
 
-pip install psutil chardet web.py MySQL-python psutil virtualenv > /dev/null 2>&1
+pip install psutil chardet web.py psutil virtualenv > /dev/null 2>&1
 
 if [ ! -d '/etc/letsencrypt' ];then
 	yum install epel-release -y
