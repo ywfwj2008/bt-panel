@@ -2,16 +2,15 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
-isUbuntu=`cat /etc/issue|grep Ubuntu`
-if [ "$isUbuntu" != "" ];then
-	wget -O install.sh http://download.bt.cn/install/install-ubuntu.sh && sudo bash install.sh
-	exit;
-fi
-
-isDebian=`cat /etc/issue|grep Debian`
-if [ "$isUbuntu" != "" ];then
-	wget -O install.sh http://download.bt.cn/install/install-ubuntu.sh && bash install.sh
-	exit;
+if [ -f "/usr/bin/apt-get" ];then
+	isDebian=`cat /etc/issue|grep Debian`
+	if [ "$isDebian" != "" ];then
+		wget -O install.sh http://download.bt.cn/install/install-ubuntu.sh && bash install.sh
+		exit;
+	else
+		wget -O install.sh http://download.bt.cn/install/install-ubuntu.sh && sudo bash install.sh
+		exit;
+	fi
 fi
 
 echo "
@@ -158,15 +157,18 @@ rpm -qa | grep kernel-headers > kernel-headers.pl
 kernelStatus=`cat kernel-headers.pl`
 #判断华为云
 huaweiLogin=`cat /etc/motd |grep 4000-955-988`
-huaweiSys=`cat /etc/redhat-release | grep 1611`
-if [ "$huaweiLogin" != "" ] && [ "$huaweiSys" != "" ]; then
-	if [ "$kernelStatus" = "" ]; then
+huaweiSys=`cat /etc/redhat-release | grep ' 7.'`
+if [ "$kernelStatus" = "" ]; then
+	if [ "$huaweiLogin" != "" ] && [ "$huaweiSys" != "" ]; then
 		wget http://125.88.182.172:5880/src/kernel-headers-3.10.0-514.el7.x86_64.rpm
 		rpm -ivh kernel-headers-3.10.0-514.el7.x86_64.rpm
 		rm -f kernel-headers-3.10.0-514.el7.x86_64.rpm
+	else
+		yum install kernel-headers -y
 	fi
 fi
 rm -f kernel-headers.pl
+
 
 yum install ntp -y
 \cp -a -r /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
