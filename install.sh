@@ -15,7 +15,7 @@ fi
 
 echo "
 +----------------------------------------------------------------------
-| Bt-WebPanel 4.x FOR CentOS/Redhat/Fedora/Ubuntu/Debian
+| Bt-WebPanel 5.x FOR CentOS/Redhat/Fedora/Ubuntu/Debian
 +----------------------------------------------------------------------
 | Copyright © 2015-2017 BT-SOFT(http://www.bt.cn) All rights reserved.
 +----------------------------------------------------------------------
@@ -457,7 +457,15 @@ if [ "$isStart" == '' ];then
 	exit;
 fi
 
+
+
+
 if [ -f "/etc/init.d/iptables" ];then
+	Firewall_Mod=`cat /proc/modules | grep iptable`
+	sshPort=`cat /etc/ssh/sshd_config | grep 'Port ' | grep -oE [0-9] | tr -d '\n'`
+	if [ "${Firewall_Mod}" = "" ] && [ "${sshport}" != "22" ]; then
+		iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport $sshPort -j ACCEPT
+	fi
 	iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport 20 -j ACCEPT
 	iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport 21 -j ACCEPT
 	iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
