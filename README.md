@@ -27,6 +27,11 @@ http://125.88.182.172:5880/install/1/opcache.sh
 
 sh $name.sh $actionType $version
 ```
+## install nginx
+nginx: http://125.88.182.172:5880/install/0/nginx.sh install 1.12  
+tengine: http://125.88.182.172:5880/install/0/nginx.sh install  
+openrestry: http://125.88.182.172:5880/install/0/nginx.sh install openresty
+
 ## run mysql
 ```
 docker run \

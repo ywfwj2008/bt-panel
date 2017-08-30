@@ -6,7 +6,7 @@ ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/raw/master
 WORKDIR /tmp
 
 # install tengine
-RUN bash /www/server/panel/install/install_soft.sh 0 install nginx -Tengine2.2.0 && \
+RUN bash /www/server/panel/install/install_soft.sh 0 install nginx && \
     rm -rf /tmp/*
 
 # expose port
