@@ -26,11 +26,16 @@ Root_Path=`cat /var/bt_setupPath.conf`
 Setup_Path=$Root_Path/server/nginx
 run_path='/root'
 
+Download_Pcre(){
+	pcre_version=8.40
+    wget -O pcre-$pcre_version.tar.gz http://$nodeAddr:5880/src/pcre-$pcre_version.tar.gz -T 5
+	tar zxf pcre-$pcre_version.tar.gz
+}
 Install_Lua()
 {
 	if [ ! -f '/usr/local/bin/lua' ];then
 		yum install libtermcap-devel ncurses-devel libevent-devel readline-devel -y
-		wget -c -O lua-5.3.4.tar.gz $Download_Url/install/src/lua-5.3.4.tar.gz -T 5
+		wget -c -O lua-5.3.4.tar.gz ${Download_Url}/install/src/lua-5.3.4.tar.gz -T 5
 		tar xvf lua-5.3.4.tar.gz
 		cd lua-5.3.4
 		make linux
@@ -44,7 +49,7 @@ Install_LuaJIT()
 {
 	if [ ! -d '/usr/local/include/luajit-2.0' ];then
 		yum install libtermcap-devel ncurses-devel libevent-devel readline-devel -y
-		wget -c -O LuaJIT-2.0.4.tar.gz $Download_Url/install/src/LuaJIT-2.0.4.tar.gz -T 5
+		wget -c -O LuaJIT-2.0.4.tar.gz ${Download_Url}/install/src/LuaJIT-2.0.4.tar.gz -T 5
 		tar xvf LuaJIT-2.0.4.tar.gz
 		cd LuaJIT-2.0.4
 		make linux
@@ -71,7 +76,7 @@ Install_Nginx()
 	cd ${Setup_Path}
 	if [ ! -f "${Setup_Path}/src.tar.gz" ];then
 		if [ "$nginx_version" == "openresty" ];then
-			wget -O ${Setup_Path}/src.tar.gz ${Download_Url}/src/openresty-1.11.2.3.tar.gz -T20
+			wget -O ${Setup_Path}/src.tar.gz ${Download_Url}/src/openresty-${openresty_version}.tar.gz -T20
 		else
 			wget -O ${Setup_Path}/src.tar.gz ${Download_Url}/src/nginx-$nginxVersion.tar.gz -T20
 		fi
@@ -80,7 +85,7 @@ Install_Nginx()
 	if [ "${nginxVersion}" == '-Tengine2.2.0' ];then
 		mv tengine-2.2.0 src
 	elif [ "${nginxVersion}" == 'openresty' ];then
-		mv openresty-1.11.2.3 src
+		mv openresty-${openresty_version} src
 	else
 		mv nginx-$nginxVersion src
 	fi
@@ -90,33 +95,38 @@ Install_Nginx()
 	tar -xvf openssl.tar.gz
 	mv openssl-1.0.2l openssl
 	rm -f openssl.tar.gz
+	wget -O ngx_cache_purge.tar.gz ${Download_Url}/src/ngx_cache_purge-2.3.tar.gz
+	tar -zxvf ngx_cache_purge.tar.gz
+	mv ngx_cache_purge-2.3 ngx_cache_purge
+	rm -f ngx_cache_purge.tar.gz
 	
 	export LD_LIBRARY_PATH=/usr/local/lib/:$LD_LIBRARY_PATH 
 	if [ "${nginxVersion}" != "1.8.1" ];then
 		if [ "${nginx_version}" == "1.12.1" ];then
 			Install_LuaJIT
 			#lua_nginx_module
-			wget -c -O lua-nginx-module-master.zip $Download_Url/install/src/lua-nginx-module-master.zip -T 5
+			wget -c -O lua-nginx-module-master.zip ${Download_Url}/install/src/lua-nginx-module-master.zip -T 5
 			unzip lua-nginx-module-master.zip
 			mv lua-nginx-module-master lua_nginx_module
 			rm -f lua-nginx-module-master.zip
 			
 			#ngx_devel_kit
-			wget -c -O ngx_devel_kit-master.zip $Download_Url/install/src/ngx_devel_kit-master.zip -T 5
+			wget -c -O ngx_devel_kit-master.zip ${Download_Url}/install/src/ngx_devel_kit-master.zip -T 5
 			unzip ngx_devel_kit-master.zip
 			mv ngx_devel_kit-master ngx_devel_kit
 			rm -f ngx_devel_kit-master.zip
-			./configure --user=www --group=www --prefix=${Setup_Path} --with-openssl=${Setup_Path}/src/openssl --add-module=${Setup_Path}/src/ngx_devel_kit --add-module=${Setup_Path}/src/lua_nginx_module --with-http_stub_status_module --with-http_ssl_module --with-http_v2_module --with-http_gzip_static_module --with-http_gunzip_module --with-stream --with-stream_ssl_module --with-ipv6 --with-http_sub_module --with-http_flv_module --with-http_addition_module --with-http_realip_module --with-http_mp4_module --with-ld-opt="-Wl,-E"
+			./configure --user=www --group=www --prefix=${Setup_Path} --with-openssl=${Setup_Path}/src/openssl --add-module=${Setup_Path}/src/ngx_devel_kit --add-module=${Setup_Path}/src/lua_nginx_module --add-module=${Setup_Path}/src/ngx_cache_purge --with-http_stub_status_module --with-http_ssl_module --with-http_v2_module --with-http_gzip_static_module --with-http_gunzip_module --with-stream --with-stream_ssl_module --with-ipv6 --with-http_sub_module --with-http_flv_module --with-http_addition_module --with-http_realip_module --with-http_mp4_module --with-ld-opt="-Wl,-E"
 		else
 			if [ "$nginx_version" == "openresty" ];then
+				Download_Pcre
 				Install_LuaJIT
-				./configure --user=www --group=www --prefix=${Setup_Path} --with-openssl=${Setup_Path}/src/openssl --with-luajit --with-http_stub_status_module --with-http_ssl_module --with-http_v2_module --with-http_gzip_static_module --with-http_gunzip_module --with-stream --with-stream_ssl_module --with-ipv6 --with-http_sub_module --with-http_flv_module --with-http_addition_module --with-http_realip_module --with-http_mp4_module --with-ld-opt="-Wl,-E"
+				./configure --user=www --group=www --prefix=${Setup_Path} --with-openssl=${Setup_Path}/src/openssl --with-pcre=pcre-${pcre_version} --add-module=${Setup_Path}/src/ngx_cache_purge --with-luajit --with-http_stub_status_module --with-http_ssl_module --with-http_v2_module --with-http_gzip_static_module --with-http_gunzip_module --with-stream --with-stream_ssl_module --with-ipv6 --with-http_sub_module --with-http_flv_module --with-http_addition_module --with-http_realip_module --with-http_mp4_module --with-ld-opt="-Wl,-E"
 			else
-				./configure --user=www --group=www --prefix=${Setup_Path} --with-openssl=${Setup_Path}/src/openssl --with-http_stub_status_module --with-http_ssl_module --with-http_v2_module --with-http_gzip_static_module --with-http_gunzip_module --with-ipv6 --with-http_sub_module --with-http_flv_module --with-http_addition_module --with-http_realip_module --with-http_mp4_module --with-ld-opt="-Wl,-E"
+				./configure --user=www --group=www --prefix=${Setup_Path} --with-openssl=${Setup_Path}/src/openssl --add-module=${Setup_Path}/src/ngx_cache_purge --with-http_stub_status_module --with-http_ssl_module --with-http_v2_module --with-http_gzip_static_module --with-http_gunzip_module --with-ipv6 --with-http_sub_module --with-http_flv_module --with-http_addition_module --with-http_realip_module --with-http_mp4_module --with-ld-opt="-Wl,-E"
 			fi
 		fi
     else
-		./configure --user=www --group=www --prefix=${Setup_Path} --with-openssl=${Setup_Path}/src/openssl --with-http_stub_status_module --with-http_ssl_module --with-http_spdy_module --with-http_gzip_static_module --with-http_gunzip_module --with-ipv6 --with-http_sub_module --with-http_flv_module --with-http_addition_module --with-http_realip_module --with-http_mp4_module --with-ld-opt="-Wl,-E"
+		./configure --user=www --group=www --prefix=${Setup_Path} --with-openssl=${Setup_Path}/src/openssl --add-module=${Setup_Path}/src/ngx_cache_purge --with-http_stub_status_module --with-http_ssl_module --with-http_spdy_module --with-http_gzip_static_module --with-http_gunzip_module --with-ipv6 --with-http_sub_module --with-http_flv_module --with-http_addition_module --with-http_realip_module --with-http_mp4_module --with-ld-opt="-Wl,-E"
 	fi
 	if [ "$nginx_version" == "openresty" ];then
 		gmake && gmake install
@@ -257,7 +267,7 @@ EOF
 	chown www.www /www/wwwlogs/waf
 	chmod 744 /www/wwwlogs/waf
 	mkdir -p /www/server/panel/vhost
-	wget -O waf.zip $Download_Url/install/waf/waf.zip
+	wget -O waf.zip ${Download_Url}/install/waf/waf.zip
 	unzip -o waf.zip -d $Setup_Path/ > /dev/null
 	if [ ! -d "/www/server/panel/vhost/wafconf" ];then
 		mv $Setup_Path/waf/wafconf /www/server/panel/vhost/wafconf
@@ -324,6 +334,7 @@ if [ "$actionType" == 'install' ];then
 	elif [ "$version" == "openresty" ];then
 		nginxVersion="openresty"
 		nginx_version="openresty"
+		openresty_version='1.11.2.4'
 	fi
 	Install_Nginx
 elif [ "$actionType" == 'uninstall' ];then
