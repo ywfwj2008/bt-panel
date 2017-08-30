@@ -36,6 +36,7 @@ openrestry: http://125.88.182.172:5880/install/0/nginx.sh install openresty
 ```
 docker run \
 --name mysql \
+-v /home/config/mysql:/etc/mysql/conf.d \
 -v /home/mysql:/var/lib/mysql \
 -e MYSQL_ROOT_PASSWORD=my-secret-pw \
 -d mysql:5.6
@@ -48,6 +49,8 @@ docker run \
 -v /home/backup:/www/backup \
 -v /home/wwwlogs:/www/wwwlogs \
 -v /home/wwwroot:/www/wwwroot \
+-v /home/config/vhost:/www/server/panel/vhost \
+-v /home/config/pureftpd.passwd:/www/server/pure-ftpd/etc/pureftpd.passwd \
 -v /home/letsencrypt:/etc/letsencrypt \
 -e BT_ADMIN_ACCOUNT=my-account \
 -e BT_ADMIN_PASSWORD=my-secret-pw \
