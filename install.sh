@@ -184,7 +184,7 @@ done
 if [ -f "/usr/bin/dnf" ]; then
 	dnf install -y redhat-rpm-config
 fi
-
+yum install python-devel -y
 tmp=`python -V 2>&1|awk '{print $2}'`
 pVersion=${tmp:0:3}
 
