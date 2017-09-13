@@ -1,7 +1,7 @@
 #!/bin/bash
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
-
+LANG=en_US.UTF-8
 if [ -f "/usr/bin/apt-get" ];then
 	isDebian=`cat /etc/issue|grep Debian`
 	if [ "$isDebian" != "" ];then
@@ -24,8 +24,8 @@ echo "
 "
 #自动选择下载节点
 CN='125.88.182.172'
-HK='103.224.251.79'
-HK2='103.224.251.67'
+HK2='103.224.251.79'
+HK='103.224.251.67'
 US='128.1.164.196'
 CN_PING=`ping -c 1 -w 1 $CN|grep time=|awk '{print $7}'|sed "s/time=//"`
 HK_PING=`ping -c 1 -w 1 $HK|grep time=|awk '{print $7}'|sed "s/time=//"`
