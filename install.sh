@@ -24,8 +24,8 @@ echo "
 "
 #自动选择下载节点
 CN='125.88.182.172'
-HK2='103.224.251.79'
-HK='103.224.251.67'
+HK='download.bt.cn'
+HK2='103.224.251.67'
 US='128.1.164.196'
 CN_PING=`ping -c 1 -w 1 $CN|grep time=|awk '{print $7}'|sed "s/time=//"`
 HK_PING=`ping -c 1 -w 1 $HK|grep time=|awk '{print $7}'|sed "s/time=//"`
@@ -35,9 +35,9 @@ echo "$HK_PING $HK" > ping.pl
 echo "$HK2_PING $HK2" >> ping.pl
 echo "$US_PING $US" >> ping.pl
 echo "$CN_PING $CN" >> ping.pl
-nodeAddr=`sort -n -b ping.pl|sed -n '1p'|awk '{print $2}'`
+nodeAddr=`sort -V ping.pl|sed -n '1p'|awk '{print $2}'`
 if [ "$nodeAddr" == "" ];then
-	nodeAddr=$HK
+	nodeAddr=$HK2
 fi
 download_Url=http://$nodeAddr:5880
 rm -f ping.pl
@@ -160,7 +160,7 @@ huaweiLogin=`cat /etc/motd |grep 4000-955-988`
 huaweiSys=`cat /etc/redhat-release | grep ' 7.'`
 if [ "$kernelStatus" = "" ]; then
 	if [ "$huaweiLogin" != "" ] && [ "$huaweiSys" != "" ]; then
-		wget http://125.88.182.172:5880/src/kernel-headers-3.10.0-514.el7.x86_64.rpm
+		wget $download_Url/src/kernel-headers-3.10.0-514.el7.x86_64.rpm
 		rpm -ivh kernel-headers-3.10.0-514.el7.x86_64.rpm
 		rm -f kernel-headers-3.10.0-514.el7.x86_64.rpm
 	else
@@ -349,9 +349,9 @@ trusted-host=pypi.doubanio.com
 EOF
 fi
 
-psutil_version=`python -c 'import psutil;print psutil.__version__;'|grep '5.'`
+psutil_version=`python -c 'import psutil;print psutil.__version__;'|grep '5.'` 
 if [ "$psutil_version" = '' ];then
-	pip uninstall psutil -y
+	pip uninstall psutil -y 
 fi
 
 pip install --upgrade pip
@@ -430,8 +430,8 @@ fi
 rm -f $setup_path/server/panel/class/*.pyc
 rm -f $setup_path/server/panel/*.pyc
 python -m compileall $setup_path/server/panel
-rm -f $setup_path/server/panel/class/*.py
-rm -f $setup_path/server/panel/*.py
+#rm -f $setup_path/server/panel/class/*.py
+#rm -f $setup_path/server/panel/*.py
 
 
 
@@ -461,9 +461,8 @@ fi
 
 
 if [ -f "/etc/init.d/iptables" ];then
-	Firewall_Mod=`cat /proc/modules | grep iptable`
 	sshPort=`cat /etc/ssh/sshd_config | grep 'Port ' | grep -oE [0-9] | tr -d '\n'`
-	if [ "${Firewall_Mod}" = "" ] && [ "${sshport}" != "22" ]; then
+	if [ "${sshPort}" != "22" ]; then
 		iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport $sshPort -j ACCEPT
 	fi
 	iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport 20 -j ACCEPT
@@ -471,8 +470,8 @@ if [ -f "/etc/init.d/iptables" ];then
 	iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
 	iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
 	iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport $port -j ACCEPT
-	iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport 30000:40000 -j ACCEPT
-	iptables -I INPUT -p tcp -m state --state NEW -m udp --dport 30000:40000 -j ACCEPT
+	iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport 39000:40000 -j ACCEPT
+	#iptables -I INPUT -p tcp -m state --state NEW -m udp --dport 39000:40000 -j ACCEPT
 	iptables -A INPUT -p icmp --icmp-type any -j ACCEPT
 	iptables -A INPUT -s localhost -d localhost -j ACCEPT
 	iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
@@ -488,17 +487,21 @@ fi
 
 if [ "${isVersion}" == '' ];then
 	if [ ! -f "/etc/init.d/iptables" ];then
+		sshPort=`cat /etc/ssh/sshd_config | grep 'Port ' | grep -oE [0-9] | tr -d '\n'`
 		yum install firewalld -y
 		systemctl enable firewalld
 		systemctl start firewalld
 		firewall-cmd --set-default-zone=public > /dev/null 2>&1
+		if [ "${sshPort}" != "22" ]; then
+			firewall-cmd --permanent --zone=public --add-port=$sshPort/tcp > /dev/null 2>&1
+		fi
 		firewall-cmd --permanent --zone=public --add-port=20/tcp > /dev/null 2>&1
 		firewall-cmd --permanent --zone=public --add-port=21/tcp > /dev/null 2>&1
 		firewall-cmd --permanent --zone=public --add-port=22/tcp > /dev/null 2>&1
 		firewall-cmd --permanent --zone=public --add-port=80/tcp > /dev/null 2>&1
 		firewall-cmd --permanent --zone=public --add-port=$port/tcp > /dev/null 2>&1
-		firewall-cmd --permanent --zone=public --add-port=30000-40000/tcp > /dev/null 2>&1
-		firewall-cmd --permanent --zone=public --add-port=30000-40000/udp > /dev/null 2>&1
+		firewall-cmd --permanent --zone=public --add-port=39000-40000/tcp > /dev/null 2>&1
+		#firewall-cmd --permanent --zone=public --add-port=39000-40000/udp > /dev/null 2>&1
 		firewall-cmd --reload
 	fi
 fi
