@@ -349,9 +349,12 @@ trusted-host=pypi.doubanio.com
 EOF
 fi
 
-psutil_version=`python -c 'import psutil;print psutil.__version__;'|grep '5.'` 
-if [ "$psutil_version" = '' ];then
-	pip uninstall psutil -y 
+isPsutil=`python -m psutil 2>&1|grep package`
+if [ "$isPsutil" != "" ];then
+	psutil_version=`python -c 'import psutil;print psutil.__version__;' |grep '5.'` 
+	if [ "$psutil_version" = '' ];then
+		pip uninstall psutil -y 
+	fi
 fi
 
 pip install --upgrade pip
