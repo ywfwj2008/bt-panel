@@ -169,7 +169,6 @@ if [ "$kernelStatus" = "" ]; then
 fi
 rm -f kernel-headers.pl
 
-
 yum install ntp -y
 \cp -a -r /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 echo 'Synchronizing system time...'
@@ -444,6 +443,7 @@ chkconfig --level 2345 bt on
 chmod -R 600 $setup_path/server/panel
 chmod +x $setup_path/server/panel/certbot-auto
 chmod -R +x $setup_path/server/panel/script
+ln -sf /etc/init.d/bt /usr/bin/bt
 echo "$port" > $setup_path/server/panel/data/port.pl
 /etc/init.d/bt start
 password=123456
@@ -509,7 +509,7 @@ if [ "${isVersion}" == '' ];then
 	fi
 fi
 
-pip install psutil chardet web.py psutil virtualenv > /dev/null 2>&1
+pip install psutil chardet web.py psutil virtualenv cryptography==2.1 > /dev/null 2>&1
 
 if [ ! -d '/etc/letsencrypt' ];then
 	yum install epel-release -y
