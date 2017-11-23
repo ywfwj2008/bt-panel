@@ -6,6 +6,8 @@
 默认用户：admin  
 默认密码：123456
 
+如果需要外连mysql，先运行mysql镜像。宝塔镜像中使用link参数连接。
+
 ## run mysql
 ```
 docker run \
@@ -25,8 +27,6 @@ docker run \
 -v /home/wwwroot:/www/wwwroot \
 -v /home/config/vhost:/www/server/panel/vhost \
 -v /home/letsencrypt:/etc/letsencrypt \
--e BT_ADMIN_ACCOUNT=my-account \
--e BT_ADMIN_PASSWORD=my-secret-pw \
 -p 8888:8888 \
 -p 80:80 \
 -p 443:443 \
@@ -34,6 +34,8 @@ docker run \
 -p 20:20 \
 -d ywfwj2008/bt-php-nginx
 ```
+
+## 参考
 
 ```
 CN='125.88.182.172'
