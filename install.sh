@@ -446,17 +446,9 @@ chmod -R +x $setup_path/server/panel/script
 ln -sf /etc/init.d/bt /usr/bin/bt
 echo "$port" > $setup_path/server/panel/data/port.pl
 /etc/init.d/bt start
-if [ ! -z ${BT_PASSWORD} ];then
-    password=$BT_PASSWORD
-else
-    password=123456
-fi
+password=123456
 cd $setup_path/server/panel/
-if [ ! -z ${BT_ACCOUNT} ];then
-    username=$BT_ACCOUNT
-else
-    username=`python tools.pyc panel $password`
-fi
+username=`python tools.pyc panel $password`
 cd ~
 echo "$password" > $setup_path/server/panel/default.pl
 chmod 600 $setup_path/server/panel/default.pl
