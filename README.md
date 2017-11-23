@@ -1,7 +1,39 @@
 # bt-panel
 ## TODO
 1. 用户名和密码自定义
-2. 修改默认IP地址
+
+## 使用指南
+默认用户：admin  
+默认密码：123456
+
+## run mysql
+```
+docker run \
+--name mysql \
+-v /home/config/mysql:/etc/mysql/conf.d \
+-v /home/mysql:/var/lib/mysql \
+-e MYSQL_ROOT_PASSWORD=my-secret-pw \
+-d mysql:latest
+```
+## run web server
+```
+docker run \
+--name bt \
+--link mysql:localmysql \
+-v /home/backup:/www/backup \
+-v /home/wwwlogs:/www/wwwlogs \
+-v /home/wwwroot:/www/wwwroot \
+-v /home/config/vhost:/www/server/panel/vhost \
+-v /home/letsencrypt:/etc/letsencrypt \
+-e BT_ADMIN_ACCOUNT=my-account \
+-e BT_ADMIN_PASSWORD=my-secret-pw \
+-p 8888:8888 \
+-p 80:80 \
+-p 443:443 \
+-p 21:21 \
+-p 20:20 \
+-d ywfwj2008/bt-php-nginx
+```
 
 ```
 CN='125.88.182.172'
@@ -31,33 +63,3 @@ sh $name.sh $actionType $version
 nginx: http://125.88.182.172:5880/install/0/nginx.sh install 1.12  
 tengine: http://125.88.182.172:5880/install/0/nginx.sh install  
 openrestry: http://125.88.182.172:5880/install/0/nginx.sh install openresty
-
-## run mysql
-```
-docker run \
---name mysql \
--v /home/config/mysql:/etc/mysql/conf.d \
--v /home/mysql:/var/lib/mysql \
--e MYSQL_ROOT_PASSWORD=my-secret-pw \
--d mysql:5.6
-```
-## run web server
-```
-docker run \
---name bt \
---link mysql:localmysql \
--v /home/backup:/www/backup \
--v /home/wwwlogs:/www/wwwlogs \
--v /home/wwwroot:/www/wwwroot \
--v /home/config/vhost:/www/server/panel/vhost \
--v /home/config/pureftpd.passwd:/www/server/pure-ftpd/etc/pureftpd.passwd \
--v /home/letsencrypt:/etc/letsencrypt \
--e BT_ADMIN_ACCOUNT=my-account \
--e BT_ADMIN_PASSWORD=my-secret-pw \
--p 8888:8888 \
--p 80:80 \
--p 443:443 \
--p 21:21 \
--p 20:20 \
--d ywfwj2008/bt-php-nginx
-```
