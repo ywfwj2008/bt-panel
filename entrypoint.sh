@@ -62,4 +62,9 @@ if [ -f "/etc/init.d/mysqld" ];then
     /etc/init.d/mysqld start
 fi
 
+if [ ! -z ${BT_PASSWORD} ];then
+    python /www/server/panel/tools.pyc panel $BT_PASSWORD
+    unset $BT_PASSWORD
+fi
+
 exec "$@"
