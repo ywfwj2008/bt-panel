@@ -24,7 +24,7 @@ fi
 # set default password
 if [ ! -z ${BT_PASSWORD} ];then
     python /www/server/panel/tools.pyc panel ${BT_PASSWORD}
-    #unset ${BT_PASSWORD}
+    unset ${BT_PASSWORD}
 fi
 
 # start run application

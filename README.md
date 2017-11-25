@@ -1,10 +1,10 @@
 # bt-panel
-## TODO
-1. 用户名和密码自定义
 
 ## 使用指南
 默认用户：admin  
 默认密码：123456
+
+运行docker时，可以通过 `BT_PASSWORD` 自定义登录密码
 
 如果需要外连mysql，先运行mysql镜像。宝塔镜像中使用link参数连接。
 
@@ -27,6 +27,7 @@ docker run \
 -v /home/wwwroot:/www/wwwroot \
 -v /home/config/vhost:/www/server/panel/vhost \
 -v /home/letsencrypt:/etc/letsencrypt \
+-e BT_PASSWORD=my-secret-pw \
 -p 8888:8888 \
 -p 80:80 \
 -p 443:443 \
