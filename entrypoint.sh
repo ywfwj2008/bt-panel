@@ -21,6 +21,12 @@ elif [ "$Mem" -gt 8000 ];then
     MEMORY_LIMIT=448
 fi
 
+# set default password
+if [ ! -z ${BT_PASSWORD} ];then
+    python /www/server/panel/tools.pyc panel ${BT_PASSWORD}
+    #unset ${BT_PASSWORD}
+fi
+
 # start run application
 if [ -f "/etc/init.d/bt" ];then
     /etc/init.d/bt start
@@ -60,11 +66,6 @@ if [ -f "/etc/init.d/memcached" ];then
 fi
 if [ -f "/etc/init.d/mysqld" ];then
     /etc/init.d/mysqld start
-fi
-
-if [ ! -z ${BT_PASSWORD} ];then
-    python /www/server/panel/tools.pyc panel $BT_PASSWORD
-    unset $BT_PASSWORD
 fi
 
 exec "$@"
