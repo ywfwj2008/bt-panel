@@ -23,23 +23,22 @@ echo "
 +----------------------------------------------------------------------
 "
 #自动选择下载节点
-CN='125.88.182.172'
-HK='download.bt.cn'
-HK2='103.224.251.67'
-US='128.1.164.196'
+CN='1.btnode.cn'
+HK='2.btnode.cn'
+US='3.btnode.cn'
+sleep 0.5;
 CN_PING=`ping -c 1 -w 1 $CN|grep time=|awk '{print $7}'|sed "s/time=//"`
 HK_PING=`ping -c 1 -w 1 $HK|grep time=|awk '{print $7}'|sed "s/time=//"`
-HK2_PING=`ping -c 1 -w 1 $HK2|grep time=|awk '{print $7}'|sed "s/time=//"`
 US_PING=`ping -c 1 -w 1 $US|grep time=|awk '{print $7}'|sed "s/time=//"`
+
 echo "$HK_PING $HK" > ping.pl
-echo "$HK2_PING $HK2" >> ping.pl
 echo "$US_PING $US" >> ping.pl
 echo "$CN_PING $CN" >> ping.pl
 nodeAddr=`sort -V ping.pl|sed -n '1p'|awk '{print $2}'`
 if [ "$nodeAddr" == "" ];then
-	nodeAddr=$HK2
+	nodeAddr=$HK
 fi
-download_Url=http://$nodeAddr:5880
+download_Url=http://$nodeAddr
 rm -f ping.pl
 
 setup_path=/www
