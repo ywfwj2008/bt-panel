@@ -3,7 +3,7 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
 CN='125.88.182.172'
-HK='103.224.251.79'
+HK='download.bt.cn'
 HK2='103.224.251.67'
 US='128.1.164.196'
 sleep 0.5;
@@ -16,32 +16,16 @@ echo "$HK_PING $HK" > ping.pl
 echo "$HK2_PING $HK2" >> ping.pl
 echo "$US_PING $US" >> ping.pl
 echo "$CN_PING $CN" >> ping.pl
-nodeAddr=`sort -n -b ping.pl|sed -n '1p'|awk '{print $2}'`
+nodeAddr=`sort -V ping.pl|sed -n '1p'|awk '{print $2}'`
 if [ "$nodeAddr" == "" ];then
-	nodeAddr=$HK
+	nodeAddr=$HK2
 fi
 
 Download_Url=http://$nodeAddr:5880
 Root_Path=`cat /var/bt_setupPath.conf`
 Setup_Path=$Root_Path/server/pure-ftpd
 run_path='/root'
-pure_ftpd_version='1.0.43'
-
-
-Install_OpenSSL()
-{
-	if [ ! -f /usr/local/openssl/version.pl ];then
-		cd /root
-		wget http://125.88.182.172:5880/src/openssl-1.0.2l.tar.gz -T 20
-		tar xvf openssl-1.0.2l.tar.gz
-		rm -f openssl-1.0.2l.tar.gz
-		cd openssl-1.0.2l
-		./config --prefix=/usr/local/openssl
-		make && make install
-		echo '1.0.2l' > /usr/local/openssl/version.pl
-	fi
-}
-
+pure_ftpd_version='1.0.47'
 
 Install_Pureftpd()
 {
@@ -55,8 +39,7 @@ Install_Pureftpd()
 	cd pure-ftpd-${pure_ftpd_version}
 	
     echo "Installing pure-ftpd..."
-    ./configure --prefix=${Setup_Path} CFLAGS=-O2 --with-puredb --with-quotas --with-cookie --with-virtualhosts --with-diraliases --with-sysquotas --with-ratios --with-altlog --with-paranoidmsg --with-shadow --with-welcomemsg --with-throttling --with-uploadscript --with-language=english --with-rfc2640 --with-ftpwho --with-tls=/usr/local/openssl
-
+    ./configure --prefix=${Setup_Path} CFLAGS=-O2 --with-puredb --with-quotas --with-cookie --with-virtualhosts --with-diraliases --with-sysquotas --with-ratios --with-altlog --with-paranoidmsg --with-shadow --with-welcomemsg --with-throttling --with-uploadscript --with-language=english --with-rfc2640 --with-ftpwho --with-tls
     make && make install
 	
 	if [ ! -f "${Setup_Path}/bin/pure-pw" ];then
@@ -113,6 +96,7 @@ $address
 admin@bt.cn
 EOF
 		if [ -f '/etc/ssl/private/pure-ftpd.pem' ];then
+			chmod 600 /etc/ssl/private/pure-ftpd.pem
 			sed -i "s/# TLS/TLS/" /www/server/pure-ftpd/etc/pure-ftpd.conf
 		fi
 		
@@ -122,10 +106,32 @@ EOF
         echo "Pureftpd install failed!"
     fi
 }
-
+Update_Pureftpd(){
+	cd ${run_path}
+	mkdir -p ${Setup_Path}/src
+	rm -rf ${Setup_Path}/src/*
+	cd ${Setup_Path}/src
+	\cp -a -r ${Setup_Path}/etc/pureftpd.pdb /www/backup/ftpd_backup.pdb
+	\cp -a -r ${Setup_Path}/etc/pureftpd.passwd /www/backup/ftpd_backup.passwd
+	\cp -a -r ${Setup_Path}/etc/pure-ftpd.conf /www/backup/ftpd_backup.conf
+	if [ ! -f "pure-ftpd-${pure_ftpd_version}.tar.gz" ];then
+		wget ${Download_Url}/src/pure-ftpd-${pure_ftpd_version}.tar.gz -T20
+	fi
+	tar -zxf pure-ftpd-${pure_ftpd_version}.tar.gz
+	cd pure-ftpd-${pure_ftpd_version}
+	
+    echo "Installing pure-ftpd..."
+    ./configure --prefix=${Setup_Path} CFLAGS=-O2 --with-puredb --with-quotas --with-cookie --with-virtualhosts --with-diraliases --with-sysquotas --with-ratios --with-altlog --with-paranoidmsg --with-shadow --with-welcomemsg --with-throttling --with-uploadscript --with-language=english --with-rfc2640 --with-ftpwho --with-tls
+    make && make install
+    \cp -a -r /www/backup/ftpd_backup.pdb ${Setup_Path}/etc/pureftpd.pdb
+    \cp -a -r /www/backup/ftpd_backup.passwd ${Setup_Path}/etc/pureftpd.passwd
+    \cp -a -r /www/backup/ftpd_backup.conf ${Setup_Path}/etc/pure-ftpd.conf
+    /etc/init.d/pure-ftpd restart
+    echo "${pure_ftpd_version}" > ${Setup_Path}/version.pl
+}
 Uninstall_Pureftpd()
 {
-	if [ -f "/etc/init.d/pure-ftpd" ];then
+	if [ -f "/www/server/pure-ftpd/sbin/pure-ftpd" ];then
 		\cp -a -r ${Setup_Path}/etc/pureftpd.pdb /www/backup/ftpd_backup.pdb
 		\cp -a -r ${Setup_Path}/etc/pureftpd.passwd /www/backup/ftpd_backup.passwd
 		\cp -a -r ${Setup_Path}/etc/pure-ftpd.conf /www/backup/ftpd_backup.conf
@@ -140,9 +146,10 @@ Uninstall_Pureftpd()
 actionType=$1
 
 if [ "$actionType" == 'install' ];then
-	Install_OpenSSL
 	Install_Pureftpd
 elif [ "$actionType" == 'uninstall' ];then
 	Uninstall_Pureftpd
+elif [ "$actionType" == 'update' ]; then
+	Update_Pureftpd
 fi
 
