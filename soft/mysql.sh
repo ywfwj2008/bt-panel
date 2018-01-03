@@ -2,7 +2,7 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 CN='125.88.182.172'
-HK='103.224.251.79'
+HK='download.bt.cn'
 HK2='103.224.251.67'
 US='128.1.164.196'
 sleep 0.5;
@@ -15,9 +15,9 @@ echo "$HK_PING $HK" > ping.pl
 echo "$HK2_PING $HK2" >> ping.pl
 echo "$US_PING $US" >> ping.pl
 echo "$CN_PING $CN" >> ping.pl
-nodeAddr=`sort -n -b ping.pl|sed -n '1p'|awk '{print $2}'`
+nodeAddr=`sort -V ping.pl|sed -n '1p'|awk '{print $2}'`
 if [ "$nodeAddr" == "" ];then
-	nodeAddr=$HK
+	nodeAddr=$HK2
 fi
 
 Download_Url=http://$nodeAddr:5880
@@ -28,12 +28,12 @@ Data_Path=$Root_Path/server/data
 Is_64bit=`getconf LONG_BIT`
 run_path='/root'
 mysql_51='5.1.73'
-mysql_55='5.5.57'
-mysql_56='5.6.37'
-mysql_57='5.7.19'
+mysql_55='5.5.58'
+mysql_56='5.6.38'
+mysql_57='5.7.20'
 mariadb_55='5.5.55'
-mariadb_100='10.0.31'
-mariadb_101='10.1.24'
+mariadb_100='10.0.33'
+mariadb_101='10.1.28'
 alisql_version='5.6.32'
 
 #检测hosts文件
@@ -42,7 +42,13 @@ if [ "${hostfile}" = '' ]; then
 	echo "127.0.0.1  localhost  localhost.localdomain" >> /etc/hosts
 fi
 
-
+#删除软链
+DelLink()
+{	
+	rm -f /usr/bin/mysql*
+	rm -f /usr/lib/libmysql*
+	rm -f /usr/lib64/libmysql*
+}
 #设置软件链
 SetLink()
 {
@@ -1351,8 +1357,95 @@ EOF
 	
 	
 }
-
-
+Update_MySQL_55(){
+	cd ${run_path}
+	mkdir -p ${Setup_Path}/update
+	rm -rf ${Setup_Path}/update/*
+	cd ${Setup_Path}/update
+	wget -O ${Setup_Path}/update/src.tar.gz ${Download_Url}/src/mysql-$mysql_55.tar.gz -T20
+	tar -zxvf src.tar.gz
+	mv mysql-$mysql_55 src
+	cd src
+	cmake -DCMAKE_INSTALL_PREFIX=${Setup_Path} -DSYSCONFDIR=/etc -DWITH_MYISAM_STORAGE_ENGINE=1 -DWITH_INNOBASE_STORAGE_ENGINE=1 -DWITH_PARTITION_STORAGE_ENGINE=1 -DWITH_FEDERATED_STORAGE_ENGINE=1 -DEXTRA_CHARSETS=all -DDEFAULT_CHARSET=utf8mb4 -DDEFAULT_COLLATION=utf8mb4_general_ci -DWITH_READLINE=1 -DWITH_EMBEDDED_SERVER=1 -DENABLED_LOCAL_INFILE=1
+	make && make install
+	echo "${mysql_55}" > ${Setup_Path}/version.pl
+}
+Update_MySQL_56(){
+	cd ${run_path}
+	mkdir -p ${Setup_Path}/update
+	rm -rf ${Setup_Path}/update/*
+	cd ${Setup_Path}/update
+	wget -O ${Setup_Path}/update/src.tar.gz ${Download_Url}/src/mysql-$mysql_56.tar.gz -T20
+	tar -zxvf src.tar.gz
+	mv mysql-$mysql_56 src
+	cd src
+	cmake -DCMAKE_INSTALL_PREFIX=${Setup_Path} -DSYSCONFDIR=/etc -DWITH_MYISAM_STORAGE_ENGINE=1 -DWITH_INNOBASE_STORAGE_ENGINE=1 -DWITH_PARTITION_STORAGE_ENGINE=1 -DWITH_FEDERATED_STORAGE_ENGINE=1 -DEXTRA_CHARSETS=all -DDEFAULT_CHARSET=utf8mb4 -DDEFAULT_COLLATION=utf8mb4_general_ci -DWITH_EMBEDDED_SERVER=1 -DENABLED_LOCAL_INFILE=1
+	make && make install
+	echo "${mysql_56}" > ${Setup_Path}/version.pl
+}
+Update_MySQL_57(){
+	cd ${run_path}
+	wget ${Download_Url}/src/boost_1_59_0.tar.gz -T20
+	tar -zxvf boost_1_59_0.tar.gz
+	cd boost_1_59_0
+	
+    ./bootstrap.sh
+    ./b2
+    ./b2 install
+	
+	cd ..
+    rm -rf boost_1_59_0
+	rm -f boost_1_59_0.tar.gz
+	mkdir -p ${Setup_Path}/update
+	rm -rf ${Setup_Path}/update/*
+	cd ${Setup_Path}/update
+	wget -O ${Setup_Path}/update/src.tar.gz ${Download_Url}/src/mysql-$mysql_57.tar.gz -T20
+	tar -zxvf src.tar.gz
+	mv mysql-$mysql_57 src
+	cd src
+	cmake -DCMAKE_INSTALL_PREFIX=${Setup_Path} -DSYSCONFDIR=/etc -DWITH_MYISAM_STORAGE_ENGINE=1 -DWITH_INNOBASE_STORAGE_ENGINE=1 -DWITH_PARTITION_STORAGE_ENGINE=1 -DWITH_FEDERATED_STORAGE_ENGINE=1 -DEXTRA_CHARSETS=all -DDEFAULT_CHARSET=utf8mb4 -DDEFAULT_COLLATION=utf8mb4_general_ci -DWITH_EMBEDDED_SERVER=1 -DENABLED_LOCAL_INFILE=1
+	make && make install
+	echo "${mysql_57}" > ${Setup_Path}/version.pl
+}
+Update_AliSQL(){
+	cd ${run_path}
+	mkdir -p ${Setup_Path}/update
+	rm -rf ${Setup_Path}/update/*
+	cd ${Setup_Path}/update
+	wget -O ${Setup_Path}/update/src.zip ${Download_Url}/src/alisql-master.zip -T20
+	unzip src.zip
+	mv AliSQL-master src
+	cd src
+    cmake -DCMAKE_INSTALL_PREFIX=${Setup_Path} -DMYSQL_UNIX_ADDR=/tmp/mysql.sock -DDEFAULT_CHARSET=utf8   -DDEFAULT_COLLATION=utf8_general_ci -DWITH_INNOBASE_STORAGE_ENGINE=1 -DWITH_ARCHIVE_STORAGE_ENGINE=1 -DWITH_BLACKHOLE_STORAGE_ENGINE=1 -DMYSQL_DATADIR=${Data_Path} -DMYSQL_TCP_PORT=3306 -DENABLE_DOWNLOADS=1
+	make && make install
+	echo "AliSQL $alisql_version" > ${Setup_Path}/version.pl
+}
+Update_Mariadb_100(){
+	cd ${run_path}
+	mkdir -p ${Setup_Path}/update
+	rm -rf ${Setup_Path}/update/*
+	cd ${Setup_Path}/update
+	wget -O ${Setup_Path}/update/src.tar.gz ${Download_Url}/src/mariadb-$mariadb_100.tar.gz -T20
+	tar -zxvf src.tar.gz
+	mv mariadb-$mariadb_100 src
+	cd src
+	cmake -DCMAKE_INSTALL_PREFIX=${Setup_Path} -DWITH_ARIA_STORAGE_ENGINE=1 -DWITH_XTRADB_STORAGE_ENGINE=1 -DWITH_INNOBASE_STORAGE_ENGINE=1 -DWITH_PARTITION_STORAGE_ENGINE=1 -DWITH_MYISAM_STORAGE_ENGINE=1 -DWITH_FEDERATED_STORAGE_ENGINE=1 -DEXTRA_CHARSETS=all -DDEFAULT_CHARSET=utf8mb4 -DDEFAULT_COLLATION=utf8mb4_general_ci -DWITH_READLINE=1 -DWITH_EMBEDDED_SERVER=1 -DENABLED_LOCAL_INFILE=1
+	make && make install
+	echo "mariadb_${mariadb_100}" > ${Setup_Path}/version.pl
+}
+Update_Mariadb_101(){
+	cd ${run_path}
+	mkdir -p ${Setup_Path}/update
+	rm -rf ${Setup_Path}/update/*
+	cd ${Setup_Path}/update
+	wget -O ${Setup_Path}/update/src.tar.gz ${Download_Url}/src/mariadb-$mariadb_101.tar.gz -T20
+	tar -zxvf src.tar.gz
+	mv mariadb-$mariadb_101 src
+	cd src
+	cmake -DCMAKE_INSTALL_PREFIX=${Setup_Path} -DWITH_ARIA_STORAGE_ENGINE=1 -DWITH_XTRADB_STORAGE_ENGINE=1 -DWITH_INNOBASE_STORAGE_ENGINE=1 -DWITH_PARTITION_STORAGE_ENGINE=1 -DWITH_MYISAM_STORAGE_ENGINE=1 -DWITH_FEDERATED_STORAGE_ENGINE=1 -DEXTRA_CHARSETS=all -DDEFAULT_CHARSET=utf8mb4 -DDEFAULT_COLLATION=utf8mb4_general_ci -DWITH_READLINE=1 -DWITH_EMBEDDED_SERVER=1 -DENABLED_LOCAL_INFILE=1 -DWITHOUT_TOKUDB=1
+	make && make install
+	echo "mariadb_${mariadb_101}" > ${Setup_Path}/version.pl
+}
 MySQL_Opt()
 {
 	MemTotal=`free -m | grep Mem | awk '{print  $2}'`
@@ -1425,6 +1518,16 @@ MySQL_Opt()
     fi
 }
 
+Install_mysqldb()
+{
+	wget -O MySQL-python-1.2.5.zip ${Download_Url}/install/src/MySQL-python-1.2.5.zip -T 10
+	unzip MySQL-python-1.2.5.zip
+	rm -f MySQL-python-1.2.5.zip
+	cd MySQL-python-1.2.5
+	python setup.py install
+	cd ..
+	rm -rf MySQL-python-1.2.5
+}
 
 Close_MySQL()
 {
@@ -1441,7 +1544,7 @@ Close_MySQL()
 	
 	chkconfig --del mysqld
 	rm -rf /etc/init.d/mysqld
-	
+	DelLink
 }
 
 actionType=$1
@@ -1490,7 +1593,42 @@ if [ "$actionType" == 'install' ];then
 	pip uninstall mysql-python -y
 	pip install mysql-python
 
+	isSetup=`python -m MySQLdb 2>&1|grep package`
+	if [ "$isSetup" = "" ];then
+		Install_mysqldb
+		/etc/init.d/bt restart
+	fi
+
 	
 elif [ "$actionType" == 'uninstall' ];then
 	Close_MySQL del
+elif [ "$actionType" == 'update' ]; then
+	case "$version" in
+		'5.5')
+			Update_MySQL_55
+			;;
+		'5.6')
+			Update_MySQL_56
+			;;
+		'5.7')
+			Update_MySQL_57
+			;;
+		'alisql')
+			Update_AliSQL
+			;;
+		'mariadb_5.5')
+			Update_Mariadb_55
+			;;		
+		'mariadb_10.0')
+			Update_Mariadb_100
+			;;		
+		'mariadb_10.1')
+			Update_Mariadb_101
+			;;
+	esac
+	if [ "/usr/bin/mysql" ]; then
+		rm -rf ${Setup_Path}/src/*
+		rm -rf ${Setup_Path}/update
+	fi
+	/etc/init.d/mysqld start
 fi
