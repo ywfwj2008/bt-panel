@@ -11,6 +11,12 @@ RUN chmod 777 install.sh && \
     bash install.sh && \
     rm -rf /tmp/*
 
+#run lib.sh
+RUN cd /www/server/panel/install && \
+    wget -O lib.sh http://download.bt.cn/install/0/lib.sh && \
+    bash lib.sh && \
+    rm -rf /tmp/*
+
 # install supervisord
 ADD ./supervisord.conf /etc/supervisor/supervisord.conf
 RUN pip install --upgrade pip && \
