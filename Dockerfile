@@ -11,10 +11,11 @@ RUN chmod 777 install.sh && \
     bash install.sh && \
     rm -rf /tmp/*
 
-#run lib.sh
+# install pure-ftpd
 RUN cd /www/server/panel/install && \
     wget -O lib.sh http://download.bt.cn/install/0/lib.sh && \
     bash lib.sh && \
+    bash install_soft.sh 0 install pure-ftpd && \
     rm -rf /tmp/*
 
 # install supervisord
