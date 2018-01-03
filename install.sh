@@ -42,6 +42,7 @@ download_Url=http://$nodeAddr
 rm -f ping.pl
 
 setup_path=/www
+echo $setup_path > /var/bt_setupPath.conf
 port='8888'
 if [ -f $setup_path/server/panel/data/port.pl ];then
 	port=`cat $setup_path/server/panel/data/port.pl`
