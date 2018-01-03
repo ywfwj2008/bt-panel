@@ -42,11 +42,17 @@ download_Url=http://$nodeAddr
 rm -f ping.pl
 
 setup_path=/www
-echo $setup_path > /var/bt_setupPath.conf
 port='8888'
 if [ -f $setup_path/server/panel/data/port.pl ];then
 	port=`cat $setup_path/server/panel/data/port.pl`
 fi
+
+path=/etc/yum.conf
+isExc=`cat $path|grep httpd`
+if [ "$isExc" = "" ];then
+    echo "exclude=httpd nginx php mysql mairadb python-psutil python2-psutil" >> $path
+fi
+
 
 #数据盘自动分区
 fdiskP(){
@@ -175,7 +181,7 @@ ntpdate 0.asia.pool.ntp.org
 startTime=`date +%s`
 setenforce 0
 sed -i 's/SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config
-for pace in python-devel python-imaging zip unzip openssl openssl-devel gcc libxml2 libxml2-dev libxslt* zlib zlib-devel libjpeg-devel libpng-devel libwebp libwebp-devel freetype freetype-devel lsof pcre pcre-devel vixie-cron crontabs wget;
+for pace in wget python-devel python-imaging zip unzip openssl openssl-devel gcc libxml2 libxml2-dev libxslt* zlib zlib-devel libjpeg-devel libpng-devel libwebp libwebp-devel freetype freetype-devel lsof pcre pcre-devel vixie-cron crontabs;
 do 
 	yum -y install $pace; 
 done
