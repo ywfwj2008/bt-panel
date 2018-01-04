@@ -6,13 +6,16 @@ ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/raw/master
 WORKDIR /tmp
 
 # install nginx
-RUN echo mysql && \
+RUN echo && \
     #bash /www/server/panel/install/install_soft.sh 0 install mysql 5.5 && \
-    bash /www/server/panel/install/install_soft.sh 0 install mysql 5.6 && \
-    #bash /www/server/panel/install/install_soft.sh 0 install mysql 5.7 && \
+    #bash /www/server/panel/install/install_soft.sh 0 install mysql 5.6 && \
+    bash /www/server/panel/install/install_soft.sh 0 install mysql 5.7 && \
     #bash /www/server/panel/install/install_soft.sh 0 install mysql alisql && \
     #bash /www/server/panel/install/install_soft.sh 0 install mysql mariadb_10.0 && \
     #bash /www/server/panel/install/install_soft.sh 0 install mysql mariadb_10.1 && \
+    #bash /www/server/panel/install/install_soft.sh 1 install phpmyadmin 4.4 && \
+    #bash /www/server/panel/install/install_soft.sh 1 install phpmyadmin 4.6 && \
+    bash /www/server/panel/install/install_soft.sh 1 install phpmyadmin 4.7 && \
     rm -rf /tmp/*
 
 # expose port
