@@ -11,7 +11,6 @@ RUN echo mysql && \
     bash /www/server/panel/install/install_soft.sh 0 install mysql 5.6 && \
     #bash /www/server/panel/install/install_soft.sh 0 install mysql 5.7 && \
     #bash /www/server/panel/install/install_soft.sh 0 install mysql alisql && \
-    #bash /www/server/panel/install/install_soft.sh 0 install mysql mariadb_5.5 && \
     #bash /www/server/panel/install/install_soft.sh 0 install mysql mariadb_10.0 && \
     #bash /www/server/panel/install/install_soft.sh 0 install mysql mariadb_10.1 && \
     rm -rf /tmp/*
