@@ -1,10 +1,10 @@
-# 宝塔Linux面板 Docker
+# 宝塔Linux面板 Docker 版
 
-`Version：5.5 正式版`
+`Version：5.6 免费版`
 
 本Docker基于[宝塔Linux面板](https://www.bt.cn),集成环境包含 Nginx PHP5.6 PHP7 FTP等基本服务，未包含Mysql，建议用外链服务的方式支持。
 
-## 使用指南
+## 快速开始
 ```
 docker run \
 --name bt \
@@ -15,6 +15,7 @@ docker run \
 -p 20:20 \
 -d ywfwj2008/bt-php-nginx:latest
 ```
+在浏览器中打开：`http://你得ip地址:8888`  
 默认用户：admin  
 默认密码：123456
 

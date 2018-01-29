@@ -22,25 +22,49 @@ echo "
 | The WebPanel URL will be http://SERVER_IP:8888 when installed.
 +----------------------------------------------------------------------
 "
-#自动选择下载节点
-CN='1.btnode.cn'
-HK='2.btnode.cn'
-US='3.btnode.cn'
-sleep 0.5;
-CN_PING=`ping -c 1 -w 1 $CN|grep time=|awk '{print $7}'|sed "s/time=//"`
-HK_PING=`ping -c 1 -w 1 $HK|grep time=|awk '{print $7}'|sed "s/time=//"`
-US_PING=`ping -c 1 -w 1 $US|grep time=|awk '{print $7}'|sed "s/time=//"`
-
-echo "$HK_PING $HK" > ping.pl
-echo "$US_PING $US" >> ping.pl
-echo "$CN_PING $CN" >> ping.pl
-nodeAddr=`sort -V ping.pl|sed -n '1p'|awk '{print $2}'`
-if [ "$nodeAddr" == "" ];then
-	nodeAddr=$HK
-fi
-download_Url=http://$nodeAddr
-rm -f ping.pl
-
+get_node_url(){
+	nodes=(http://125.88.182.172:5880 http://103.224.251.67 http://128.1.164.196);
+	i=1;
+	if [ ! -f /bin/curl ];then
+		if [ -f /usr/local/curl/bin/curl ];then
+			ln -sf /usr/local/curl/bin/curl /bin/curl
+		else
+			yum install curl -y
+		fi
+	fi
+	for node in ${nodes[@]};
+	do
+		start=`date +%s.%N`
+		result=`curl -s $node/check.txt`
+		if [ $result = 'True' ];then
+			end=`date +%s.%N`
+			start_s=`echo $start | cut -d '.' -f 1`
+			start_ns=`echo $start | cut -d '.' -f 2`
+			end_s=`echo $end | cut -d '.' -f 1`
+			end_ns=`echo $end | cut -d '.' -f 2`
+			time_micro=$(( (10#$end_s-10#$start_s)*1000000 + (10#$end_ns/1000 - 10#$start_ns/1000) ))
+			time_ms=$(($time_micro/1000))
+			values[$i]=$time_ms;
+			urls[$time_ms]=$node
+			i=$(($i+1))
+		fi
+	done
+	j=5000
+	for n in ${values[@]};
+	do
+		if [ $j -gt $n ];then
+			j=$n
+		fi
+	done
+	if [ $j = 5000 ];then
+		NODE_URL='http://download.bt.cn';
+	else
+		NODE_URL=${urls[$j]}
+	fi
+	
+}
+get_node_url
+download_Url=$NODE_URL
 setup_path=/www
 echo $setup_path > /var/bt_setupPath.conf
 port='8888'
