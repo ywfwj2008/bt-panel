@@ -13,6 +13,8 @@ if [ -f "/usr/bin/apt-get" ];then
 	fi
 fi
 
+CN='http://125.88.182.172:5880'
+
 echo "
 +----------------------------------------------------------------------
 | Bt-WebPanel 5.x FOR CentOS/Redhat/Fedora/Ubuntu/Debian
@@ -35,7 +37,7 @@ get_node_url(){
 	for node in ${nodes[@]};
 	do
 		start=`date +%s.%N`
-		result=`curl -s $node/check.txt`
+		result=`curl -sS --connect-timeout 3 -m 60 $node/check.txt`
 		if [ $result = 'True' ];then
 			end=`date +%s.%N`
 			start_s=`echo $start | cut -d '.' -f 1`
@@ -63,8 +65,12 @@ get_node_url(){
 	fi
 	
 }
+echo '---------------------------------------------';
+echo "Selected download node...";
 get_node_url
 download_Url=$NODE_URL
+echo "Download node: $download_Url";
+echo '---------------------------------------------';
 setup_path=/www
 echo $setup_path > /var/bt_setupPath.conf
 port='8888'
@@ -365,7 +371,7 @@ Install_webpy()
 Install_setuptools
 Install_pip
 
-if [ "$nodeAddr" = "$CN" ]; then
+if [ "${download_Url}" = "$CN" ]; then
 	if [ ! -d "/root/.pip" ];then
 		mkdir ~/.pip
 	fi
