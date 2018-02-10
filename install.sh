@@ -573,7 +573,8 @@ fi
 
 address=""
 address=`curl -sS --connect-timeout 10 -m 60 https://www.bt.cn/Api/getIpAddress`
-if [ "$address" == "" ];then
+ipCheck=`python -c "import re; print re.match('^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$','$address')"`
+if [ "$ipCheck" == "None" ];then
 	address="SERVER_IP"
 fi
 
