@@ -13,6 +13,7 @@ docker run \
 -p 443:443 \
 -p 21:21 \
 -p 20:20 \
+-p 25:25 \
 -d ywfwj2008/bt-php-nginx:latest
 ```
 在浏览器中打开：`http://你得ip地址:8888`  
@@ -36,6 +37,7 @@ docker run \
 -p 443:443 \
 -p 21:21 \
 -p 20:20 \
+-p 25:25 \
 -d ywfwj2008/bt-php-nginx:latest
 ```
 
