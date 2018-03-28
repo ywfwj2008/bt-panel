@@ -563,13 +563,9 @@ if [ ! -d '/etc/letsencrypt' ];then
 		echo '' > /var/spool/cron/root
 		chmod 600 /var/spool/cron/root
 	fi
-	isCron=`cat /var/spool/cron/root|grep certbot.log`
-	if [ "${isCron}" == "" ];then
-		echo "30 2 * * * $setup_path/server/panel/certbot-auto renew >> $setup_path/server/panel/logs/certbot.log" >>  /var/spool/cron/root
-		chown 600 /var/spool/cron/root
-	fi
-	nohup $setup_path/server/panel/certbot-auto -n > /tmp/certbot-auto.log 2>&1 &
 fi
+
+acme_i=`curl -sS $download_Url/install/acme_install.sh|bash`
 
 address=""
 address=`curl -sS --connect-timeout 10 -m 60 https://www.bt.cn/Api/getIpAddress`
