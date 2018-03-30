@@ -26,11 +26,11 @@ docker run \
 docker run \
 --name bt \
 --link mysql:localmysql \
--v /home/backup:/www/backup \
--v /home/wwwlogs:/www/wwwlogs \
--v /home/wwwroot:/www/wwwroot \
--v /home/config/vhost:/www/server/panel/vhost \
--v /home/letsencrypt:/etc/letsencrypt \
+-v /data/backup:/www/backup \
+-v /data/wwwlogs:/www/wwwlogs \
+-v /data/wwwroot:/www/wwwroot \
+-v /data/config/vhost:/www/server/panel/vhost \
+-v /data/letsencrypt:/etc/letsencrypt \
 -e BT_PASSWORD=my-secret-pw \
 -p 8888:8888 \
 -p 80:80 \
@@ -46,8 +46,8 @@ docker run \
 ```
 docker run \
 --name mysql \
--v /home/config/mysql:/etc/mysql/conf.d \
--v /home/mysql:/var/lib/mysql \
+-v /data/config/mysql:/etc/mysql/conf.d \
+-v /data/mysql:/var/lib/mysql \
 -e MYSQL_ROOT_PASSWORD=my-secret-pw \
 -d mysql:latest
 ```
