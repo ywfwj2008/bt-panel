@@ -2,6 +2,8 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 LANG=en_US.UTF-8
+is64bit=`getconf LONG_BIT`
+
 if [ -f "/usr/bin/apt-get" ];then
 	isDebian=`cat /etc/issue|grep Debian`
 	if [ "$isDebian" != "" ];then
@@ -19,7 +21,7 @@ echo "
 +----------------------------------------------------------------------
 | Bt-WebPanel 5.x FOR CentOS/Redhat/Fedora/Ubuntu/Debian
 +----------------------------------------------------------------------
-| Copyright © 2015-2017 BT-SOFT(http://www.bt.cn) All rights reserved.
+| Copyright © 2015-2018 BT-SOFT(http://www.bt.cn) All rights reserved.
 +----------------------------------------------------------------------
 | The WebPanel URL will be http://SERVER_IP:8888 when installed.
 +----------------------------------------------------------------------
@@ -213,9 +215,10 @@ startTime=`date +%s`
 setenforce 0
 sed -i 's/SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config
 for pace in wget python-devel python-imaging zip unzip openssl openssl-devel gcc libxml2 libxml2-dev libxslt* zlib zlib-devel libjpeg-devel libpng-devel libwebp libwebp-devel freetype freetype-devel lsof pcre pcre-devel vixie-cron crontabs icu libicu-devel c-ares;
-do 
-	yum -y install $pace; 
+do
+	yum -y install ${pace}; 
 done
+
 if [ -f "/usr/bin/dnf" ]; then
 	dnf install -y redhat-rpm-config
 fi
@@ -392,7 +395,7 @@ if [ "$isPsutil" != "" ];then
 	fi
 fi
 
-pip install --upgrade pip
+pip install pip==9.0.3
 pip install psutil chardet web.py virtualenv
 
 Install_Pillow
