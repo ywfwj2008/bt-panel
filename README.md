@@ -16,9 +16,13 @@ docker run \
 -p 25:25 \
 -d ywfwj2008/bt-php-nginx:latest
 ```
-在浏览器中打开：`http://你得ip地址:8888`  
-默认用户：admin  
-默认密码：123456
+获取用户名与密码：
+`docker exec -t bt bash bt default`
+
+在浏览器中打开：
+`http://你得ip地址:8888`  
+
+
 
 ## run web server
 运行docker时，可以通过 `BT_PASSWORD` 自定义登录密码
