@@ -523,10 +523,10 @@ chmod -R +x $setup_path/server/panel/script
 ln -sf /etc/init.d/bt /usr/bin/bt
 echo "$port" > $setup_path/server/panel/data/port.pl
 /etc/init.d/bt start
-password=123456
+password=`cat /dev/urandom | head -n 16 | md5sum | head -c 8`
 cd $setup_path/server/panel/
-#python tools.py username
-username=admin
+python tools.py username
+username=`python tools.py panel $password`
 cd ~
 echo "$password" > $setup_path/server/panel/default.pl
 chmod 600 $setup_path/server/panel/default.pl
