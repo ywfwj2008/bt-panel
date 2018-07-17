@@ -525,8 +525,8 @@ echo "$port" > $setup_path/server/panel/data/port.pl
 /etc/init.d/bt start
 password=123456
 cd $setup_path/server/panel/
-python tools.py username
-username=`python tools.py panel $password`
+#python tools.py username
+username=admin
 cd ~
 echo "$password" > $setup_path/server/panel/default.pl
 chmod 600 $setup_path/server/panel/default.pl
