@@ -17,6 +17,44 @@ fi
 
 CN='http://125.88.182.172:5880'
 
+Install_Check(){
+	while [ "$yes" != 'yes' ] && [ "$yes" != 'n' ]
+	do
+		echo -e "----------------------------------------------------"
+		echo -e "已有Web环境，安装宝塔可能影响现有站点"
+		echo -e "Web service is alreday installed,Can't install panel"
+		echo -e "----------------------------------------------------"
+		read -p "输入yes强制安装/Enter yes to force installation (yes/n): " yes;
+	done 
+	if [ "$yes" == 'n' ];then
+		exit;
+	fi
+}
+
+Web_Service_Check(){
+	if [ -f "/etc/init.d/nginx" ]; then
+        nginxV=$(cat /etc/init.d/nginx|grep /www/server/nginx)
+        if [ "${nginxV}" = "" ];then
+        	Install_Check
+        fi
+    fi
+
+    if [ -f "/etc/init.d/httpd" ]; then
+        httpdV=$(cat /etc/init.d/httpd|grep /www/server/apache)
+        if [ "${httpdV}" = "" ];then
+        	Install_Check
+        fi
+    fi
+
+    if [ -f "/etc/init.d/mysqld" ]; then
+        mysqlV=$(cat /etc/init.d/mysqld|grep /www/server/mysql)
+        if [ "${mysqlV}" = "" ];then
+        	Install_Check
+        fi
+    fi
+}
+#Web_Service_Check
+
 echo "
 +----------------------------------------------------------------------
 | Bt-WebPanel 5.x FOR CentOS/Redhat/Fedora/Ubuntu/Debian
@@ -487,7 +525,8 @@ echo "$port" > $setup_path/server/panel/data/port.pl
 /etc/init.d/bt start
 password=123456
 cd $setup_path/server/panel/
-username=`python tools.pyc panel $password`
+python tools.py username
+username=`python tools.py panel $password`
 cd ~
 echo "$password" > $setup_path/server/panel/default.pl
 chmod 600 $setup_path/server/panel/default.pl
