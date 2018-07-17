@@ -6,7 +6,7 @@ ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/raw/master
 WORKDIR /tmp
 
 # install nginx
-RUN bash /www/server/panel/install/install_soft.sh 0 install nginx 1.12 && \
+RUN bash /www/server/panel/install/install_soft.sh 0 install nginx 1.14 && \
     rm -rf /tmp/*
 
 # expose port
