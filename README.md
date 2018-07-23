@@ -16,42 +16,55 @@ docker run \
 -p 25:25 \
 -d ywfwj2008/bt-php-nginx:latest
 ```
+
 获取用户名与密码：
 `docker exec -t bt bash bt default`
 
+默认用户名：m0rcjzzc  
+默认密码：0617331b
+
 在浏览器中打开：
 `http://你得ip地址:8888`  
-
 
 
 ## run web server
 运行docker时，可以通过 `BT_PASSWORD` 自定义登录密码
 ```
 docker run \
---name bt \
---link mysql:localmysql \
--v /data/backup:/www/backup \
--v /data/wwwlogs:/www/wwwlogs \
--v /data/wwwroot:/www/wwwroot \
--v /data/config/vhost:/www/server/panel/vhost \
--v /data/letsencrypt:/etc/letsencrypt \
--e BT_PASSWORD=my-secret-pw \
--p 8888:8888 \
--p 80:80 \
--p 443:443 \
--p 21:21 \
--p 20:20 \
--p 25:25 \
--d ywfwj2008/bt-php-nginx:latest
+    --name bt \
+    --link mysql:localmysql \
+    -v /data/backup:/www/backup \
+    -v /data/wwwlogs:/www/wwwlogs \
+    -v /data/wwwroot:/www/wwwroot \
+    -v /data/config/vhost:/www/server/panel/vhost \
+    -v /data/letsencrypt:/etc/letsencrypt \
+    -e BT_PASSWORD=my-secret-pw \
+    -p 8888:8888 \
+    -p 80:80 \
+    -p 443:443 \
+    -p 21:21 \
+    -p 20:20 \
+    -p 25:25 \
+    -d ywfwj2008/bt-php-nginx:latest
 ```
 
 ## run mysql
 如果需要外连mysql，先运行mysql镜像。宝塔镜像中使用link参数连接。
 ```
 docker run \
---name mysql \
--v /data/config/mysql:/etc/mysql/conf.d \
--v /data/mysql:/var/lib/mysql \
--e MYSQL_ROOT_PASSWORD=my-secret-pw \
--d mysql:latest
+    --name mysql \
+    -v /data/config/mysql:/etc/mysql/conf.d \
+    -v /data/mysql:/var/lib/mysql \
+    -e MYSQL_ROOT_PASSWORD=my-secret-pw \
+    -d mysql:latest
+```
+
+## run redis
+```
+docker run \
+    --name redis \
+    --restart=always \
+    -e 'REDIS_PASSWORD=redispassword' \
+    -v /data/redis-persistence:/var/lib/redis \
+    -d sameersbn/redis --appendonly yes
 ```
