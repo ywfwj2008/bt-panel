@@ -3,7 +3,10 @@ MAINTAINER ywfwj2008 <ywfwj2008@163.com>
 
 ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/raw/master \
     LIBMEMCACHED_VERSION=1.0.18 \
-    MEMCACHED_PECL_VERSION=3.0.4 \
+    MEMCACHED_PECL_VERSION=2.2.0 \
+    MEMCACHED_PHP7_PECL_VERSION=3.0.4 \
+    PHP_56_PATH=/www/server/php/56 \
+    PHP_70_PATH=/www/server/php/70
 
 WORKDIR /tmp
 
@@ -11,16 +14,32 @@ WORKDIR /tmp
 RUN bash /www/server/panel/install/install_soft.sh 0 install php 5.6 && \
     bash /www/server/panel/install/install_soft.sh 0 install fileinfo 56 && \
     #bash /www/server/panel/install/install_soft.sh 0 install swoole 56 && \
-    #install php-redis
-    /www/server/php/56/bin/pecl install redis && \
-    echo "extension=redis.so" >> /www/server/php/56/etc/php.ini && \
     rm -rf /tmp/*
 
 # install php7.0
 RUN bash /www/server/panel/install/install_soft.sh 0 install php 7.0 && \
     bash /www/server/panel/install/install_soft.sh 0 install fileinfo 70 && \
     #bash /www/server/panel/install/install_soft.sh 0 install swoole 70 && \
-    /www/server/php/70/bin/pecl install redis && \
+    rm -rf /tmp/*
+
+# install php-redis
+RUN ${PHP_70_PATH}/bin/pecl install redis && \
+    ${PHP_56_PATH}/bin/pecl install redis && \
+    echo "extension=redis.so" >> ${PHP_56_PATH}/etc/php.ini && \
+    rm -rf /tmp/*
+
+# install php-memcached
+RUN wget -c --no-check-certificate https://launchpad.net/libmemcached/1.0/${LIBMEMCACHED_VERSION}/+download/libmemcached-${LIBMEMCACHED_VERSION}.tar.gz && \
+    wget -c https://src.fedoraproject.org/cgit/rpms/libmemcached.git/plain/libmemcached-build.patch && \
+    tar xzf libmemcached-${LIBMEMCACHED_VERSION}.tar.gz && \
+    patch -d libmemcached-${LIBMEMCACHED_VERSION} -p0 < libmemcached-build.patch && \
+    cd libmemcached-${LIBMEMCACHED_VERSION} && \
+    ./configure && \
+    make && make install && \
+    cd .. && \
+    ${PHP_70_PATH}/bin/pecl install memcached && \
+    ${PHP_56_PATH}/bin/pecl install memcached-${MEMCACHED_PECL_VERSION} && \
+    echo "extension=memcached.so" >> ${PHP_56_PATH}/etc/php.ini && \
     rm -rf /tmp/*
 
 RUN /usr/bin/composer self-update
