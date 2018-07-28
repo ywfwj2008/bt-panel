@@ -20,8 +20,8 @@ docker run \
 获取用户名与密码：
 `docker exec -t bt bash bt default`
 
-默认用户名：m0rcjzzc  
-默认密码：0617331b
+默认用户名：ihnmkhfq  
+默认密码：32ba9bd6
 
 在浏览器中打开：
 `http://你得ip地址:8888`  
