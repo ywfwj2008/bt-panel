@@ -33,11 +33,13 @@ docker run \
 docker run \
     --name bt \
     --link mysql:localmysql \
+    --link redis:localredis \
     -v /data/backup:/www/backup \
     -v /data/wwwlogs:/www/wwwlogs \
     -v /data/wwwroot:/www/wwwroot \
-    -v /data/config/vhost:/www/server/panel/vhost \
+    -v /data/config/panel/vhost:/www/server/panel/vhost \
     -v /data/letsencrypt:/etc/letsencrypt \
+    --mount type=bind,source=/data/config/panel/data/default.db,target=/www/server/panel/data/default.db \
     -e BT_PASSWORD=my-secret-pw \
     -p 8888:8888 \
     -p 80:80 \
