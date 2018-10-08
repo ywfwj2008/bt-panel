@@ -65,7 +65,7 @@ echo "
 +----------------------------------------------------------------------
 "
 get_node_url(){
-	nodes=(http://125.88.182.172:5880 http://103.224.251.67 http://128.1.164.196);
+	nodes=(http://125.88.182.172:5880 http://103.224.251.67 http://128.1.164.196 http://download.bt.cn);
 	i=1;
 	if [ ! -f /bin/curl ];then
 		if [ -f /usr/local/curl/bin/curl ];then
@@ -591,7 +591,6 @@ pip install psutil chardet web.py psutil virtualenv cryptography==2.1 > /dev/nul
 
 if [ ! -d '/etc/letsencrypt' ];then
 	yum install epel-release -y
-
 	if [ "${country}" = "CN" ]; then
 		isC7=`cat /etc/redhat-release |grep ' 7.'`
 		if [ "${isC7}" == "" ];then
@@ -611,6 +610,19 @@ acme_i=`curl -sS $download_Url/install/acme_install.sh|bash`
 
 address=""
 address=`curl -sS --connect-timeout 10 -m 60 https://www.bt.cn/Api/getIpAddress`
+
+if [ "$address" == '0.0.0.0' ] || [ "$address" == '' ];then
+	isHosts=`cat /etc/hosts|grep 'www.bt.cn'`
+	if [ "$isHosts" == '' ];then
+		echo "" >> /etc/hosts
+		echo "125.88.182.170 www.bt.cn" >> /etc/hosts
+		address=`curl -sS --connect-timeout 10 -m 60 https://www.bt.cn/Api/getIpAddress`
+		if [ "$address" == '' ];then
+			sed -i "/bt.cn/d" /etc/hosts
+		fi
+	fi
+fi
+
 ipCheck=`python -c "import re; print re.match('^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$','$address')"`
 if [ "$ipCheck" == "None" ];then
 	address="SERVER_IP"
@@ -620,8 +632,12 @@ if [ "$address" != "SERVER_IP" ];then
 	echo "" > $setup_path/server/panel/data/iplist.txt
 fi
 
-curl -sS --connect-timeout 10 -m 60 https://www.bt.cn/Api/SetupCount?type=Linux > /dev/null 2>&1
-
+curl -sS --connect-timeout 10 -m 60 https://www.bt.cn/Api/SetupCount?type=Linux\&o=$1 > /dev/null 2>&1
+if [ "$1" != "" ];then
+	echo $1 > /www/server/panel/data/o.pl
+	cd /www/server/panel
+	python tools.py o
+fi
 
 echo -e "=================================================================="
 echo -e "\033[32mCongratulations! Install succeeded!\033[0m"
