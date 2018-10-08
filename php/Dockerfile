@@ -13,13 +13,11 @@ WORKDIR /tmp
 # install php5.6
 RUN bash /www/server/panel/install/install_soft.sh 0 install php 5.6 && \
     bash /www/server/panel/install/install_soft.sh 0 install fileinfo 56 && \
-    #bash /www/server/panel/install/install_soft.sh 0 install swoole 56 && \
     rm -rf /tmp/*
 
 # install php7.0
 RUN bash /www/server/panel/install/install_soft.sh 0 install php 7.0 && \
     bash /www/server/panel/install/install_soft.sh 0 install fileinfo 70 && \
-    #bash /www/server/panel/install/install_soft.sh 0 install swoole 70 && \
     rm -rf /tmp/*
 
 # install php-redis
@@ -45,7 +43,7 @@ RUN wget -c --no-check-certificate https://launchpad.net/libmemcached/1.0/${LIBM
 RUN /usr/bin/composer self-update
 
 # expose port
-EXPOSE 8888 80 443 21 20 888 3306 9001
+EXPOSE 8888 80 443 21 20 888 3306 9001 25
 
 # Set the entrypoint script.
 ADD ${REMOTE_PATH}/entrypoint.sh /entrypoint.sh

@@ -60,6 +60,7 @@ docker run \
 ```
 
 ## run redis
+如果需要外连redis，先运行redis镜像。宝塔镜像中使用link参数连接。
 ```
 docker run \
     --name redis \
