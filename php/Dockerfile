@@ -6,8 +6,8 @@ ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/raw/master \
     MEMCACHED_PECL_VERSION=2.2.0 \
     MEMCACHED_PHP7_PECL_VERSION=3.0.4 \
     PHP_56_PATH=/www/server/php/56 \
-    PHP_70_PATH=/www/server/php/70
-    PHP_71_PATH=/www/server/php/71
+    PHP_70_PATH=/www/server/php/70 \
+    PHP_71_PATH=/www/server/php/71 \
     PHP_72_PATH=/www/server/php/72
 
 WORKDIR /tmp
@@ -55,8 +55,6 @@ RUN wget -c --no-check-certificate https://launchpad.net/libmemcached/1.0/${LIBM
     ${PHP_56_PATH}/bin/pecl install memcached-${MEMCACHED_PECL_VERSION} && \
     echo "extension=memcached.so" >> ${PHP_56_PATH}/etc/php.ini && \
     rm -rf /tmp/*
-
-RUN /usr/bin/composer self-update
 
 # expose port
 EXPOSE 8888 80 443 21 20 888 3306 9001 25
