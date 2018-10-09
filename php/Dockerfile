@@ -7,6 +7,8 @@ ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/raw/master \
     MEMCACHED_PHP7_PECL_VERSION=3.0.4 \
     PHP_56_PATH=/www/server/php/56 \
     PHP_70_PATH=/www/server/php/70
+    PHP_71_PATH=/www/server/php/71
+    PHP_72_PATH=/www/server/php/72
 
 WORKDIR /tmp
 
@@ -20,8 +22,20 @@ RUN bash /www/server/panel/install/install_soft.sh 0 install php 7.0 && \
     bash /www/server/panel/install/install_soft.sh 0 install fileinfo 70 && \
     rm -rf /tmp/*
 
+# install php7.1
+RUN bash /www/server/panel/install/install_soft.sh 0 install php 7.1 && \
+    bash /www/server/panel/install/install_soft.sh 0 install fileinfo 71 && \
+    rm -rf /tmp/*
+
+# install php7.2
+RUN bash /www/server/panel/install/install_soft.sh 0 install php 7.2 && \
+    bash /www/server/panel/install/install_soft.sh 0 install fileinfo 72 && \
+    rm -rf /tmp/*
+
 # install php-redis
 RUN ${PHP_70_PATH}/bin/pecl install redis && \
+    ${PHP_71_PATH}/bin/pecl install redis && \
+    ${PHP_72_PATH}/bin/pecl install redis && \
     ${PHP_56_PATH}/bin/pecl install redis && \
     echo "extension=redis.so" >> ${PHP_56_PATH}/etc/php.ini && \
     rm -rf /tmp/*
@@ -36,6 +50,8 @@ RUN wget -c --no-check-certificate https://launchpad.net/libmemcached/1.0/${LIBM
     make && make install && \
     cd .. && \
     ${PHP_70_PATH}/bin/pecl install memcached && \
+    ${PHP_71_PATH}/bin/pecl install memcached && \
+    ${PHP_72_PATH}/bin/pecl install memcached && \
     ${PHP_56_PATH}/bin/pecl install memcached-${MEMCACHED_PECL_VERSION} && \
     echo "extension=memcached.so" >> ${PHP_56_PATH}/etc/php.ini && \
     rm -rf /tmp/*
