@@ -11,15 +11,15 @@ ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/raw/master \
 
 WORKDIR /tmp
 
-ADD ${REMOTE_PATH}/libmemcached-build.patch /tmp/libmemcached-build.patch
-RUN wget -c --no-check-certificate https://launchpad.net/libmemcached/1.0/${LIBMEMCACHED_VERSION}/+download/libmemcached-${LIBMEMCACHED_VERSION}.tar.gz && \
+#ADD ${REMOTE_PATH}/libmemcached-build.patch /tmp/libmemcached-build.patch
+#RUN wget -c --no-check-certificate https://launchpad.net/libmemcached/1.0/${LIBMEMCACHED_VERSION}/+download/libmemcached-${LIBMEMCACHED_VERSION}.tar.gz && \
 #    wget -c https://src.fedoraproject.org/cgit/rpms/libmemcached.git/plain/libmemcached-build.patch && \
-    tar xzf libmemcached-${LIBMEMCACHED_VERSION}.tar.gz && \
-    patch -d libmemcached-${LIBMEMCACHED_VERSION} -p0 < /tmp/libmemcached-build.patch && \
-    cd libmemcached-${LIBMEMCACHED_VERSION} && \
-    ./configure && \
-    make && make install && \
-    rm -rf /tmp/*
+#    tar xzf libmemcached-${LIBMEMCACHED_VERSION}.tar.gz && \
+#    patch -d libmemcached-${LIBMEMCACHED_VERSION} -p0 < /tmp/libmemcached-build.patch && \
+#    cd libmemcached-${LIBMEMCACHED_VERSION} && \
+#    ./configure && \
+#    make && make install && \
+#    rm -rf /tmp/*
 
 # install php5.6
 RUN bash /www/server/panel/install/install_soft.sh 0 install php 5.6 && \
