@@ -25,7 +25,7 @@ RUN wget -c --no-check-certificate https://launchpad.net/libmemcached/1.0/${LIBM
 RUN bash /www/server/panel/install/install_soft.sh 0 install php 5.6 && \
     bash /www/server/panel/install/install_soft.sh 0 install fileinfo 56 && \
     ${PHP_56_PATH}/bin/pecl install redis && \
-    ${PHP_56_PATH}/bin/pecl install memcached && \
+    ${PHP_56_PATH}/bin/pecl install memcached-${MEMCACHED_PECL_VERSION} && \
     rm -rf /tmp/*
 
 # install php7.0
