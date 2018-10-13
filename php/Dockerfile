@@ -25,7 +25,7 @@ RUN wget -c --no-check-certificate https://launchpad.net/libmemcached/1.0/${LIBM
 RUN bash /www/server/panel/install/install_soft.sh 0 install php 5.6 && \
     bash /www/server/panel/install/install_soft.sh 0 install fileinfo 56 && \
     ${PHP_56_PATH}/bin/pecl install redis && \
-    ${PHP_56_PATH}/bin/pecl install memcached-${MEMCACHED_PECL_VERSION} && \
+#    ${PHP_56_PATH}/bin/pecl install memcached-${MEMCACHED_PECL_VERSION} && \
     rm -rf /tmp/*
 
 # install php7.0
@@ -39,14 +39,14 @@ RUN bash /www/server/panel/install/install_soft.sh 0 install php 7.0 && \
 RUN bash /www/server/panel/install/install_soft.sh 0 install php 7.1 && \
     bash /www/server/panel/install/install_soft.sh 0 install fileinfo 71 && \
     ${PHP_71_PATH}/bin/pecl install redis && \
-    ${PHP_71_PATH}/bin/pecl install memcached && \
+#    ${PHP_71_PATH}/bin/pecl install memcached && \
     rm -rf /tmp/*
 
 # install php7.2
 RUN bash /www/server/panel/install/install_soft.sh 0 install php 7.2 && \
     bash /www/server/panel/install/install_soft.sh 0 install fileinfo 72 && \
     ${PHP_72_PATH}/bin/pecl install redis && \
-    ${PHP_72_PATH}/bin/pecl install memcached && \
+#    ${PHP_72_PATH}/bin/pecl install memcached && \
     rm -rf /tmp/*
 
 # install php-redis
