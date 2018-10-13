@@ -32,7 +32,7 @@ RUN bash /www/server/panel/install/install_soft.sh 0 install php 5.6 && \
 RUN bash /www/server/panel/install/install_soft.sh 0 install php 7.0 && \
     bash /www/server/panel/install/install_soft.sh 0 install fileinfo 70 && \
     ${PHP_70_PATH}/bin/pecl install redis && \
-    ${PHP_70_PATH}/bin/pecl install memcached && \
+#    ${PHP_70_PATH}/bin/pecl install memcached && \
     rm -rf /tmp/*
 
 # install php7.1
