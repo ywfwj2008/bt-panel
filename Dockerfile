@@ -1,7 +1,8 @@
 FROM centos:latest
 MAINTAINER ywfwj2008 <ywfwj2008@163.com>
 
-ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/raw/master
+ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/raw/master \
+    LIBMEMCACHED_VERSION=1.0.18
 
 WORKDIR /tmp
 
@@ -16,6 +17,16 @@ RUN cd /www/server/panel/install && \
     wget -O lib.sh http://download.bt.cn/install/0/lib.sh && \
     bash lib.sh && \
     bash install_soft.sh 0 install pure-ftpd && \
+    rm -rf /tmp/*
+
+# install libmemcached
+ADD ${REMOTE_PATH}/libmemcached-build.patch /tmp/libmemcached-build.patch
+RUN wget -c --no-check-certificate https://launchpad.net/libmemcached/1.0/${LIBMEMCACHED_VERSION}/+download/libmemcached-${LIBMEMCACHED_VERSION}.tar.gz && \
+    tar xzf libmemcached-${LIBMEMCACHED_VERSION}.tar.gz && \
+    patch -d libmemcached-${LIBMEMCACHED_VERSION} -p0 < /tmp/libmemcached-build.patch && \
+    cd libmemcached-${LIBMEMCACHED_VERSION} && \
+    ./configure && \
+    make && make install && \
     rm -rf /tmp/*
 
 # install supervisord
