@@ -4,6 +4,11 @@
 
 本Docker基于[宝塔Linux面板](https://www.bt.cn),集成环境包含 Nginx PHP5.6 PHP7 FTP等基本服务，未包含Mysql，建议用外链服务的方式支持。
 
+## 三级镜像
+ - [宝塔面板](https://hub.docker.com/r/ywfwj2008/bt-panel)
+ - [宝塔面板 + PHP](https://hub.docker.com/r/ywfwj2008/bt-php/)
+ - [宝塔面板 + PHP + NGINX](https://hub.docker.com/r/ywfwj2008/bt-php-nginx/)
+
 ## 快速开始
 ```
 docker run \
