@@ -11,7 +11,7 @@ RUN bash /www/server/panel/install/install_soft.sh 0 install nginx ${NGINX_VERSI
     rm -rf /tmp/*
 
 # expose port
-EXPOSE 8888 80 443 21 20 888 3306 9001 25
+EXPOSE 8888 80 443 21 20 888 3306 9001
 
 # Set the entrypoint script.
 ADD ${REMOTE_PATH}/entrypoint.sh /entrypoint.sh

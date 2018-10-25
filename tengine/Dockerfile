@@ -2,7 +2,7 @@ FROM ywfwj2008/bt-php:latest
 MAINTAINER ywfwj2008 <ywfwj2008@163.com>
 
 ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/raw/master \
-    JEMALLOC_VERSION=5.0.1
+    JEMALLOC_VERSION=5.1.0
 
 WORKDIR /tmp
 
