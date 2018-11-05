@@ -244,7 +244,6 @@ if [ "$kernelStatus" = "" ]; then
 	fi
 fi
 rm -f kernel-headers.pl
-
 yum install ntp -y
 \cp -a -r /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 echo 'Synchronizing system time...'
@@ -513,7 +512,7 @@ python -m compileall $setup_path/server/panel
 #rm -f $setup_path/server/panel/*.py
 
 
-
+rm -f /dev/shm/session.db
 chmod +x /etc/init.d/bt
 chkconfig --add bt
 chkconfig --level 2345 bt on
@@ -606,7 +605,10 @@ if [ ! -d '/etc/letsencrypt' ];then
 	fi
 fi
 
-acme_i=`curl -sS $download_Url/install/acme_install.sh|bash`
+wget -O acme_install.sh $download_Url/install/acme_install.sh
+nohup bash acme_install.sh &> /dev/null &
+sleep 1
+rm -f acme_install.sh
 
 address=""
 address=`curl -sS --connect-timeout 10 -m 60 https://www.bt.cn/Api/getIpAddress`
