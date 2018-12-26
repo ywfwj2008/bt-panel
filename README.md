@@ -22,15 +22,36 @@ docker run \
 -d ywfwj2008/bt-php-nginx:latest
 ```
 
-
 获取用户名与密码：
-`docker exec -t bt bash bt default`
-
+`docker exec -t bt bash bt default`  
 在浏览器中打开：
 `http://你得ip地址:8888`  
 
 
-## run web server
+## 带 MYSQL 和 REDIS 的 运行案例
+### run mysql
+如果需要外连mysql，先运行mysql镜像。宝塔镜像中使用link参数连接。
+```
+docker run \
+    --name mysql \
+    -v /data/config/mysql:/etc/mysql/conf.d \
+    -v /data/mysql:/var/lib/mysql \
+    -e MYSQL_ROOT_PASSWORD=my-secret-pw \
+    -d mysql:latest
+```
+
+### run redis
+如果需要外连redis，先运行redis镜像。宝塔镜像中使用link参数连接。
+```
+docker run \
+    --name redis \
+    --restart=always \
+    -e 'REDIS_PASSWORD=redispassword' \
+    -v /data/redis-persistence:/var/lib/redis \
+    -d sameersbn/redis --appendonly yes
+```
+
+### run web server
 运行docker时，可以通过 `BT_PASSWORD` 自定义登录密码
 ```
 docker run \
@@ -53,24 +74,4 @@ docker run \
     -d ywfwj2008/bt-php-nginx:latest
 ```
 
-## run mysql
-如果需要外连mysql，先运行mysql镜像。宝塔镜像中使用link参数连接。
-```
-docker run \
-    --name mysql \
-    -v /data/config/mysql:/etc/mysql/conf.d \
-    -v /data/mysql:/var/lib/mysql \
-    -e MYSQL_ROOT_PASSWORD=my-secret-pw \
-    -d mysql:latest
-```
-
-## run redis
-如果需要外连redis，先运行redis镜像。宝塔镜像中使用link参数连接。
-```
-docker run \
-    --name redis \
-    --restart=always \
-    -e 'REDIS_PASSWORD=redispassword' \
-    -v /data/redis-persistence:/var/lib/redis \
-    -d sameersbn/redis --appendonly yes
-```
+## 联系方式

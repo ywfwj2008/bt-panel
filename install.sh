@@ -25,7 +25,7 @@ Install_Check(){
 		echo -e "Web service is alreday installed,Can't install panel"
 		echo -e "----------------------------------------------------"
 		read -p "输入yes强制安装/Enter yes to force installation (yes/n): " yes;
-	done 
+	done
 	if [ "$yes" == 'n' ];then
 		exit;
 	fi
@@ -103,7 +103,7 @@ get_node_url(){
 	else
 		NODE_URL=${urls[$j]}
 	fi
-	
+
 }
 echo '---------------------------------------------';
 echo "Selected download node...";
@@ -127,7 +127,7 @@ fi
 
 #数据盘自动分区
 fdiskP(){
-	
+
 	for i in `cat /proc/partitions|grep -v name|grep -v ram|awk '{print $4}'|grep -v '^$'|grep -v '[0-9]$'|grep -v 'vda'|grep -v 'xvda'|grep -v 'sda'|grep -e 'vd' -e 'sd' -e 'xvd'`;
 	do
 		#判断指定目录是否被挂载
@@ -136,13 +136,13 @@ fdiskP(){
 			echo "Error: The $setup_path directory has been mounted."
 			return;
 		fi
-		
+
 		isM=`df -P|grep '/dev/${i}1'`
 		if [ "$isM" != "" ];then
 			echo "/dev/${i}1 has been mounted."
 			continue;
 		fi
-			
+
 		#判断是否存在未分区磁盘
 		isP=`fdisk -l /dev/$i |grep -v 'bytes'|grep "$i[1-9]*"`
 		if [ "$isP" = "" ];then
@@ -176,7 +176,7 @@ EOF
 				echo 'Warning: The Windows partition was detected. For your data security, Mount manually.';
 				return;
 			fi
-			
+
 			#挂载已有分区
 			checkR=`df -P|grep "/dev/$i"`
 			if [ "$checkR" = "" ];then
@@ -186,7 +186,7 @@ EOF
 					mount -a
 					df -h
 			fi
-			
+
 			#清理不可写分区
 			echo 'True' > $setup_path/checkD.pl
 			if [ ! -f $setup_path/checkD.pl ];then
@@ -222,7 +222,7 @@ autoSwap()
         echo "Swap total sizse: $swap";
 		return;
 	fi
-	
+
 	sed -i "/\/www\/swap/d" /etc/fstab
 	rm -f $swapFile
 }
@@ -251,9 +251,9 @@ ntpdate 0.asia.pool.ntp.org
 startTime=`date +%s`
 setenforce 0
 sed -i 's/SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config
-for pace in wget cyrus-sasl-devel python-devel python-imaging zip unzip openssl openssl-devel gcc libxml2 libxml2-dev libxslt* zlib zlib-devel libjpeg-devel libpng-devel libwebp libwebp-devel freetype freetype-devel lsof pcre pcre-devel vixie-cron crontabs icu libicu-devel c-ares;
+for pace in wget cyrus-sasl-devel python-devel python-imaging zip unzip openssl openssl-devel gcc libxml2 libxml2-devel libxslt* zlib zlib-devel libjpeg-devel libpng-devel libwebp libwebp-devel freetype freetype-devel lsof pcre pcre-devel vixie-cron crontabs icu libicu-devel c-ares;
 do
-	yum -y install ${pace}; 
+	yum -y install ${pace};
 done
 
 if [ -f "/usr/bin/dnf" ]; then
@@ -274,7 +274,7 @@ Install_setuptools()
 		cd ..
 		rm -rf setuptools-33.1.1
 	fi
-	
+
 	if [ ! -f "/usr/bin/easy_install" ];then
 		echo '=================================================';
 		echo -e "\033[31msetuptools installation failed. \033[0m";
@@ -322,7 +322,7 @@ Install_Pillow()
 		cd ..
 		rm -rf Pillow-3.2.0
 	fi
-	
+
 	isSetup=`python -m PIL 2>&1|grep package`
 	if [ "$isSetup" = "" ];then
 		echo '=================================================';
@@ -376,8 +376,8 @@ Install_chardet()
 		python setup.py install
 		cd ..
 		rm -rf chardet-2.3.0
-	fi	
-	
+	fi
+
 	isSetup=`python -m chardet 2>&1|grep package`
 	if [ "$isSetup" = "" ];then
 		echo '=================================================';
@@ -398,7 +398,7 @@ Install_webpy()
 		cd ..
 		rm -rf web.py-0.38
 	fi
-	
+
 	isSetup=`python -m web 2>&1|grep package`
 	if [ "$isSetup" = "" ];then
 		echo '=================================================';
@@ -426,9 +426,9 @@ fi
 
 isPsutil=`python -m psutil 2>&1|grep package`
 if [ "$isPsutil" != "" ];then
-	psutil_version=`python -c 'import psutil;print psutil.__version__;' |grep '5.'` 
+	psutil_version=`python -c 'import psutil;print psutil.__version__;' |grep '5.'`
 	if [ "$psutil_version" = '' ];then
-		pip uninstall psutil -y 
+		pip uninstall psutil -y
 	fi
 fi
 
@@ -456,7 +456,7 @@ chmod +x $setup_path/server/panel/certbot-auto
 if [ -f '/etc/init.d/bt' ];then
 	/etc/init.d/bt stop
 fi
-
+rm -f /dev/shm/session.db
 mkdir -p /www/server
 mkdir -p /www/wwwroot
 mkdir -p /www/wwwlogs
@@ -491,7 +491,7 @@ if [ -d "$setup_path/server/panel/old_data" ];then
 	mv -f $setup_path/server/panel/old_data/qiniuAs.conf $setup_path/server/panel/data/qiniuAs.conf
 	mv -f $setup_path/server/panel/old_data/iplist.txt $setup_path/server/panel/data/iplist.txt
 	mv -f $setup_path/server/panel/old_data/port.pl $setup_path/server/panel/data/port.pl
-	
+
 	if [ -d "/$setup_path/server/panel/old_data" ];then
 		rm -rf $setup_path/server/panel/old_data
 	fi
@@ -642,7 +642,7 @@ if [ "$1" != "" ];then
 fi
 
 echo -e "=================================================================="
-echo -e "\033[32mCongratulations! Install succeeded!\033[0m"
+echo -e "\033[32mCongratulations! Installed successfully!\033[0m"
 echo -e "=================================================================="
 echo  "Bt-Panel: http://$address:$port"
 echo -e "username: $username"
