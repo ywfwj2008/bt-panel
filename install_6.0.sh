@@ -15,6 +15,19 @@ if [ -f "/usr/bin/apt-get" ];then
 	fi
 fi
 
+if [ "$is64bit" != '64' ];then
+	echo "====================================="
+	echo "抱歉, 6.0不支持32位系统, 请使用64位系统或安装宝塔5.9!";
+	exit 0;
+fi
+
+py26=$(python -V 2>&1|grep '2.6.')
+if [ "$py26" != "" ];then
+	echo "====================================="
+	echo "抱歉, 6.0不支持Centos6.x,请安装Centos7或安装宝塔5.9";
+	exit 0;
+fi
+
 CN='http://125.88.182.172:5880'
 
 Install_Check(){
@@ -263,7 +276,7 @@ ntpdate 0.asia.pool.ntp.org
 startTime=`date +%s`
 setenforce 0
 sed -i 's/SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config
-for pace in python-devel python-imaging zip unzip openssl openssl-devel gcc libxml2 libxml2-dev libxslt* zlib zlib-devel libjpeg-devel libpng-devel libwebp libwebp-devel freetype freetype-devel lsof pcre pcre-devel vixie-cron crontabs icu libicu-devel c-ares;
+for pace in python-devel python-imaging zip unzip openssl openssl-devel gcc libxml2 libxml2-devel libxslt* zlib zlib-devel libjpeg-devel libpng-devel libwebp libwebp-devel freetype freetype-devel lsof pcre pcre-devel vixie-cron crontabs icu libicu-devel c-ares;
 do
 	yum -y install ${pace}; 
 done
@@ -343,6 +356,8 @@ Install_pip()
 		echo -e "\033[31m Python-pip installation failed. \033[0m";
 		exit;
 	fi
+	
+	pip install -U pip
 }
 
 Install_Pillow()
@@ -471,10 +486,21 @@ if [ "$isPsutil" != "" ];then
 		pip uninstall psutil -y 
 	fi
 fi
+yum install libffi-devel -y
+pip install --upgrade setuptools
+pip install -U pip
 pip install itsdangerous==0.24
+pip install paramiko==2.0.2
+for p_name in psutil chardet virtualenv Flask Flask-Session Flask-SocketIO flask-sqlalchemy Pillow gunicorn gevent-websocket;
+do
+	pip install ${p_name}
+done
+
 pip install psutil chardet virtualenv Flask Flask-Session Flask-SocketIO flask-sqlalchemy Pillow gunicorn gevent-websocket paramiko
 Install_Pillow
 Install_psutil
+
+pip install gunicorn
 
 if [  -f /www/server/mysql/bin/mysql ]; then
 	pip install mysql-python
@@ -573,7 +599,10 @@ if [ "$isStart" == '' ];then
 	exit;
 fi
 
-if [ ! -f /root/.ssh/id_rsa.pub ];then
+if [ ! -f /root/.ssh/authorized_keys ] || [ ! -f /root/.ssh/id_rsa ];then
+	if [ -f /root/.ssh/id_rsa ];then
+		rm -f /root/.ssh/id_rsa /root/.ssh/id_rsa.pub
+	fi
 	ssh-keygen -q -t rsa -P "" -f /root/.ssh/id_rsa
 fi
 cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
@@ -670,7 +699,7 @@ if [ "$ipCheck" == "None" ];then
 fi
 
 if [ "$address" != "SERVER_IP" ];then
-	echo "" > $setup_path/server/panel/data/iplist.txt
+	echo "$address" > $setup_path/server/panel/data/iplist.txt
 fi
 
 #curl -sS --connect-timeout 10 -m 60 https://www.bt.cn/Api/SetupCount?type=Linux\&o=$1 > /dev/null 2>&1
@@ -679,7 +708,7 @@ echo /www > /var/bt_setupPath.conf
 
 
 echo -e "=================================================================="
-echo -e "\033[32mCongratulations! Install succeeded!\033[0m"
+echo -e "\033[32mCongratulations! Installed successfully!\033[0m"
 echo -e "=================================================================="
 echo  "Bt-Panel: http://$address:$port$auth_path"
 echo -e "username: $username"
