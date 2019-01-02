@@ -9,14 +9,14 @@ ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/raw/master \
 
 WORKDIR /tmp
 
-RUN wget http://ftp.gnu.org/gnu/bison/bison-3.2.4.tar.gz \
-    tar -zxvf bison-3.2.4.tar.gz && cd bison-3.2.4 \
-    ./configure \
-    make && make install \
-    wget https://sourceforge.net/projects/re2c/files/1.0.1/re2c-1.0.1.tar.gz \
-    tar zxf re2c-1.0.1.tar.gz && cd re2c-1.0.1 \
-    ./configure \
-    make && make install \
+RUN wget http://ftp.gnu.org/gnu/bison/bison-3.2.4.tar.gz && \
+    tar -zxvf bison-3.2.4.tar.gz && cd bison-3.2.4 && \
+    ./configure && \
+    make && make install && \
+    wget https://sourceforge.net/projects/re2c/files/1.0.1/re2c-1.0.1.tar.gz && \
+    tar zxf re2c-1.0.1.tar.gz && cd re2c-1.0.1 && \
+    ./configure && \
+    make && make install && \
     rm -rf /tmp/*
 
 # install php5.6
