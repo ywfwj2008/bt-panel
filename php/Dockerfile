@@ -12,7 +12,7 @@ WORKDIR /tmp
 # install php5.6
 RUN bash /www/server/panel/install/install_soft.sh 0 install php 5.6 && \
     bash /www/server/panel/install/install_soft.sh 0 install fileinfo 56 && \
-    bash /www/server/panel/install/install_soft.sh 0 install opcache 56 && \
+#    bash /www/server/panel/install/install_soft.sh 0 install opcache 56 && \
     ${PHP_56_PATH}/bin/pecl install redis && \
     ${PHP_56_PATH}/bin/pecl install memcached-2.2.0 && \
     rm -rf /tmp/*
@@ -20,7 +20,7 @@ RUN bash /www/server/panel/install/install_soft.sh 0 install php 5.6 && \
 # install php7.0
 RUN bash /www/server/panel/install/install_soft.sh 0 install php 7.0 && \
     bash /www/server/panel/install/install_soft.sh 0 install fileinfo 70 && \
-    bash /www/server/panel/install/install_soft.sh 0 install opcache 70 && \
+#    bash /www/server/panel/install/install_soft.sh 0 install opcache 70 && \
     ${PHP_70_PATH}/bin/pecl install redis && \
     ${PHP_70_PATH}/bin/pecl install memcached && \
     rm -rf /tmp/*
@@ -28,7 +28,7 @@ RUN bash /www/server/panel/install/install_soft.sh 0 install php 7.0 && \
 # install php7.1
 RUN bash /www/server/panel/install/install_soft.sh 0 install php 7.1 && \
     bash /www/server/panel/install/install_soft.sh 0 install fileinfo 71 && \
-    bash /www/server/panel/install/install_soft.sh 0 install opcache 71 && \
+#    bash /www/server/panel/install/install_soft.sh 0 install opcache 71 && \
     ${PHP_71_PATH}/bin/pecl install redis && \
     ${PHP_71_PATH}/bin/pecl install memcached && \
     rm -rf /tmp/*
@@ -36,7 +36,7 @@ RUN bash /www/server/panel/install/install_soft.sh 0 install php 7.1 && \
 # install php7.2
 RUN bash /www/server/panel/install/install_soft.sh 0 install php 7.2 && \
     bash /www/server/panel/install/install_soft.sh 0 install fileinfo 72 && \
-    bash /www/server/panel/install/install_soft.sh 0 install opcache 72 && \
+#    bash /www/server/panel/install/install_soft.sh 0 install opcache 72 && \
     ${PHP_72_PATH}/bin/pecl install redis && \
     ${PHP_72_PATH}/bin/pecl install memcached && \
     rm -rf /tmp/*
