@@ -131,15 +131,6 @@ if [ -f $setup_path/server/panel/data/port.pl ];then
 	port=`cat $setup_path/server/panel/data/port.pl`
 fi
 
-while [ "$go" != 'y' ] && [ "$go" != 'n' ]
-do
-	read -p "Do you want to install Bt-Panel to the $setup_path directory now?(y/n): " go;
-done
-
-if [ "$go" == 'n' ];then
-	exit;
-fi
-
 path=/etc/yum.conf
 isExc=`cat $path|grep httpd`
 if [ "$isExc" = "" ];then
