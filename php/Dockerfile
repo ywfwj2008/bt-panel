@@ -21,8 +21,8 @@ RUN wget http://ftp.gnu.org/gnu/bison/bison-3.2.4.tar.gz && \
 
 # install php5.6
 RUN bash /www/server/panel/install/install_soft.sh 0 install php 5.6 && \
-    bash /www/server/panel/install/install_soft.sh 0 install fileinfo 56 && \
-    bash /www/server/panel/install/install_soft.sh 0 install opcache 56 && \
+#    bash /www/server/panel/install/install_soft.sh 0 install fileinfo 56 && \
+#    bash /www/server/panel/install/install_soft.sh 0 install opcache 56 && \
     ${PHP_56_PATH}/bin/pecl install redis && \
     ${PHP_56_PATH}/bin/pecl install memcached-2.2.0 && \
     rm -rf /tmp/*
