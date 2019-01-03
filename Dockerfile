@@ -6,6 +6,8 @@ ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/raw/master \
 
 WORKDIR /tmp
 
+RUN yum install -y wget
+
 # install bt panel
 ADD ${REMOTE_PATH}/install_6.0.sh /tmp/install.sh
 RUN chmod 777 install.sh && \
