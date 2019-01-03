@@ -19,6 +19,13 @@ RUN wget https://sourceforge.net/projects/re2c/files/1.0.1/re2c-1.0.1.tar.gz && 
     cd bison-2.7.1 && \
     ./configure --prefix=/usr && \
     make && make install && \
+    cd /tmp && \
+    wget https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.15.tar.gz && \
+    tar zxf libiconv-1.15.tar.gz && \
+    cd libiconv-1.15 && \
+    ./configure --prefix=/usr && \
+    make && make install && \
+    libtool --finish /usr/lib && \
     rm -rf /tmp/*
 
 # install php5.6
