@@ -9,22 +9,16 @@ ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/raw/master \
 
 WORKDIR /tmp
 
-RUN wget http://ftp.gnu.org/gnu/bison/bison-3.2.4.tar.gz && \
-    tar -zxvf bison-3.2.4.tar.gz && cd bison-3.2.4 && \
-    ./configure && \
-    make && make install && \
-    wget https://sourceforge.net/projects/re2c/files/1.0.1/re2c-1.0.1.tar.gz && \
-    tar zxf re2c-1.0.1.tar.gz && cd re2c-1.0.1 && \
-    ./configure && \
-    make && make install && \
-    rm -rf /tmp/*
+RUN yum install -y bison re2c
 
 # install php5.6
 RUN bash /www/server/panel/install/install_soft.sh 0 install php 5.6 && \
 #    bash /www/server/panel/install/install_soft.sh 0 install fileinfo 56 && \
 #    bash /www/server/panel/install/install_soft.sh 0 install opcache 56 && \
-    ${PHP_56_PATH}/bin/pecl install redis && \
-    ${PHP_56_PATH}/bin/pecl install memcached-2.2.0 && \
+    wget http://pecl.php.net/get/redis-4.2.0.tgz && \
+    ${PHP_56_PATH}/bin/pecl install redis-4.2.0.tgz && \
+#    wget http://pecl.php.net/get/memcached-2.2.0.tgz && \
+#    ${PHP_56_PATH}/bin/pecl install memcached-2.2.0.tgz && \
     rm -rf /tmp/*
 
 # install php7.0
