@@ -14,6 +14,13 @@ RUN chmod 777 install.sh \
     && bash install.sh \
     && rm -rf /tmp/*
 
+# install pure-ftpd
+RUN cd /www/server/panel/install \
+    && wget -O lib.sh http://download.bt.cn/install/0/lib.sh \
+    && bash lib.sh \
+    && bash install_soft.sh 0 install pure-ftpd \
+    && rm -rf /tmp/*
+
 RUN wget https://sourceforge.net/projects/re2c/files/1.0.1/re2c-1.0.1.tar.gz \
     && tar zxf re2c-1.0.1.tar.gz \
     && cd re2c-1.0.1 \
@@ -25,13 +32,6 @@ RUN wget https://sourceforge.net/projects/re2c/files/1.0.1/re2c-1.0.1.tar.gz \
     && cd libiconv-1.15 \
     && ./configure \
     && make && make install \
-    && rm -rf /tmp/*
-
-# install pure-ftpd
-RUN cd /www/server/panel/install \
-    && wget -O lib.sh http://download.bt.cn/install/0/lib.sh \
-    && bash lib.sh \
-    && bash install_soft.sh 0 install pure-ftpd \
     && rm -rf /tmp/*
 
 # install libmemcached
