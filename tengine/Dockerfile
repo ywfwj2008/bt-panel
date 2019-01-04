@@ -2,23 +2,12 @@ FROM ywfwj2008/bt-php:latest
 MAINTAINER ywfwj2008 <ywfwj2008@163.com>
 
 ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/raw/master \
-    JEMALLOC_VERSION=5.1.0
+    NGINX_VERSION=-tengine2.2
 
 WORKDIR /tmp
 
-# install jemalloc
-# 查看jemalloc状态  lsof -n | grep jemalloc
-RUN wget -c --no-check-certificate https://github.com/jemalloc/jemalloc/releases/download/${JEMALLOC_VERSION}/jemalloc-${JEMALLOC_VERSION}.tar.bz2 \
-    && tar xjf jemalloc-${JEMALLOC_VERSION}.tar.bz2 \
-    && cd jemalloc-${JEMALLOC_VERSION} \
-    && ./configure \
-    && make && make install \
-    && echo '/usr/local/lib' > /etc/ld.so.conf.d/local.conf \
-    && ldconfig \
-    && rm -rf /tmp/*
-
 # install tengine
-RUN bash /www/server/panel/install/install_soft.sh 0 install nginx -tengine2.2 \
+RUN bash /www/server/panel/install/install_soft.sh 0 install nginx ${NGINX_VERSION} \
     && rm -rf /tmp/*
 
 # expose port
