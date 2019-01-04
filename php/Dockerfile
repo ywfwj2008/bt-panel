@@ -2,15 +2,20 @@ FROM ywfwj2008/bt-panel:latest
 MAINTAINER ywfwj2008 <ywfwj2008@163.com>
 
 ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/raw/master \
+    BISON2_VERSION=2.7.1 \
+    BISON3_VERSION=3.2.4 \
+    MEMCACHED2_VERSION=2.2.0 \
+    MEMCACHED3_VERSION=3.1.3 \
+    REDIS_VERSION=4.2.0 \
     PHP_56_PATH=/www/server/php/56 \
     PHP_70_PATH=/www/server/php/70
 
 WORKDIR /tmp
 
 # install php5.6
-RUN wget http://ftp.gnu.org/gnu/bison/bison-2.7.1.tar.gz \
-    && tar -zxvf bison-2.7.1.tar.gz \
-    && cd bison-2.7.1 \
+RUN wget http://ftp.gnu.org/gnu/bison/bison-${BISON2_VERSION}.tar.gz \
+    && tar -zxvf bison-${BISON2_VERSION}.tar.gz \
+    && cd bison-${BISON2_VERSION} \
     && ./configure --prefix=/usr \
     && make && make install \
     && cd /tmp \
@@ -18,16 +23,16 @@ RUN wget http://ftp.gnu.org/gnu/bison/bison-2.7.1.tar.gz \
     && bash /www/server/panel/install/install_soft.sh 1 install fileinfo 56 \
     && bash /www/server/panel/install/install_soft.sh 1 install opcache 56 \
     && bash /www/server/panel/install/install_soft.sh 1 install imagemagick 56 \
-    && wget http://pecl.php.net/get/redis-4.2.0.tgz \
-    && ${PHP_56_PATH}/bin/pecl install redis-4.2.0.tgz \
-    && ${PHP_56_PATH}/bin/pecl install memcached-2.2.0 \
+    && wget http://pecl.php.net/get/redis-${REDIS_VERSION}.tgz \
+    && ${PHP_56_PATH}/bin/pecl install redis-${REDIS_VERSION}.tgz \
+    && ${PHP_56_PATH}/bin/pecl install memcached-${MEMCACHED2_VERSION} \
     && echo "extension=memcached.so" >> ${PHP_56_PATH}/etc/php.ini \
     && rm -rf /tmp/*
 
 # install php7.0
-RUN wget http://ftp.gnu.org/gnu/bison/bison-3.2.4.tar.gz \
-    && tar -zxvf bison-3.2.4.tar.gz \
-    && cd bison-3.2.4 \
+RUN wget http://ftp.gnu.org/gnu/bison/bison-${BISON3_VERSION}.tar.gz \
+    && tar -zxvf bison-${BISON3_VERSION}.tar.gz \
+    && cd bison-${BISON3_VERSION} \
     && ./configure --prefix=/usr \
     && make && make install \
     && cd /tmp \
@@ -35,10 +40,10 @@ RUN wget http://ftp.gnu.org/gnu/bison/bison-3.2.4.tar.gz \
     && bash /www/server/panel/install/install_soft.sh 1 install fileinfo 70 \
     && bash /www/server/panel/install/install_soft.sh 1 install opcache 70 \
     && bash /www/server/panel/install/install_soft.sh 1 install imagemagick 70 \
-    && wget http://pecl.php.net/get/redis-4.2.0.tgz \
-    && ${PHP_70_PATH}/bin/pecl install redis-4.2.0.tgz \
-    && wget http://pecl.php.net/get/memcached-3.1.3.tgz \
-    && ${PHP_70_PATH}/bin/pecl install memcached-3.1.3.tgz \
+    && wget http://pecl.php.net/get/redis-${REDIS_VERSION}.tgz \
+    && ${PHP_70_PATH}/bin/pecl install redis-${REDIS_VERSION}.tgz \
+    && wget http://pecl.php.net/get/memcached-${MEMCACHED3_VERSION}.tgz \
+    && ${PHP_70_PATH}/bin/pecl install memcached-${MEMCACHED3_VERSION}.tgz \
     && rm -rf /tmp/*
 
 # expose port
