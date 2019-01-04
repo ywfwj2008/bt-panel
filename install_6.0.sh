@@ -690,7 +690,7 @@ if [ "$ipCheck" == "None" ];then
 fi
 
 if [ "$address" != "SERVER_IP" ];then
-	echo "$address" > $setup_path/server/panel/data/iplist.txt
+	echo "" > $setup_path/server/panel/data/iplist.txt
 fi
 
 #curl -sS --connect-timeout 10 -m 60 https://www.bt.cn/Api/SetupCount?type=Linux\&o=$1 > /dev/null 2>&1

@@ -17,6 +17,7 @@ RUN wget http://ftp.gnu.org/gnu/bison/bison-2.7.1.tar.gz \
     && bash /www/server/panel/install/install_soft.sh 0 install php 5.6 \
     && bash /www/server/panel/install/install_soft.sh 1 install fileinfo 56 \
     && bash /www/server/panel/install/install_soft.sh 1 install opcache 56 \
+    && bash /www/server/panel/install/install_soft.sh 1 install imagemagick 56 \
     && wget http://pecl.php.net/get/redis-4.2.0.tgz \
     && ${PHP_56_PATH}/bin/pecl install redis-4.2.0.tgz \
     && ${PHP_56_PATH}/bin/pecl install memcached-2.2.0 \
@@ -33,6 +34,7 @@ RUN wget http://ftp.gnu.org/gnu/bison/bison-3.2.4.tar.gz \
     && bash /www/server/panel/install/install_soft.sh 0 install php 7.0 \
     && bash /www/server/panel/install/install_soft.sh 1 install fileinfo 70 \
     && bash /www/server/panel/install/install_soft.sh 1 install opcache 70 \
+    && bash /www/server/panel/install/install_soft.sh 1 install imagemagick 70 \
     && wget http://pecl.php.net/get/redis-4.2.0.tgz \
     && ${PHP_70_PATH}/bin/pecl install redis-4.2.0.tgz \
     && wget http://pecl.php.net/get/memcached-3.1.3.tgz \
