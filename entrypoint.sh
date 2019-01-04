@@ -52,6 +52,9 @@ fi
 if [ -f "/etc/init.d/php-fpm-72" ];then
     /etc/init.d/php-fpm-72 start
 fi
+if [ -f "/etc/init.d/php-fpm-72" ];then
+    /etc/init.d/nginx start
+fi
 if [ -f "/etc/init.d/redis" ];then
     if [ -f "/var/run/redis_6379.pid" ];then
         unlink /var/run/redis_6379.pid
