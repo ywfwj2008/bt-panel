@@ -6,11 +6,10 @@ ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/raw/master \
 
 WORKDIR /tmp
 
-RUN yum install -y wget cyrus-sasl-devel
-
 # install bt panel
 ADD ${REMOTE_PATH}/install_6.0.sh /tmp/install.sh
-RUN chmod 777 install.sh \
+RUN yum install -y wget cyrus-sasl-devel \
+    && chmod 777 install.sh \
     && bash install.sh \
     && rm -rf /tmp/*
 
