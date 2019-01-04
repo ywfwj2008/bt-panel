@@ -8,18 +8,18 @@ WORKDIR /tmp
 
 # install jemalloc
 # 查看jemalloc状态  lsof -n | grep jemalloc
-RUN wget -c --no-check-certificate https://github.com/jemalloc/jemalloc/releases/download/${JEMALLOC_VERSION}/jemalloc-${JEMALLOC_VERSION}.tar.bz2 && \
-    tar xjf jemalloc-${JEMALLOC_VERSION}.tar.bz2 && \
-    cd jemalloc-${JEMALLOC_VERSION} && \
-    ./configure && \
-    make && make install && \
-    echo '/usr/local/lib' > /etc/ld.so.conf.d/local.conf && \
-    ldconfig && \
-    rm -rf /tmp/*
+RUN wget -c --no-check-certificate https://github.com/jemalloc/jemalloc/releases/download/${JEMALLOC_VERSION}/jemalloc-${JEMALLOC_VERSION}.tar.bz2 \
+    && tar xjf jemalloc-${JEMALLOC_VERSION}.tar.bz2 \
+    && cd jemalloc-${JEMALLOC_VERSION} \
+    && ./configure \
+    && make && make install \
+    && echo '/usr/local/lib' > /etc/ld.so.conf.d/local.conf \
+    && ldconfig \
+    && rm -rf /tmp/*
 
 # install tengine
-RUN bash /www/server/panel/install/install_soft.sh 0 install nginx && \
-    rm -rf /tmp/*
+RUN bash /www/server/panel/install/install_soft.sh 0 install nginx -tengine2.2 \
+    && rm -rf /tmp/*
 
 # expose port
 EXPOSE 8888 80 443 21 20 888 3306 9001

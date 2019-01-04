@@ -18,7 +18,7 @@ RUN chmod 777 install.sh \
 RUN cd /www/server/panel/install \
     && wget -O lib.sh http://download.bt.cn/install/0/lib.sh \
     && bash lib.sh \
-    && bash install_soft.sh 0 install pure-ftpd \
+    && bash install_soft.sh 0 install pureftpd \
     && rm -rf /tmp/*
 
 RUN wget https://sourceforge.net/projects/re2c/files/1.0.1/re2c-1.0.1.tar.gz \
