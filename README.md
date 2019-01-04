@@ -22,7 +22,7 @@ docker run \
 -d ywfwj2008/bt-php-nginx:latest
 ```
 
-获BT后台地址和用户名与密码：
+获取BT管理后台地址和用户名与密码：  
 `docker exec -it bt /etc/init.d/bt default`
 
 
@@ -50,7 +50,10 @@ docker run \
 ```
 
 ### run web server
-运行docker时，可以通过 `BT_PASSWORD` 自定义登录密码
+~~运行docker时，可以通过 `BT_PASSWORD` 自定义登录密码~~  
+6.0以上版本不再支持自定义密码,请通过执行以下命令获取  
+`docker exec -it bt /etc/init.d/bt default`
+
 ```
 docker run \
     --name bt \
@@ -62,7 +65,6 @@ docker run \
     -v /data/config/panel/vhost:/www/server/panel/vhost \
     -v /data/letsencrypt:/etc/letsencrypt \
     --mount type=bind,source=/data/config/panel/data/default.db,target=/www/server/panel/data/default.db \
-    -e BT_PASSWORD=my-secret-pw \
     -p 8888:8888 \
     -p 80:80 \
     -p 443:443 \
