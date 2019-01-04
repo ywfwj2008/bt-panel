@@ -239,7 +239,7 @@ autoSwap()
 	sed -i "/\/www\/swap/d" /etc/fstab
 	rm -f $swapFile
 }
-autoSwap
+#autoSwap
 
 #判断kernel-headers组件是否安装
 rpm -qa | grep kernel-headers > kernel-headers.pl
