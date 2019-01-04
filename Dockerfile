@@ -2,7 +2,9 @@ FROM centos:latest
 MAINTAINER ywfwj2008 <ywfwj2008@163.com>
 
 ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/raw/master \
-    LIBMEMCACHED_VERSION=1.0.18
+    LIBMEMCACHED_VERSION=1.0.18 \
+    RE2C_VERSION=1.0.1 \
+    LIBICONV_VERSION=1.15
 
 WORKDIR /tmp
 
@@ -20,15 +22,15 @@ RUN cd /www/server/panel/install \
     && bash install_soft.sh 0 install pureftpd \
     && rm -rf /tmp/*
 
-RUN wget https://sourceforge.net/projects/re2c/files/1.0.1/re2c-1.0.1.tar.gz \
-    && tar zxf re2c-1.0.1.tar.gz \
-    && cd re2c-1.0.1 \
+RUN wget https://sourceforge.net/projects/re2c/files/${RE2C_VERSION}/re2c-${RE2C_VERSION}.tar.gz \
+    && tar zxf re2c-${RE2C_VERSION}.tar.gz \
+    && cd re2c-${RE2C_VERSION} \
     && ./configure \
     && make && make install \
     && cd /tmp \
-    && wget https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.15.tar.gz \
-    && tar zxf libiconv-1.15.tar.gz \
-    && cd libiconv-1.15 \
+    && wget https://ftp.gnu.org/pub/gnu/libiconv/libiconv-${LIBICONV_VERSION}.tar.gz \
+    && tar zxf libiconv-${LIBICONV_VERSION}.tar.gz \
+    && cd libiconv-${LIBICONV_VERSION} \
     && ./configure \
     && make && make install \
     && rm -rf /tmp/*
