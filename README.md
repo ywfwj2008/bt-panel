@@ -63,8 +63,6 @@ docker run \
     -v /data/wwwlogs:/www/wwwlogs \
     -v /data/wwwroot:/www/wwwroot \
     -v /data/config/panel/vhost:/www/server/panel/vhost \
-    -v /data/letsencrypt:/etc/letsencrypt \
-    --mount type=bind,source=/data/config/panel/data/default.db,target=/www/server/panel/data/default.db \
     -p 8888:8888 \
     -p 80:80 \
     -p 443:443 \
@@ -73,5 +71,7 @@ docker run \
     -p 25:25 \
     -d ywfwj2008/bt-php-nginx:latest
 ```
+
+备份配置建议使用宝塔内置的备份功能
 
 ## 联系方式
