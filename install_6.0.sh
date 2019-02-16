@@ -482,6 +482,8 @@ pip install --upgrade setuptools
 pip install -U pip
 pip install itsdangerous==0.24
 pip install paramiko==2.0.2
+pip install flask-socketio==3.0.2
+pip install python-socketio==2.1.2
 for p_name in psutil chardet virtualenv Flask Flask-Session Flask-SocketIO flask-sqlalchemy Pillow gunicorn gevent-websocket;
 do
 	pip install ${p_name}
