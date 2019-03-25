@@ -592,15 +592,6 @@ if [ "$isStart" == '' ];then
 	exit;
 fi
 
-if [ ! -f /root/.ssh/authorized_keys ] || [ ! -f /root/.ssh/id_rsa ];then
-	if [ -f /root/.ssh/id_rsa ];then
-		rm -f /root/.ssh/id_rsa /root/.ssh/id_rsa.pub
-	fi
-	ssh-keygen -q -t rsa -P "" -f /root/.ssh/id_rsa
-fi
-cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
-chmod 600 /root/.ssh/authorized_keys
-
 if [ -f "/etc/init.d/iptables" ];then
 	sshPort=`cat /etc/ssh/sshd_config | grep 'Port ' | grep -oE [0-9] | tr -d '\n'`
 	if [ "${sshPort}" != "22" ]; then
@@ -695,7 +686,12 @@ if [ "$address" != "SERVER_IP" ];then
 	echo "" > $setup_path/server/panel/data/iplist.txt
 fi
 
-#curl -sS --connect-timeout 10 -m 60 https://www.bt.cn/Api/SetupCount?type=Linux\&o=$1 > /dev/null 2>&1
+curl -sS --connect-timeout 10 -m 60 https://www.bt.cn/Api/SetupCount?type=Linux\&o=$1 > /dev/null 2>&1
+if [ "$1" != "" ];then
+	echo $1 > /www/server/panel/data/o.pl
+	cd /www/server/panel
+	python tools.py o
+fi
 echo /www > /var/bt_setupPath.conf
 /etc/init.d/bt start
 

@@ -1,6 +1,6 @@
 # 宝塔Linux面板 Docker 版
 
-`Version：6.8 免费版`
+`Version：6.9 免费版`
 
 本Docker基于[宝塔Linux面板](https://www.bt.cn),集成环境包含 Nginx PHP5.6 PHP7 FTP等基本服务，未包含Mysql，建议用外链服务的方式支持。
 
