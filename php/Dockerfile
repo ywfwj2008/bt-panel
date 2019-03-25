@@ -3,10 +3,10 @@ MAINTAINER ywfwj2008 <ywfwj2008@163.com>
 
 ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/raw/master \
     BISON2_VERSION=2.7.1 \
-    BISON3_VERSION=3.2.4 \
+    BISON3_VERSION=3.3.2 \
     MEMCACHED2_VERSION=2.2.0 \
     MEMCACHED3_VERSION=3.1.3 \
-    REDIS_VERSION=4.2.0 \
+    REDIS_VERSION=4.3.0 \
     PHP_56_PATH=/www/server/php/56 \
     PHP_70_PATH=/www/server/php/70
 
