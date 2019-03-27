@@ -12,7 +12,7 @@ fi
 download_Url=$NODE_URL
 srcPath='/root';
 Install_Memcached()
-{	
+{
 	yum -y remove libmemcached libmemcached-devel
 	yum install cyrus-sasl cyrus-sasl-devel libevent libevent-devel -y
 	if [ ! -f "/usr/local/memcached/bin/memcached" ];then
@@ -54,25 +54,25 @@ Install_Memcached()
 		rm -rf memcached*
 		rm -rf libmemcached*
 	fi
-	
+
 	if [ ! -d /www/server/php/$version ];then
 		return;
 	fi
-	
+
 	if [ ! -f "/www/server/php/$version/bin/php-config" ];then
 		echo "php-$vphp 未安装,请选择其它版本!"
 		echo "php-$vphp not install, Plese select other version!"
 		return
 	fi
-	
+
 	isInstall=`cat /www/server/php/$version/etc/php.ini|grep 'memcached.so'`
 	if [ "${isInstall}" != "" ];then
 		echo "php-$vphp 已安装过memcached,请选择其它版本!"
 		echo "php-$vphp not install, Plese select other version!"
 		return
 	fi
-		
-	case "${version}" in 
+
+	case "${version}" in
 		'52')
 		extFile='/www/server/php/52/lib/php/extensions/no-debug-non-zts-20060613/memcached.so'
 		;;
@@ -108,7 +108,7 @@ Install_Memcached()
 			wget $download_Url/src/memcached-${memcachedPhpVer}.tgz -T 5
 			tar -xvf memcached-${memcachedPhpVer}.tgz
 			cd memcached-${memcachedPhpVer}
-			
+
 			/www/server/php/$version/bin/phpize
 			./configure --with-php-config=/www/server/php/$version/bin/php-config --enable-memcached --with-libmemcached-dir=/usr/local/libmemcached --enable-sasl
 			make && make install
@@ -126,12 +126,12 @@ Install_Memcached()
 			rm -rf memcached*
 		fi
 	fi
-	
+
 	if [ ! -f "$extFile" ];then
 		echo 'error';
 		exit 0;
 	fi
-	
+
 	echo "extension=memcached.so" >> /www/server/php/$version/etc/php.ini
 	service php-fpm-$version reload
 	echo '==============================================='
@@ -150,20 +150,20 @@ Uninstall_Memcached()
 		rm -rf /usr/local/memcached
 		return;
 	fi
-	
+
 	if [ ! -f "/www/server/php/$version/bin/php-config" ];then
 		echo "php-$vphp 未安装,请选择其它版本!"
 		echo "php-$vphp not install, Plese select other version!"
 		return
 	fi
-	
+
 	isInstall=`cat /www/server/php/$version/etc/php.ini|grep 'memcached.so'`
 	if [ "${isInstall}" = "" ];then
 		echo "php-$vphp 未安装memcached,请选择其它版本!"
 		echo "php-$vphp not install memcached, Plese select other version!"
 		return
 	fi
-		
+
 	sed -i '/memcached.so/d'  /www/server/php/$version/etc/php.ini
 	service php-fpm-$version reload
 	echo '==============================================='
@@ -186,7 +186,7 @@ Update_memcached(){
 	cd libmemcached-1.0.18
 	./configure --prefix=/usr/local/libmemcached --with-memcached
 	make && make install
-	
+
 	/etc/init.d/memcached start
 	rm -f /usr/local/memcached/version_check.pl
 	cd $srcPath
@@ -197,7 +197,7 @@ Update_memcached(){
 
 	for version in 52 53 54 55 56 70 71 72 73
 	do
-		case "${version}" in 
+		case "${version}" in
 			'52')
 			extFile='/www/server/php/52/lib/php/extensions/no-debug-non-zts-20060613/memcached.so'
 			;;
@@ -234,7 +234,7 @@ Update_memcached(){
 				wget $download_Url/src/memcached-${memcachedPhpVer}.tgz -T 5
 				tar -xvf memcached-${memcachedPhpVer}.tgz
 				cd memcached-${memcachedPhpVer}
-				
+
 				/www/server/php/$version/bin/phpize
 				./configure --with-php-config=/www/server/php/$version/bin/php-config --enable-memcached --with-libmemcached-dir=/usr/local/libmemcached --disable-memcached-sasl
 				make && make install

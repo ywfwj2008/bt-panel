@@ -52,7 +52,7 @@ RUN pip install supervisor \
     && rm -rf /tmp/*
 
 # expose port
-EXPOSE 8888 80 443 21 20 888 3306 9001
+EXPOSE 8888 80 443 21 20 888 3306 9001 25
 
 # Set the entrypoint script.
 ADD ${REMOTE_PATH}/entrypoint.sh /entrypoint.sh

@@ -18,7 +18,6 @@ docker run \
 -p 443:443 \
 -p 21:21 \
 -p 20:20 \
--p 25:25 \
 -d ywfwj2008/bt-php-nginx:latest
 ```
 
@@ -68,7 +67,6 @@ docker run \
     -p 443:443 \
     -p 21:21 \
     -p 20:20 \
-    -p 25:25 \
     -d ywfwj2008/bt-php-nginx:latest
 ```
 
