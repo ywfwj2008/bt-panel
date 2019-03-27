@@ -1,17 +1,18 @@
 FROM ywfwj2008/bt-php:latest
 MAINTAINER ywfwj2008 <ywfwj2008@163.com>
 
-ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/raw/master \
-    NGINX_VERSION=1.14
+ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/raw/master
 
 WORKDIR /tmp
 
 # install nginx
-RUN bash /www/server/panel/install/install_soft.sh 0 install nginx ${NGINX_VERSION} \
+RUN bash /www/server/panel/install/install_soft.sh 0 install nginx 1.14 \
+    && bash /www/server/panel/install/install_soft.sh 0 install nginx -tengine2.2 \
+    && bash /www/server/panel/install/install_soft.sh 0 install nginx openresty \
     && rm -rf /tmp/*
 
 # expose port
-EXPOSE 8888 80 443 21 20 888 3306 9001
+EXPOSE 8888 80 443 21 20 888 3306 9001 25
 
 # Set the entrypoint script.
 ADD ${REMOTE_PATH}/entrypoint.sh /entrypoint.sh
