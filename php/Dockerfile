@@ -23,10 +23,6 @@ RUN wget http://ftp.gnu.org/gnu/bison/bison-${BISON2_VERSION}.tar.gz \
     && bash /www/server/panel/install/install_soft.sh 1 install fileinfo 56 \
     && bash /www/server/panel/install/install_soft.sh 1 install opcache 56 \
     && bash /www/server/panel/install/install_soft.sh 1 install imagemagick 56 \
-    && wget http://pecl.php.net/get/redis-${REDIS_VERSION}.tgz \
-    && ${PHP_56_PATH}/bin/pecl install redis-${REDIS_VERSION}.tgz \
-    && ${PHP_56_PATH}/bin/pecl install memcached-${MEMCACHED2_VERSION} \
-    && echo "extension=memcached.so" >> ${PHP_56_PATH}/etc/php.ini \
     && rm -rf /tmp/*
 
 # install php7.0
