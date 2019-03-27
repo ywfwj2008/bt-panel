@@ -20,10 +20,11 @@ RUN wget http://ftp.gnu.org/gnu/bison/bison-${BISON2_VERSION}.tar.gz \
     && make && make install \
     && cd /tmp \
     && bash /www/server/panel/install/install_soft.sh 0 install php 5.6 \
+    && sed -i 's/disable_functions =.*/disable_functions = system/g' ${PHP_56_PATH}/etc/php.ini \
     && bash /www/server/panel/install/install_soft.sh 1 install fileinfo 56 \
     && bash /www/server/panel/install/install_soft.sh 1 install opcache 56 \
     && bash /www/server/panel/install/install_soft.sh 1 install imagemagick 56 \
-    && sed -i 's/disable_functions =.*/disable_functions = system/g' ${PHP_56_PATH}/etc/php.ini \
+    && pecl channel-update pecl.php.net \
     && ${PHP_56_PATH}/bin/pecl install channel://pecl.php.net/redis-${REDIS_VERSION} \
     && ${PHP_56_PATH}/bin/pecl install channel://pecl.php.net/memcached-${MEMCACHED2_VERSION} \
     && echo "extension=memcached.so" >> ${PHP_56_PATH}/etc/php.ini \
@@ -41,8 +42,10 @@ RUN wget http://ftp.gnu.org/gnu/bison/bison-${BISON3_VERSION}.tar.gz \
     && bash /www/server/panel/install/install_soft.sh 1 install fileinfo 70 \
     && bash /www/server/panel/install/install_soft.sh 1 install opcache 70 \
     && bash /www/server/panel/install/install_soft.sh 1 install imagemagick 70 \
-    && ${PHP_70_PATH}/bin/pecl install channel://pecl.php.net/redis-${REDIS_VERSION} \
-    && ${PHP_70_PATH}/bin/pecl install channel://pecl.php.net/memcached-${MEMCACHED3_VERSION} \
+    && wget http://pecl.php.net/get/redis-${REDIS_VERSION}.tgz \
+    && ${PHP_70_PATH}/bin/pecl install redis-${REDIS_VERSION}.tgz \
+    && wget http://pecl.php.net/get/memcached-${MEMCACHED3_VERSION}.tgz \
+    && ${PHP_70_PATH}/bin/pecl install memcached-${MEMCACHED3_VERSION}.tgz \
     && rm -rf /tmp/*
 
 # expose port
