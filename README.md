@@ -61,6 +61,7 @@ docker run \
     -v /data/backup:/www/backup \
     -v /data/wwwlogs:/www/wwwlogs \
     -v /data/wwwroot:/www/wwwroot \
+    -v /data/config/letsencrypt:/etc/letsencrypt \
     -v /data/config/panel/vhost:/www/server/panel/vhost \
     -p 8888:8888 \
     -p 80:80 \
