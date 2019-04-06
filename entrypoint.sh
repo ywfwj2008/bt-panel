@@ -100,7 +100,7 @@ if [ -f "/etc/init.d/mysqld" ];then
     /etc/init.d/mysqld start
 fi
 if [ -f "/usr/sbin/crond" ];then
-    /usr/sbin/crond start
+    /usr/sbin/crond
 fi
 
 exec "$@"
