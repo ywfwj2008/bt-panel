@@ -21,6 +21,7 @@ elif [ $Mem -gt 8000 ]; then
   Memory_limit=448
 fi
 
+sed -i '/session    required   pam_loginuid.so/c\#session    required   pam_loginuid.so' /etc/pam.d/crond
 sed -i "s@^memory_limit.*@memory_limit = ${Memory_limit}M@" ${PHP_70_PATH}/etc/php.ini
 sed -i "s@^opcache.memory_consumption.*@opcache.memory_consumption=${Memory_limit}@" ${PHP_70_PATH}/etc/php.ini
 if [ $Mem -le 3000 ]; then
