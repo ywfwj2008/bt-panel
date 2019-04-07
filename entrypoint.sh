@@ -100,7 +100,10 @@ if [ -f "/etc/init.d/mysqld" ];then
     /etc/init.d/mysqld start
 fi
 if [ -f "/usr/sbin/crond" ];then
-    /usr/sbin/crond
+    if [ -f "/var/run/crond.pid" ];then
+        unlink /var/run/crond.pid
+    fi
+    /usr/sbin/crond start
 fi
 
 exec "$@"
