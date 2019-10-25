@@ -2,9 +2,9 @@ FROM centos:latest
 MAINTAINER ywfwj2008 <ywfwj2008@163.com>
 
 ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/raw/master \
-    LIBMEMCACHED_VERSION=1.0.18 \
     RE2C_VERSION=1.0.1 \
-    LIBICONV_VERSION=1.15
+    LIBICONV_VERSION=1.16 \
+    LIBMEMCACHED_VERSION=1.0.18
 
 WORKDIR /tmp
 

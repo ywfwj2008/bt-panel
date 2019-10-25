@@ -533,7 +533,7 @@ Get_Ip_Address(){
 	fi
 
 	if [ "${getIpAddress}" != "SERVER_IP" ];then
-		echo "${getIpAddress}" > ${setup_path}/server/panel/data/iplist.txt
+		echo "" > ${setup_path}/server/panel/data/iplist.txt
 	fi
 }
 Setup_Count(){
@@ -570,7 +570,7 @@ Install_Main(){
 	Set_Firewall
 
 	Get_Ip_Address
-	Setup_Count
+	#Setup_Count
 }
 
 echo "
