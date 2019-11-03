@@ -35,7 +35,10 @@ docker run \
     -v /data/config/mysql:/etc/mysql/conf.d \
     -v /data/mysql:/var/lib/mysql \
     -e MYSQL_ROOT_PASSWORD=my-secret-pw \
-    -d mysql:latest --default-authentication-plugin=mysql_native_password
+    -d mysql:latest \
+        --default-authentication-plugin=mysql_native_password \
+        --character-set-server=utf8mb4 \
+        --collation-server=utf8mb4_unicode_ci
 ```
 
 ### run redis
