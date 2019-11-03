@@ -1,6 +1,6 @@
 # 宝塔Linux面板 Docker 版
 
-`Version：6.9 免费版`
+`Version：7.0 免费版`
 
 本Docker基于[宝塔Linux面板](https://www.bt.cn),集成环境包含 Nginx PHP5.6 PHP7 FTP等基本服务，未包含Mysql，建议用外链服务的方式支持。
 
@@ -22,7 +22,7 @@ docker run \
 ```
 
 获取BT管理后台地址和用户名与密码：  
-`docker exec -it bt /etc/init.d/bt default`
+`docker exec -it bt bt default`
 
 
 ## 带 MYSQL 和 REDIS 的 运行案例
@@ -31,10 +31,11 @@ docker run \
 ```
 docker run \
     --name mysql \
+    --restart=always \
     -v /data/config/mysql:/etc/mysql/conf.d \
     -v /data/mysql:/var/lib/mysql \
     -e MYSQL_ROOT_PASSWORD=my-secret-pw \
-    -d mysql:latest
+    -d mysql:latest --default-authentication-plugin=mysql_native_password
 ```
 
 ### run redis
@@ -51,7 +52,7 @@ docker run \
 ### run web server
 ~~运行docker时，可以通过 `BT_PASSWORD` 自定义登录密码~~  
 6.0以上版本不再支持自定义密码,请通过执行以下命令获取  
-`docker exec -it bt /etc/init.d/bt default`
+`docker exec -it bt bt default`
 
 ```
 docker run \
@@ -61,8 +62,6 @@ docker run \
     -v /data/backup:/www/backup \
     -v /data/wwwlogs:/www/wwwlogs \
     -v /data/wwwroot:/www/wwwroot \
-    -v /data/config/letsencrypt:/etc/letsencrypt \
-    -v /data/config/panel/vhost:/www/server/panel/vhost \
     -p 8888:8888 \
     -p 80:80 \
     -p 443:443 \
@@ -71,6 +70,7 @@ docker run \
     -d ywfwj2008/bt-php-nginx:latest
 ```
 
-备份配置建议使用宝塔内置的备份功能
+备份宝塔配置建议使用宝塔内置的备份功能
 
 ## 联系方式
+
