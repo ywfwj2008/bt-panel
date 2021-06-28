@@ -10,7 +10,7 @@ WORKDIR /tmp
 
 # install bt panel
 ADD ${REMOTE_PATH}/install_6.0.sh /tmp/install.sh
-RUN yum install -y wget cyrus-sasl-devel \
+RUN yum install -y wget cyrus-sasl-devel dbus vim \
     && chmod 777 install.sh \
     && bash install.sh \
     && sed -i '/session    required   pam_loginuid.so/c\#session    required   pam_loginuid.so' /etc/pam.d/crond \

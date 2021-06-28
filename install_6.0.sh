@@ -720,9 +720,9 @@ Install_Main(){
 	get_node_url
 
 	MEM_TOTAL=$(free -g|grep Mem|awk '{print $2}')
-	if [ "${MEM_TOTAL}" -le "1" ];then
-		#Auto_Swap
-	fi
+#	if [ "${MEM_TOTAL}" -le "1" ];then
+#		Auto_Swap
+#	fi
 	
 	if [ "${PM}" = "yum" ]; then
 		Install_RPM_Pack
