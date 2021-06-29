@@ -10,7 +10,7 @@ WORKDIR /tmp
 
 # install bt panel
 ADD ${REMOTE_PATH}/install_6.0.sh /tmp/install.sh
-RUN yum install -y wget cyrus-sasl-devel \
+RUN yum install -y wget cyrus-sasl-devel python3 \
     && chmod 777 install.sh \
     && bash install.sh \
     && sed -i '/session    required   pam_loginuid.so/c\#session    required   pam_loginuid.so' /etc/pam.d/crond \
@@ -48,10 +48,10 @@ RUN wget -c --no-check-certificate https://launchpad.net/libmemcached/1.0/${LIBM
     && rm -rf /tmp/*
 
 # install supervisord
-#ADD ./supervisord.conf /etc/supervisor/supervisord.conf
-#RUN pip install supervisor \
-#    && mkdir -p /etc/supervisor/conf.d /var/log/supervisor \
-#    && rm -rf /tmp/*
+ADD ./supervisord.conf /etc/supervisor/supervisord.conf
+RUN python3 -m pip install supervisor \
+    && mkdir -p /etc/supervisor/conf.d /var/log/supervisor \
+    && rm -rf /tmp/*
 
 # expose port
 EXPOSE 8888 80 443 21 20 888 3306 9001 25
@@ -62,5 +62,4 @@ RUN chmod 777 /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 #Define the default command.
-CMD ["tail", "-f", "/dev/null"]
-#CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
