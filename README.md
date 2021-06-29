@@ -18,6 +18,8 @@ docker run \
 -p 443:443 \
 -p 21:21 \
 -p 20:20 \
+--privileged=true \
+--restart always \
 -d ywfwj2008/bt-php-nginx:latest
 ```
 
@@ -62,14 +64,16 @@ docker run \
     --name bt \
     --link mysql:localmysql \
     --link redis:localredis \
-    -v /data/backup:/www/backup \
-    -v /data/wwwlogs:/www/wwwlogs \
-    -v /data/wwwroot:/www/wwwroot \
     -p 8888:8888 \
     -p 80:80 \
     -p 443:443 \
     -p 21:21 \
     -p 20:20 \
+    -v /data/backup:/www/backup \
+    -v /data/wwwlogs:/www/wwwlogs \
+    -v /data/wwwroot:/www/wwwroot \
+    --privileged=true \
+    --restart always \
     -d ywfwj2008/bt-php-nginx:latest
 ```
 

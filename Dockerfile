@@ -48,10 +48,10 @@ RUN wget -c --no-check-certificate https://launchpad.net/libmemcached/1.0/${LIBM
     && rm -rf /tmp/*
 
 # install supervisord
-ADD ./supervisord.conf /etc/supervisor/supervisord.conf
-RUN pip install supervisor \
-    && mkdir -p /etc/supervisor/conf.d /var/log/supervisor \
-    && rm -rf /tmp/*
+#ADD ./supervisord.conf /etc/supervisor/supervisord.conf
+#RUN pip install supervisor \
+#    && mkdir -p /etc/supervisor/conf.d /var/log/supervisor \
+#    && rm -rf /tmp/*
 
 # expose port
 EXPOSE 8888 80 443 21 20 888 3306 9001 25
@@ -62,4 +62,5 @@ RUN chmod 777 /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 #Define the default command.
-CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+CMD ["tail", "-f", "/dev/null"]
+#CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
