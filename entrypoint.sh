@@ -34,6 +34,15 @@ fi
 if [ -f "/etc/init.d/php-fpm-72" ];then
     /etc/init.d/php-fpm-72 start
 fi
+if [ -f "/etc/init.d/php-fpm-73" ];then
+    /etc/init.d/php-fpm-73 start
+fi
+if [ -f "/etc/init.d/php-fpm-74" ];then
+    /etc/init.d/php-fpm-74 start
+fi
+if [ -f "/etc/init.d/php-fpm-80" ];then
+    /etc/init.d/php-fpm-80 start
+fi
 if [ -f "/etc/init.d/nginx" ];then
     /etc/init.d/nginx start
 fi
