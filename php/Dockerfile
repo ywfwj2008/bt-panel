@@ -9,7 +9,7 @@ ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/raw/master \
     REDIS4_VERSION=4.3.0 \
     REDIS5_VERSION=5.3.4 \
     PHP_56_PATH=/www/server/php/56 \
-    PHP_73_PATH=/www/server/php/73 \
+    PHP_73_PATH=/www/server/php/73
 
 WORKDIR /tmp
 
