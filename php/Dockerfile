@@ -5,8 +5,9 @@ ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/raw/master \
     BISON2_VERSION=2.7.1 \
     BISON3_VERSION=3.7.6 \
     MEMCACHED2_VERSION=2.2.0 \
-    MEMCACHED3_VERSION=3.1.3 \
-    REDIS_VERSION=4.3.0 \
+    MEMCACHED3_VERSION=3.1.5 \
+    REDIS4_VERSION=4.3.0 \
+    REDIS5_VERSION=5.3.4 \
     PHP_56_PATH=/www/server/php/56 \
     PHP_73_PATH=/www/server/php/73 \
 
@@ -25,7 +26,7 @@ RUN wget http://ftp.gnu.org/gnu/bison/bison-${BISON2_VERSION}.tar.gz \
     && bash /www/server/panel/install/install_soft.sh 1 install opcache 56 \
     && bash /www/server/panel/install/install_soft.sh 1 install imagemagick 56 \
     && pecl channel-update pecl.php.net \
-    && ${PHP_56_PATH}/bin/pecl install channel://pecl.php.net/redis-${REDIS_VERSION} \
+    && ${PHP_56_PATH}/bin/pecl install channel://pecl.php.net/redis-${REDIS4_VERSION} \
     && ${PHP_56_PATH}/bin/pecl install channel://pecl.php.net/memcached-${MEMCACHED2_VERSION} \
     && echo "extension=memcached.so" >> ${PHP_56_PATH}/etc/php.ini \
     && sed -i 's/disable_functions =.*/disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,popen,proc_open,ini_alter,ini_restore,dl,openlog,syslog,readlink,symlink,popepassthru/g' ${PHP_56_PATH}/etc/php.ini \
@@ -42,8 +43,8 @@ RUN wget http://ftp.gnu.org/gnu/bison/bison-${BISON3_VERSION}.tar.gz \
     && bash /www/server/panel/install/install_soft.sh 1 install fileinfo 73 \
     && bash /www/server/panel/install/install_soft.sh 1 install opcache 73 \
     && bash /www/server/panel/install/install_soft.sh 1 install imagemagick 73 \
-    && wget http://pecl.php.net/get/redis-${REDIS_VERSION}.tgz \
-    && ${PHP_73_PATH}/bin/pecl install redis-${REDIS_VERSION}.tgz \
+    && wget http://pecl.php.net/get/redis-${REDIS5_VERSION}.tgz \
+    && ${PHP_73_PATH}/bin/pecl install redis-${REDIS5_VERSION}.tgz \
     && wget http://pecl.php.net/get/memcached-${MEMCACHED3_VERSION}.tgz \
     && ${PHP_73_PATH}/bin/pecl install memcached-${MEMCACHED3_VERSION}.tgz \
     && rm -rf /tmp/*
