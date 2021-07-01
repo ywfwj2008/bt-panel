@@ -20,7 +20,7 @@ docker run \
 -p 21:21 \
 -p 20:20 \
 --privileged=true \
---shm-size=1g
+--shm-size=1g \
 --restart always \
 -d ywfwj2008/bt-php-nginx:latest
 ```
@@ -76,7 +76,7 @@ docker run \
     -v /data/wwwlogs:/www/wwwlogs \
     -v /data/wwwroot:/www/wwwroot \
     --privileged=true \
-    --shm-size=1g
+    --shm-size=1g \
     --restart always \
     -d ywfwj2008/bt-php-nginx:latest
 ```
