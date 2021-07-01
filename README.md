@@ -14,7 +14,7 @@
 docker run \
 --name bt \
 -p 8888:8888 \
--p 888:888
+-p 888:888 \
 -p 80:80 \
 -p 443:443 \
 -p 21:21 \
@@ -35,7 +35,7 @@ docker run \
 ```
 docker run \
     --name mysql \
-    --restart=always \
+    --restart always \
     -v /data/config/mysql:/etc/mysql/conf.d \
     -v /data/mysql:/var/lib/mysql \
     -e MYSQL_ROOT_PASSWORD=my-secret-pw \
@@ -50,7 +50,7 @@ docker run \
 ```
 docker run \
     --name redis \
-    --restart=always \
+    --restart always \
     -e 'REDIS_PASSWORD=redispassword' \
     -v /data/redis-persistence:/var/lib/redis \
     -d sameersbn/redis --appendonly yes
@@ -64,10 +64,11 @@ docker run \
 ```
 docker run \
     --name bt \
+    --restart always \
     --link mysql:localmysql \
     --link redis:localredis \
     -p 8888:8888 \
-    -p 888:888
+    -p 888:888 \
     -p 80:80 \
     -p 443:443 \
     -p 21:21 \
@@ -77,7 +78,6 @@ docker run \
     -v /data/wwwroot:/www/wwwroot \
     --privileged=true \
     --shm-size=1g \
-    --restart always \
     -d ywfwj2008/bt-php-nginx:latest
 ```
 

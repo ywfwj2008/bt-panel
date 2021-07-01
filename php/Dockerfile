@@ -14,7 +14,7 @@ ENV REMOTE_PATH=https://github.com/ywfwj2008/bt-panel/raw/master \
 WORKDIR /tmp
 
 # install php5.6
-RUN wget http://ftp.gnu.org/gnu/bison/bison-${BISON2_VERSION}.tar.gz \
+RUN wget http://ftp.igh.cnrs.fr/pub/gnu/bison/bison-${BISON2_VERSION}.tar.gz \
     && tar -zxvf bison-${BISON2_VERSION}.tar.gz \
     && cd bison-${BISON2_VERSION} \
     && ./configure --prefix=/usr \
@@ -33,7 +33,7 @@ RUN wget http://ftp.gnu.org/gnu/bison/bison-${BISON2_VERSION}.tar.gz \
     && rm -rf /tmp/*
 
 # install php7.3
-RUN wget http://ftp.gnu.org/gnu/bison/bison-${BISON3_VERSION}.tar.gz \
+RUN wget http://ftp.igh.cnrs.fr/pub/gnu/bison/bison-${BISON3_VERSION}.tar.gz \
     && tar -zxvf bison-${BISON3_VERSION}.tar.gz \
     && cd bison-${BISON3_VERSION} \
     && ./configure --prefix=/usr \
