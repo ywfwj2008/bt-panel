@@ -40,7 +40,7 @@ GetSysInfo(){
 }
 Red_Error(){
 	echo '=================================================';
-	printf '\033[1;31;40m%b\033[0m\n' "$1";
+	printf '\033[1;31;40m%b\033[0m\n' "$@";
 	GetSysInfo
 	exit 1;
 }
@@ -127,10 +127,17 @@ get_node_url(){
 			apt-get install curl -y
 		fi
 	fi
+
+	if [ -f "/www/node.pl" ];then
+		download_Url=$(cat /www/node.pl)
+		echo "Download node: $download_Url";
+		echo '---------------------------------------------';
+		return
+	fi
 	
 	echo '---------------------------------------------';
 	echo "Selected download node...";
-	nodes=(http://dg2.bt.cn http://dg1.bt.cn http://180.101.160.68:5880 http://103.224.251.67 http://45.76.53.20 http://120.206.184.160 http://113.107.111.78 http://128.1.164.196);
+	nodes=(http://dg2.bt.cn http://dg1.bt.cn http://125.90.93.52:5880 http://36.133.1.8:5880 http://123.129.198.197 http://38.34.185.130 http://103.224.251.67:5880 http://128.1.164.196);
 	tmp_file1=/dev/shm/net_test1.pl
 	tmp_file2=/dev/shm/net_test2.pl
 	[ -f "${tmp_file1}" ] && rm -f ${tmp_file1}
@@ -198,11 +205,12 @@ Install_RPM_Pack(){
 		echo "exclude=httpd nginx php mysql mairadb python-psutil python2-psutil" >> $yumPath
 	fi
 
-	yumBaseUrl=$(cat /etc/yum.repos.d/CentOS-Base.repo|grep baseurl=http|cut -d '=' -f 2|cut -d '$' -f 1|head -n 1)
-	[ "${yumBaseUrl}" ] && checkYumRepo=$(curl --connect-timeout 5 --head -s -o /dev/null -w %{http_code} ${yumBaseUrl})	
-	if [ "${checkYumRepo}" != "200" ];then
-		curl -Ss --connect-timeout 3 -m 60 http://download.bt.cn/install/yumRepo_select.sh|bash
-	fi
+	#SYS_TYPE=$(uname -a|grep x86_64)
+	#yumBaseUrl=$(cat /etc/yum.repos.d/CentOS-Base.repo|grep baseurl=http|cut -d '=' -f 2|cut -d '$' -f 1|head -n 1)
+	#[ "${yumBaseUrl}" ] && checkYumRepo=$(curl --connect-timeout 5 --head -s -o /dev/null -w %{http_code} ${yumBaseUrl})	
+	#if [ "${checkYumRepo}" != "200" ] && [ "${SYS_TYPE}" ];then
+	#	curl -Ss --connect-timeout 3 -m 60 http://download.bt.cn/install/yumRepo_select.sh|bash
+	#fi
 	
 	#尝试同步时间(从bt.cn)
 	echo 'Synchronizing system time...'
@@ -281,264 +289,6 @@ Install_Deb_Pack(){
 		fi	
 	fi
 }
-Install_Bt(){
-	panelPort="8888"
-	if [ -f ${setup_path}/server/panel/data/port.pl ];then
-		panelPort=$(cat ${setup_path}/server/panel/data/port.pl)
-	fi
-	mkdir -p ${setup_path}/server/panel/logs
-	mkdir -p ${setup_path}/server/panel/vhost/apache
-	mkdir -p ${setup_path}/server/panel/vhost/nginx
-	mkdir -p ${setup_path}/server/panel/vhost/rewrite
-	mkdir -p ${setup_path}/server/panel/install
-	mkdir -p /www/server
-	mkdir -p /www/wwwroot
-	mkdir -p /www/wwwlogs
-	mkdir -p /www/backup/database
-	mkdir -p /www/backup/site
-
-	if [ ! -f "/usr/bin/unzip" ]; then
-		if [ "${PM}" = "yum" ]; then
-			yum install unzip -y
-		elif [ "${PM}" = "apt-get" ]; then
-			apt-get install unzip -y
-		fi
-	fi
-
-	if [ -f "/etc/init.d/bt" ]; then
-		/etc/init.d/bt stop
-		sleep 1
-	fi
-
-	wget -O panel.zip ${download_Url}/install/src/panel6.zip -T 10
-	wget -O /etc/init.d/bt ${download_Url}/install/src/bt6.init -T 10
-	wget -O /www/server/panel/install/public.sh ${download_Url}/install/public.sh -T 10
-
-	if [ -f "${setup_path}/server/panel/data/default.db" ];then
-		if [ -d "/${setup_path}/server/panel/old_data" ];then
-			rm -rf ${setup_path}/server/panel/old_data
-		fi
-		mkdir -p ${setup_path}/server/panel/old_data
-		d_format=$(date +"%Y%m%d_%H%M%S")
-		\cp -arf ${setup_path}/server/panel/data/default.db ${setup_path}/server/panel/data/default_backup_${d_format}.db
-		mv -f ${setup_path}/server/panel/data/default.db ${setup_path}/server/panel/old_data/default.db
-		mv -f ${setup_path}/server/panel/data/system.db ${setup_path}/server/panel/old_data/system.db
-		mv -f ${setup_path}/server/panel/data/port.pl ${setup_path}/server/panel/old_data/port.pl
-		mv -f ${setup_path}/server/panel/data/admin_path.pl ${setup_path}/server/panel/old_data/admin_path.pl
-	fi
-
-	unzip -o panel.zip -d ${setup_path}/server/ > /dev/null
-
-	if [ -d "${setup_path}/server/panel/old_data" ];then
-		mv -f ${setup_path}/server/panel/old_data/default.db ${setup_path}/server/panel/data/default.db
-		mv -f ${setup_path}/server/panel/old_data/system.db ${setup_path}/server/panel/data/system.db
-		mv -f ${setup_path}/server/panel/old_data/port.pl ${setup_path}/server/panel/data/port.pl
-		mv -f ${setup_path}/server/panel/old_data/admin_path.pl ${setup_path}/server/panel/data/admin_path.pl
-		if [ -d "/${setup_path}/server/panel/old_data" ];then
-			rm -rf ${setup_path}/server/panel/old_data
-		fi
-	fi
-
-	rm -f panel.zip
-
-	if [ ! -f ${setup_path}/server/panel/tools.py ];then
-		Red_Error "ERROR: Failed to download, please try install again!"
-	fi
-
-	rm -f ${setup_path}/server/panel/class/*.pyc
-	rm -f ${setup_path}/server/panel/*.pyc
-
-	chmod +x /etc/init.d/bt
-	chmod -R 600 ${setup_path}/server/panel
-	chmod -R +x ${setup_path}/server/panel/script
-	ln -sf /etc/init.d/bt /usr/bin/bt
-	echo "${panelPort}" > ${setup_path}/server/panel/data/port.pl
-	wget -O /etc/init.d/bt ${download_Url}/install/src/bt7.init -T 10
-	wget -O /www/server/panel/init.sh ${download_Url}/install/src/bt7.init -T 10
-}
-Install_Python_Lib(){
-	curl -Ss --connect-timeout 3 -m 60 $download_Url/install/pip_select.sh|bash
-	pyenv_path="/www/server/panel"
-	if [ -f $pyenv_path/pyenv/bin/python ];then
-		is_err=$($pyenv_path/pyenv/bin/python3.7 -V 2>&1|grep 'Could not find platform')
-		if [ "$is_err" = "" ];then
-			chmod -R 700 $pyenv_path/pyenv/bin
-			is_package=$($python_bin -m psutil 2>&1|grep package)
-			if [ "$is_package" = "" ];then
-				wget -O $pyenv_path/pyenv/pip.txt $download_Url/install/pyenv/pip.txt -T 5
-				$pyenv_path/pyenv/bin/pip install -U pip
-				$pyenv_path/pyenv/bin/pip install -U setuptools
-				$pyenv_path/pyenv/bin/pip install -r $pyenv_path/pyenv/pip.txt
-			fi
-			source $pyenv_path/pyenv/bin/activate
-			return
-		else
-			rm -rf $pyenv_path/pyenv
-		fi
-	fi
-	py_version="3.7.8"
-	mkdir -p $pyenv_path
-	os_type='el'
-	os_version='7'
-	is_export_openssl=0
-	Get_Versions
-	Centos6_Openssl
-	Other_Openssl
-	echo "OS: $os_type - $os_version"
-	is_aarch64=$(uname -a|grep aarch64)
-	if [ "$is_aarch64" != "" ];then
-		os_version="aarch64"
-	fi
-	
-	if [ -f "/www/server/panel/pymake.pl" ];then
-		os_version=""
-		rm -f /www/server/panel/pymake.pl
-	fi	
-
-	if [ "${os_version}" != "" ];then
-		pyenv_file="/www/pyenv.tar.gz"
-		wget -O $pyenv_file $download_Url/install/pyenv/pyenv-${os_type}${os_version}-x${is64bit}.tar.gz -T 10
-		tmp_size=$(du -b $pyenv_file|awk '{print $1}')
-		if [ $tmp_size -lt 703460 ];then
-			rm -f $pyenv_file
-			echo "ERROR: Download python env fielded."
-		else
-			echo "Install python env..."
-			tar zxvf $pyenv_file -C $pyenv_path/ > /dev/null
-			chmod -R 700 $pyenv_path/pyenv/bin
-			if [ ! -f $pyenv_path/pyenv/bin/python ];then
-				rm -f $pyenv_file
-				Red_Error "ERROR: Install python env fielded."
-			fi
-			is_err=$($pyenv_path/pyenv/bin/python3.7 -V 2>&1|grep 'Could not find platform')
-			if [ "$is_err" = "" ];then
-				rm -f $pyenv_file
-				ln -sf $pyenv_path/pyenv/bin/pip3.7 /usr/bin/btpip
-				ln -sf $pyenv_path/pyenv/bin/python3.7 /usr/bin/btpython
-				source $pyenv_path/pyenv/bin/activate
-				return
-			else
-				rm -f $pyenv_file
-				rm -rf $pyenv_path/pyenv
-			fi
-		fi
-		
-	fi
-	if [ -f /usr/local/openssl/lib/libssl.so ];then
-		export LDFLAGS="-L/usr/local/openssl/lib"
-		export CPPFLAGS="-I/usr/local/openssl/include"
-		export PKG_CONFIG_PATH="/usr/local/openssl/lib/pkgconfig"
-		echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/openssl/lib" >> /etc/profile
-		source /etc/profile
-	fi
-	cd /www
-	python_src='/www/python_src.tar.xz'
-	python_src_path="/www/Python-${py_version}"
-	wget -O $python_src $download_Url/src/Python-${py_version}.tar.xz -T 5
-	tmp_size=$(du -b $python_src|awk '{print $1}')
-	if [ $tmp_size -lt 10703460 ];then
-		rm -f $python_src
-		Red_Error "ERROR: Download python source code fielded."
-	fi
-	tar xvf $python_src
-	rm -f $python_src
-	cd $python_src_path
-	./configure --prefix=$pyenv_path/pyenv
-	make -j$cpu_cpunt
-	make install
-	if [ ! -f $pyenv_path/pyenv/bin/python3.7 ];then
-		rm -rf $python_src_path
-		Red_Error "ERROR: Make python env fielded."
-	fi
-	cd ~
-	rm -rf $python_src_path
-	wget -O $pyenv_path/pyenv/bin/activate $download_Url/install/pyenv/activate.panel -T 5
-	wget -O $pyenv_path/pyenv/pip.txt $download_Url/install/pyenv/pip-3.7.8.txt -T 5
-	ln -sf $pyenv_path/pyenv/bin/pip3.7 $pyenv_path/pyenv/bin/pip
-	ln -sf $pyenv_path/pyenv/bin/python3.7 $pyenv_path/pyenv/bin/python
-	ln -sf $pyenv_path/pyenv/bin/pip3.7 /usr/bin/btpip
-	ln -sf $pyenv_path/pyenv/bin/python3.7 /usr/bin/btpython
-	chmod -R 700 $pyenv_path/pyenv/bin
-	$pyenv_path/pyenv/bin/pip install -U pip
-	$pyenv_path/pyenv/bin/pip install -U setuptools
-	$pyenv_path/pyenv/bin/pip install -U wheel==0.34.2 
-	$pyenv_path/pyenv/bin/pip install -r $pyenv_path/pyenv/pip.txt
-	source $pyenv_path/pyenv/bin/activate
-}
-Other_Openssl(){
-	openssl_version=$(openssl version|grep -Eo '[0-9]\.[0-9]\.[0-9]')
-	if [ "$openssl_version" = '1.0.1' ] || [ "$openssl_version" = '1.0.0' ];then	
-		opensslVersion="1.0.2r"
-		if [ ! -f "/usr/local/openssl/lib/libssl.so" ];then
-			cd /www
-			openssl_src_file=/www/openssl.tar.gz
-			wget -O $openssl_src_file ${download_Url}/src/openssl-${opensslVersion}.tar.gz
-			tmp_size=$(du -b $openssl_src_file|awk '{print $1}')
-			if [ $tmp_size -lt 703460 ];then
-				rm -f $openssl_src_file
-				Red_Error "ERROR: Download openssl-1.0.2 source code fielded."
-			fi
-			tar -zxf $openssl_src_file
-			rm -f $openssl_src_file
-			cd openssl-${opensslVersion}
-			#zlib-dynamic shared
-			./config --openssldir=/usr/local/openssl zlib-dynamic shared
-			make -j${cpuCore} 
-			make install
-			echo  "/usr/local/openssl/lib" > /etc/ld.so.conf.d/zopenssl.conf
-			ldconfig
-			cd ..
-			rm -rf openssl-${opensslVersion}
-			is_export_openssl=1
-			cd ~
-		fi
-	fi
-}
-Insatll_Libressl(){
-	openssl_version=$(openssl version|grep -Eo '[0-9]\.[0-9]\.[0-9]')
-	if [ "$openssl_version" = '1.0.1' ] || [ "$openssl_version" = '1.0.0' ];then	
-		opensslVersion="3.0.2"
-		cd /www
-		openssl_src_file=/www/openssl.tar.gz
-		wget -O $openssl_src_file ${download_Url}/install/pyenv/libressl-${opensslVersion}.tar.gz
-		tmp_size=$(du -b $openssl_src_file|awk '{print $1}')
-		if [ $tmp_size -lt 703460 ];then
-			rm -f $openssl_src_file
-			Red_Error "ERROR: Download libressl-$opensslVersion source code fielded."
-		fi
-		tar -zxf $openssl_src_file
-		rm -f $openssl_src_file
-		cd libressl-${opensslVersion}
-		./config –prefix=/usr/local/lib
-		make -j${cpuCore}
-		make install
-		ldconfig
-		ldconfig -v
-		cd ..
-		rm -rf libressl-${opensslVersion}
-		is_export_openssl=1
-		cd ~
-	fi
-}
-Centos6_Openssl(){
-	if [ "$os_type" != 'el' ];then
-		return
-	fi
-	if [ "$os_version" != '6' ];then
-		return
-	fi
-	echo 'Centos6 install openssl-1.0.2...'
-	openssl_rpm_file="/www/openssl.rpm"
-	wget -O $openssl_rpm_file $download_Url/rpm/centos6/${is64bit}/bt-openssl102.rpm -T 10
-	tmp_size=$(du -b $openssl_rpm_file|awk '{print $1}')
-	if [ $tmp_size -lt 102400 ];then
-		rm -f $openssl_rpm_file
-		Red_Error "ERROR: Download python env fielded."
-	fi
-	rpm -ivh $openssl_rpm_file
-	rm -f $openssl_rpm_file
-	is_export_openssl=1
-}
 Get_Versions(){
 	redhat_version_file="/etc/redhat-release"
 	deb_version_file="/etc/issue"
@@ -581,6 +331,195 @@ Get_Versions(){
 		fi
 	fi
 }
+Install_Python_Lib(){
+	curl -Ss --connect-timeout 3 -m 60 $download_Url/install/pip_select.sh|bash
+	pyenv_path="/www/server/panel"
+	if [ -f $pyenv_path/pyenv/bin/python ];then
+	 	is_ssl=$($python_bin -c "import ssl" 2>&1|grep cannot)
+		$pyenv_path/pyenv/bin/python3.7 -V
+		if [ $? -eq 0 ] && [ -z "${is_ssl}" ];then
+			chmod -R 700 $pyenv_path/pyenv/bin
+			is_package=$($python_bin -m psutil 2>&1|grep package)
+			if [ "$is_package" = "" ];then
+				wget -O $pyenv_path/pyenv/pip.txt $download_Url/install/pyenv/pip.txt -T 5
+				$pyenv_path/pyenv/bin/pip install -U pip
+				$pyenv_path/pyenv/bin/pip install -U setuptools
+				$pyenv_path/pyenv/bin/pip install -r $pyenv_path/pyenv/pip.txt
+			fi
+			source $pyenv_path/pyenv/bin/activate
+			return
+		else
+			rm -rf $pyenv_path/pyenv
+		fi
+	fi
+
+	py_version="3.7.8"
+	mkdir -p $pyenv_path
+	echo "True" > /www/disk.pl
+	if [ ! -w /www/disk.pl ];then
+		Red_Error "ERROR: Install python env fielded." "ERROR: /www目录无法写入，请检查目录/用户/磁盘权限！"
+	fi
+	os_type='el'
+	os_version='7'
+	is_export_openssl=0
+	Get_Versions
+
+	echo "OS: $os_type - $os_version"
+	is_aarch64=$(uname -a|grep aarch64)
+	if [ "$is_aarch64" != "" ];then
+		is64bit="aarch64"
+	fi
+	
+	if [ -f "/www/server/panel/pymake.pl" ];then
+		os_version=""
+		rm -f /www/server/panel/pymake.pl
+	fi	
+
+	if [ "${os_version}" != "" ];then
+		pyenv_file="/www/pyenv.tar.gz"
+		wget -O $pyenv_file $download_Url/install/pyenv/pyenv-${os_type}${os_version}-x${is64bit}.tar.gz -T 10
+		tmp_size=$(du -b $pyenv_file|awk '{print $1}')
+		if [ $tmp_size -lt 703460 ];then
+			rm -f $pyenv_file
+			echo "ERROR: Download python env fielded."
+		else
+			echo "Install python env..."
+			tar zxvf $pyenv_file -C $pyenv_path/ > /dev/null
+			chmod -R 700 $pyenv_path/pyenv/bin
+			if [ ! -f $pyenv_path/pyenv/bin/python ];then
+				rm -f $pyenv_file
+				Red_Error "ERROR: Install python env fielded." "ERROR: 下载宝塔运行环境失败，请尝试重新安装！" 
+			fi
+			$pyenv_path/pyenv/bin/python3.7 -V
+			if [ $? -eq 0 ];then
+				rm -f $pyenv_file
+				ln -sf $pyenv_path/pyenv/bin/pip3.7 /usr/bin/btpip
+				ln -sf $pyenv_path/pyenv/bin/python3.7 /usr/bin/btpython
+				source $pyenv_path/pyenv/bin/activate
+				return
+			else
+				rm -f $pyenv_file
+				rm -rf $pyenv_path/pyenv
+			fi
+		fi
+	fi
+
+	cd /www
+	python_src='/www/python_src.tar.xz'
+	python_src_path="/www/Python-${py_version}"
+	wget -O $python_src $download_Url/src/Python-${py_version}.tar.xz -T 5
+	tmp_size=$(du -b $python_src|awk '{print $1}')
+	if [ $tmp_size -lt 10703460 ];then
+		rm -f $python_src
+		Red_Error "ERROR: Download python source code fielded." "ERROR: 下载宝塔运行环境失败，请尝试重新安装！"
+	fi
+	tar xvf $python_src
+	rm -f $python_src
+	cd $python_src_path
+	./configure --prefix=$pyenv_path/pyenv
+	make -j$cpu_cpunt
+	make install
+	if [ ! -f $pyenv_path/pyenv/bin/python3.7 ];then
+		rm -rf $python_src_path
+		Red_Error "ERROR: Make python env fielded." "ERROR: 编译宝塔运行环境失败！"
+	fi
+	cd ~
+	rm -rf $python_src_path
+	wget -O $pyenv_path/pyenv/bin/activate $download_Url/install/pyenv/activate.panel -T 5
+	wget -O $pyenv_path/pyenv/pip.txt $download_Url/install/pyenv/pip-3.7.8.txt -T 5
+	ln -sf $pyenv_path/pyenv/bin/pip3.7 $pyenv_path/pyenv/bin/pip
+	ln -sf $pyenv_path/pyenv/bin/python3.7 $pyenv_path/pyenv/bin/python
+	ln -sf $pyenv_path/pyenv/bin/pip3.7 /usr/bin/btpip
+	ln -sf $pyenv_path/pyenv/bin/python3.7 /usr/bin/btpython
+	chmod -R 700 $pyenv_path/pyenv/bin
+	$pyenv_path/pyenv/bin/pip install -U pip
+	$pyenv_path/pyenv/bin/pip install -U setuptools
+	$pyenv_path/pyenv/bin/pip install -U wheel==0.34.2 
+	$pyenv_path/pyenv/bin/pip install -r $pyenv_path/pyenv/pip.txt
+	source $pyenv_path/pyenv/bin/activate
+
+	is_gevent=$($python_bin -m gevent 2>&1|grep -oE package)
+	is_psutil=$($python_bin -m psutil 2>&1|grep -oE package)
+	if [ "${is_gevent}" != "${is_psutil}" ];then
+		Red_Error "ERROR: psutil/gevent install failed!"
+	fi
+}
+Install_Bt(){
+	panelPort="8888"
+	if [ -f ${setup_path}/server/panel/data/port.pl ];then
+		panelPort=$(cat ${setup_path}/server/panel/data/port.pl)
+	fi
+	mkdir -p ${setup_path}/server/panel/logs
+	mkdir -p ${setup_path}/server/panel/vhost/apache
+	mkdir -p ${setup_path}/server/panel/vhost/nginx
+	mkdir -p ${setup_path}/server/panel/vhost/rewrite
+	mkdir -p ${setup_path}/server/panel/install
+	mkdir -p /www/server
+	mkdir -p /www/wwwroot
+	mkdir -p /www/wwwlogs
+	mkdir -p /www/backup/database
+	mkdir -p /www/backup/site
+
+	if [ -f "/etc/init.d/bt" ]; then
+		/etc/init.d/bt stop
+		sleep 1
+	fi
+
+	wget -O /etc/init.d/bt ${download_Url}/install/src/bt6.init -T 10
+	wget -O /www/server/panel/install/public.sh ${download_Url}/install/public.sh -T 10
+	wget -O panel.zip ${download_Url}/install/src/panel6.zip -T 10
+
+	if [ -f "${setup_path}/server/panel/data/default.db" ];then
+		if [ -d "/${setup_path}/server/panel/old_data" ];then
+			rm -rf ${setup_path}/server/panel/old_data
+		fi
+		mkdir -p ${setup_path}/server/panel/old_data
+		d_format=$(date +"%Y%m%d_%H%M%S")
+		\cp -arf ${setup_path}/server/panel/data/default.db ${setup_path}/server/panel/data/default_backup_${d_format}.db
+		mv -f ${setup_path}/server/panel/data/default.db ${setup_path}/server/panel/old_data/default.db
+		mv -f ${setup_path}/server/panel/data/system.db ${setup_path}/server/panel/old_data/system.db
+		mv -f ${setup_path}/server/panel/data/port.pl ${setup_path}/server/panel/old_data/port.pl
+		mv -f ${setup_path}/server/panel/data/admin_path.pl ${setup_path}/server/panel/old_data/admin_path.pl
+	fi
+
+	if [ ! -f "/usr/bin/unzip" ]; then
+		if [ "${PM}" = "yum" ]; then
+			yum install unzip -y
+		elif [ "${PM}" = "apt-get" ]; then
+			apt-get update
+			apt-get install unzip -y
+		fi
+	fi
+
+	unzip -o panel.zip -d ${setup_path}/server/ > /dev/null
+
+	if [ -d "${setup_path}/server/panel/old_data" ];then
+		mv -f ${setup_path}/server/panel/old_data/default.db ${setup_path}/server/panel/data/default.db
+		mv -f ${setup_path}/server/panel/old_data/system.db ${setup_path}/server/panel/data/system.db
+		mv -f ${setup_path}/server/panel/old_data/port.pl ${setup_path}/server/panel/data/port.pl
+		mv -f ${setup_path}/server/panel/old_data/admin_path.pl ${setup_path}/server/panel/data/admin_path.pl
+		if [ -d "/${setup_path}/server/panel/old_data" ];then
+			rm -rf ${setup_path}/server/panel/old_data
+		fi
+	fi
+
+	if [ ! -f ${setup_path}/server/panel/tools.py ] || [ ! -f ${setup_path}/server/panel/BT-Panel ];then
+		ls -lh panel.zip
+		Red_Error "ERROR: Failed to download, please try install again!" "ERROR: 下载宝塔失败，请尝试重新安装！"
+	fi
+
+	rm -f panel.zip
+	rm -f ${setup_path}/server/panel/class/*.pyc
+	rm -f ${setup_path}/server/panel/*.pyc
+
+	chmod +x /etc/init.d/bt
+	chmod -R 600 ${setup_path}/server/panel
+	chmod -R +x ${setup_path}/server/panel/script
+	ln -sf /etc/init.d/bt /usr/bin/bt
+	echo "${panelPort}" > ${setup_path}/server/panel/data/port.pl
+	wget -O /etc/init.d/bt ${download_Url}/install/src/bt7.init -T 10
+	wget -O /www/server/panel/init.sh ${download_Url}/install/src/bt7.init -T 10
+}
 Set_Bt_Panel(){
 	password=$(cat /dev/urandom | head -n 16 | md5sum | head -c 8)
 	sleep 1
@@ -609,7 +548,7 @@ Set_Bt_Panel(){
 		touch t.pl
 		ls -al python3.7 python
 		lsattr python3.7 python
-		Red_Error "ERROR: The BT-Panel service startup failed."
+		Red_Error "ERROR: The BT-Panel service startup failed." "ERROR: 宝塔启动失败"
 	fi
 }
 Set_Firewall(){
@@ -759,4 +698,5 @@ echo -e "=================================================================="
 endTime=`date +%s`
 ((outTime=($endTime-$startTime)/60))
 echo -e "Time consumed:\033[32m $outTime \033[0mMinute!"
+
 
