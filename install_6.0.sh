@@ -13,6 +13,18 @@ if [ "${is64bit}" != '64' ];then
 	Red_Error "抱歉, 当前面板版本不支持32位系统, 请使用64位系统或安装宝塔5.9!";
 fi
 
+Centos6Check=$(cat /etc/redhat-release | grep ' 6.' | grep -iE 'centos|Red Hat')
+if [ "${Centos6Check}" ];then
+	echo "Centos6不支持安装宝塔面板，请更换Centos7/8安装宝塔面板"
+	exit 1
+fi 
+
+UbuntuCheck=$(cat /etc/issue|grep Ubuntu|awk '{print $2}'|cut -f 1 -d '.')
+if [ "${UbuntuCheck}" -lt "16" ];then
+	echo "Ubuntu ${UbuntuCheck}不支持安装宝塔面板，建议更换Ubuntu18/20安装宝塔面板"
+	exit 1
+fi
+
 cd ~
 setup_path="/www"
 python_bin=$setup_path/server/panel/pyenv/bin/python
@@ -137,7 +149,7 @@ get_node_url(){
 	
 	echo '---------------------------------------------';
 	echo "Selected download node...";
-	nodes=(http://dg2.bt.cn http://dg1.bt.cn http://125.90.93.52:5880 http://36.133.1.8:5880 http://123.129.198.197 http://38.34.185.130 http://103.224.251.67:5880 http://128.1.164.196);
+	nodes=(http://dg2.bt.cn http://dg1.bt.cn http://125.90.93.52:5880 http://36.133.1.8:5880 http://123.129.198.197 http://38.34.185.130 http://116.213.43.206:5880 http://128.1.164.196);
 	tmp_file1=/dev/shm/net_test1.pl
 	tmp_file2=/dev/shm/net_test2.pl
 	[ -f "${tmp_file1}" ] && rm -f ${tmp_file1}
@@ -276,7 +288,7 @@ Install_Deb_Pack(){
 	do
 		packCheck=$(dpkg -l ${debPack})
 		if [ "$?" -ne "0" ] ;then
-			apt-get install -y debPack
+			apt-get install -y $debPack
 		fi
 	done
 
@@ -301,6 +313,9 @@ Get_Versions(){
 		os_version=$(cat $redhat_version_file|grep CentOS|grep -Eo '([0-9]+\.)+[0-9]+'|grep -Eo '^[0-9]')
 		if [ "${os_version}" = "5" ];then
 			os_version=""
+		fi
+		if [ -z "${os_version}" ];then
+			os_version=$(cat /etc/redhat-release |grep Stream|grep -oE 8)
 		fi
 	else
 		os_type='ubuntu'
@@ -327,7 +342,15 @@ Get_Versions(){
 			if [ "$os_version" = "19" ];then
 				os_version=""
 			fi
-
+			if [ "$os_version" = "21" ];then
+				os_version=""
+			fi
+			if [ "$os_version" = "20" ];then
+				os_version2004=$(cat /etc/issue|grep 20.04)
+				if [ -z "${os_version2004}" ];then
+					os_version=""
+				fi
+			fi
 		fi
 	fi
 }
@@ -351,6 +374,45 @@ Install_Python_Lib(){
 		else
 			rm -rf $pyenv_path/pyenv
 		fi
+	fi
+
+	is_loongarch64=$(uname -a|grep loongarch64)
+	if [ "$is_loongarch64" != "" ] && [ -f "/usr/bin/yum" ];then
+		yumPacks="python3-devel python3-pip python3-psutil python3-gevent python3-pyOpenSSL python3-paramiko python3-flask python3-rsa python3-requests python3-six python3-websocket-client"
+		yum install -y ${yumPacks}
+		for yumPack in ${yumPacks}
+		do
+			rpmPack=$(rpm -q ${yumPack})
+			packCheck=$(echo ${rpmPack}|grep not)
+			if [ "${packCheck}" ]; then
+				yum install ${yumPack} -y
+			fi
+		done
+
+		pip3 install -U pip
+		pip3 install Pillow psutil pyinotify pycryptodome upyun oss2 pymysql qrcode qiniu redis pymongo Cython configparser cos-python-sdk-v5 supervisor gevent-websocket pyopenssl
+		pip3 install flask==1.1.4
+		pip3 install Pillow -U
+
+		pyenv_bin=/www/server/panel/pyenv/bin
+		mkdir -p $pyenv_bin
+		ln -sf /usr/local/bin/pip3 $pyenv_bin/pip
+		ln -sf /usr/local/bin/pip3 $pyenv_bin/pip3
+		ln -sf /usr/local/bin/pip3 $pyenv_bin/pip3.7
+
+		if [ -f "/usr/bin/python3.7" ];then
+			ln -sf /usr/bin/python3.7 $pyenv_bin/python
+			ln -sf /usr/bin/python3.7 $pyenv_bin/python3
+			ln -sf /usr/bin/python3.7 $pyenv_bin/python3.7
+		elif [ -f "/usr/bin/python3.6"  ]; then
+			ln -sf /usr/bin/python3.6 $pyenv_bin/python
+			ln -sf /usr/bin/python3.6 $pyenv_bin/python3
+			ln -sf /usr/bin/python3.6 $pyenv_bin/python3.7
+		fi
+
+		echo > $pyenv_bin/activate
+
+		return
 	fi
 
 	py_version="3.7.8"
@@ -519,8 +581,16 @@ Install_Bt(){
 	echo "${panelPort}" > ${setup_path}/server/panel/data/port.pl
 	wget -O /etc/init.d/bt ${download_Url}/install/src/bt7.init -T 10
 	wget -O /www/server/panel/init.sh ${download_Url}/install/src/bt7.init -T 10
+	wget -O /www/server/panel/data/softList.conf ${download_Url}/install/conf/softList.conf
 }
 Set_Bt_Panel(){
+	Run_User="www"
+	wwwUser=$(cat /etc/passwd|grep www)
+	if [ "${wwwUser}" == "" ];then
+		groupadd ${Run_User}
+		useradd -s /sbin/nologin -g ${Run_User} ${Run_User}
+	fi
+
 	password=$(cat /dev/urandom | head -n 16 | md5sum | head -c 8)
 	sleep 1
 	admin_auth="/www/server/panel/data/admin_path.pl"
@@ -616,7 +686,7 @@ Get_Ip_Address(){
 		isHosts=$(cat /etc/hosts|grep 'www.bt.cn')
 		if [ -z "${isHosts}" ];then
 			echo "" >> /etc/hosts
-			echo "103.224.251.67 www.bt.cn" >> /etc/hosts
+			echo "116.213.43.206 www.bt.cn" >> /etc/hosts
 			getIpAddress=$(curl -sS --connect-timeout 10 -m 60 https://www.bt.cn/Api/getIpAddress)
 			if [ -z "${getIpAddress}" ];then
 				sed -i "/bt.cn/d" /etc/hosts
